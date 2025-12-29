@@ -1,14 +1,14 @@
 package com.yoimerdr.compose.ludens.ui.components.buttons
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.yoimerdr.compose.ludens.app.theme.onSurfaceDark
-import com.yoimerdr.compose.ludens.app.theme.surfaceDark
 
 /**
  * Outlined icon button with predefined colors for dark theme.
@@ -22,6 +22,10 @@ import com.yoimerdr.compose.ludens.app.theme.surfaceDark
 fun OutlinedIconButton(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    colors: IconButtonColors = IconButtonDefaults.outlinedIconButtonColors(
+        contentColor = Color(0xFFE2E2E9),
+        containerColor = Color(0xFF111318)
+    ),
     border: BorderStroke? = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     content: @Composable (() -> Unit),
 ) {
@@ -29,10 +33,7 @@ fun OutlinedIconButton(
         modifier = modifier,
         onClick = { onClick?.invoke() },
         enabled = true,
-        colors = IconButtonDefaults.outlinedIconButtonColors(
-            contentColor = onSurfaceDark,
-            containerColor = surfaceDark
-        ),
+        colors = colors,
         border = border,
         content = content
     )
