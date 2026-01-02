@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package com.yoimerdr.compose.ludens.core.data.source.local.settings;
+option java_multiple_files = true;
+
+message ProtoControlItem {
+  int32 type = 1;
+  bool enabled = 2;
+  float alpha = 3;
+  int32 key = 4;
+}
+
+message ProtoControlSettings {
+  bool enabled = 1;
+  float alpha = 2;
+  repeated ProtoControlItem items = 3;
+}
+
+message ProtoPositionableItem {
+  int32 type = 1;
+  float x = 2;
+  float y = 3;
+}
+
+message ProtoToolSettings {
+  bool isMuted = 2;
+  bool showFPS = 3;
+}
+
+message ProtoSettings {
+  ProtoControlSettings control = 1;
+  ProtoToolSettings tool = 2;
+  repeated ProtoPositionableItem positions = 3;
+}
