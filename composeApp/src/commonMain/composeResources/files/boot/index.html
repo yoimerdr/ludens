@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ludens StartBoot</title>
+</head>
+<script>
+    function LudensStartBoot(){window.LudensBridge.callNative("StartBoot",JSON.stringify({supportsWebGL:function(){try{var t=document.createElement("canvas");return!(!t.getContext("webgl")&&!t.getContext("experimental-webgl"))}catch(t){return console.log(t),!1}}(),supportsWebAudio:function(){try{var t=null;return"undefined"!=typeof AudioContext?t=new AudioContext:"undefined"!=typeof webkitAudioContext&&(t=new webkitAudioContext),!!t}catch(t){return console.log(t),!1}}()}))}
+</script>
+<body>
+</body>
+</html>
