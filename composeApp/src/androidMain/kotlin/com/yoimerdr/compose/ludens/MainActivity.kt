@@ -8,6 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.yoimerdr.compose.ludens.app.App
+import org.koin.android.ext.koin.androidContext
 
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +27,9 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-
+            App {
+                androidContext(this@MainActivity)
+            }
         }
     }
 }
