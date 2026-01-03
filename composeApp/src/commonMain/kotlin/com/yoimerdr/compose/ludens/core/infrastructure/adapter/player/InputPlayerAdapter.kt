@@ -33,4 +33,8 @@ class InputPlayerAdapter(
             key.copy(type = type, timeout = i)
         }
     }
+
+    override fun onKeyEvent(key: InputKeyEvent) {
+        evaluator.evaluateKeyEvent(key)
+    }
 }

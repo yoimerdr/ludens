@@ -1,5 +1,6 @@
 package com.yoimerdr.compose.ludens.core.infrastructure.adapter.script
 
+import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEvent
 import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
 import com.yoimerdr.compose.ludens.core.domain.port.KeyEventEvaluator
 import com.yoimerdr.compose.ludens.core.domain.port.KeyEventScriptBuilder
@@ -76,5 +77,8 @@ class KeyEventEvaluatorAdapter(
         builder: KeyScriptDeclaration,
     ) = evaluateKeyEvent(type, false, builder)
 
-
+    override fun evaluateKeyEvent(key: KeyEvent) {
+        this.builder.add(key)
+        evaluateKeyEventScript()
+    }
 }

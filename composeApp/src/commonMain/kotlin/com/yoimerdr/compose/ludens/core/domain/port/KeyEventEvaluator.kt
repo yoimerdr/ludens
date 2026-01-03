@@ -1,7 +1,7 @@
 package com.yoimerdr.compose.ludens.core.domain.port
 
-import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
 import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEvent
+import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
 
 /**
  * Type alias for a function that declares a key event script.
@@ -74,4 +74,11 @@ interface KeyEventEvaluator {
         type: KeyEventType,
         builder: KeyScriptDeclaration,
     )
+
+    /**
+     * Evaluates a key event immediately.
+     *
+     * @param key The key event to evaluate.
+     */
+    fun evaluateKeyEvent(key: KeyEvent)
 }
