@@ -12,11 +12,16 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 
 fun Settings.toProto(): ProtoSettings = ProtoSettings(
-    tool = tool.toProto(), control = control.toProto(), positions = positions.map { it.toProto() })
+    tool = tool.toProto(),
+    control = control.toProto(),
+    positions = positions.map { it.toProto() },
+    theme = theme.value
+)
 
 fun ToolSettings.toProto(): ProtoToolSettings = ProtoToolSettings(
     isMuted = isMuted, showFPS = showFPS
@@ -36,7 +41,9 @@ fun PositionableItem.toProto(): ProtoPositionableItem = ProtoPositionableItem(
 fun ProtoSettings.toDomain(): Settings = Settings(
     tool = tool?.toDomain() ?: SettingsFactory.toolSettings(),
     control = control?.toDomain() ?: SettingsFactory.controlSettings(),
-    positions = positions.map { it.toDomain() })
+    positions = positions.map { it.toDomain() },
+    theme = SystemTheme.from(theme)
+)
 
 fun ProtoToolSettings.toDomain(): ToolSettings = ToolSettings(
     isMuted = isMuted, showFPS = showFPS

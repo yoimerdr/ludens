@@ -1,7 +1,11 @@
 package com.yoimerdr.compose.ludens.core.presentation.extension.settings
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
@@ -68,3 +72,24 @@ fun List<ControlItemState>.withPositionable(
         }
     }
 }
+
+/**
+ * Determines whether to use the dark theme.
+ *
+ * This evaluates the current theme setting and returns whether
+ * dark mode should be applied. For [SystemTheme.System], it queries the system's
+ * current theme preference.
+ *
+ * @see isSystemInDarkTheme
+ * @return `true` if dark theme should be used, `false` for light theme.
+ */
+val SystemTheme.isDarkTheme: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() {
+        return when (this) {
+            SystemTheme.System -> isSystemInDarkTheme()
+            SystemTheme.Light -> false
+            SystemTheme.Dark -> true
+        }
+    }

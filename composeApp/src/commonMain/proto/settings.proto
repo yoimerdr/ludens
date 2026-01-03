@@ -31,4 +31,5 @@ message ProtoSettings {
   ProtoControlSettings control = 1;
   ProtoToolSettings tool = 2;
   repeated ProtoPositionableItem positions = 3;
+  int32 theme = 4;
 }

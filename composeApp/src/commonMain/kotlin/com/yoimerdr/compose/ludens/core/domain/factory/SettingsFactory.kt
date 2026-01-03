@@ -6,6 +6,7 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 
@@ -22,17 +23,25 @@ object SettingsFactory {
      * @param tool Tool settings (default: default tool settings).
      * @param control Control settings (default: default control settings).
      * @param positions List of positionable items (default: all positionable types at origin).
+     * @param theme The application's theme configuration (default: default theme setting).
      * @return A fully configured Settings instance.
      */
     fun settings(
         tool: ToolSettings = toolSettings(),
         control: ControlSettings = controlSettings(),
         positions: List<PositionableItem> = this.positions(),
+        theme: SystemTheme = this.theme(),
     ) = Settings(
         tool = tool,
         control = control,
         positions = positions,
+        theme = theme,
     )
+
+    /**
+     * Provides the default theme configuration.
+     */
+    fun theme(): SystemTheme = SystemTheme.System
 
 
     /**

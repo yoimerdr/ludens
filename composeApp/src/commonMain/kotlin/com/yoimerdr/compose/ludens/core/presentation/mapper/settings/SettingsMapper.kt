@@ -19,7 +19,9 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettings
 fun Settings.toUIModel(): SettingsState = SettingsState(
     tool = tool.toUIModel(),
     control = control.toUIModel(),
-    positions = positions.map { it.toUIModel() })
+    positions = positions.map { it.toUIModel() },
+    theme = theme
+)
 
 fun ToolSettings.toUIModel(): ToolSettingsState = ToolSettingsState(
     isMuted = isMuted, showFPS = showFPS
@@ -59,7 +61,8 @@ fun PositionableItem.toUIModel(): PositionableItemState = PositionableItemState(
 fun SettingsState.toDomain(): Settings = Settings(
     tool = tool.toDomain(),
     control = control.toDomain(),
-    positions = positions.map { it.toDomain() }
+    positions = positions.map { it.toDomain() },
+    theme = theme
 )
 
 fun ToolSettingsState.toDomain(): ToolSettings = ToolSettings(
