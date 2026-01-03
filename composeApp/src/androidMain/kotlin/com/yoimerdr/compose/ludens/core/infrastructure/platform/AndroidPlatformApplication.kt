@@ -3,6 +3,7 @@ package com.yoimerdr.compose.ludens.core.infrastructure.platform
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import com.yoimerdr.compose.ludens.BuildConfig
 import kotlin.system.exitProcess
 
 /**
@@ -46,4 +47,15 @@ class AndroidPlatformApplication(
         activity.finishAndRemoveTask()
         exitProcess(0)
     }
+
+    /**
+     * Indicates whether the application is running in debug mode.
+     *
+     * Returns the value from Android's `BuildConfig.DEBUG`, which is `true` for
+     * debug builds and `false` for release builds.
+     *
+     * @return `true` if the application is a debug build, `false` otherwise
+     */
+    override val isDebug: Boolean
+        get() = BuildConfig.DEBUG
 }

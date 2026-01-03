@@ -14,4 +14,12 @@ interface PlatformApplication {
      * The exact behavior depends on the platform implementation.
      */
     fun finish()
+
+    /**
+     * Indicates whether the application is running in debug mode.
+     *
+     * This property provides platform-specific information about whether the application
+     * was built and is running in debug configuration.
+     */
+    val isDebug: Boolean
 }
