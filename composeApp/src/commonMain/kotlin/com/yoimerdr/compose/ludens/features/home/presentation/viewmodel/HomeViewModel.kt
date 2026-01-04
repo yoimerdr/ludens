@@ -16,6 +16,7 @@ import com.yoimerdr.compose.ludens.core.infrastructure.extension.player.upRight
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeState
+import com.yoimerdr.compose.ludens.ui.state.isAvailable
 import io.github.yoimerdr.compose.virtualjoystick.core.control.Direction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -91,7 +92,22 @@ class HomeViewModel(
      * @param event The home event to process
      */
     fun onEvent(event: HomeEvent) {
+        val value = _state.value
+        val settings = value.settings
+
         when (event) {
+            is HomeEvent.OnPluginLoaded -> {
+                updateState { copy(plugin = event.plugin) }
+            }
+
+            is HomeEvent.ToggleFpsCounter -> {
+                if (!value.plugin.isAvailable)
+                    return
+                if (settings.tool.showFPS)
+                    event.player.show()
+                else event.player.hide()
+            }
+
             is HomeEvent.OnPlayerMovement -> {
                 val player = event.player
                 val snapshot = event.snapshot
