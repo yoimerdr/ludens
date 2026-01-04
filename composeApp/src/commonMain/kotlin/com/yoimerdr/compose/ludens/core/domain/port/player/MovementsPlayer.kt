@@ -1,5 +1,7 @@
 package com.yoimerdr.compose.ludens.core.domain.port.player
 
+import com.yoimerdr.compose.ludens.core.domain.model.key.MovementKeyEvent
+
 /**
  * Port interface for handling movement input in the player.
  *
@@ -8,53 +10,21 @@ package com.yoimerdr.compose.ludens.core.domain.port.player
  */
 interface MovementsPlayer {
     /**
-     * Triggers upward movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun up(pressed: Boolean = false)
+     * Handles a single dynamic movement key event.
+     *
+     * @param key The movement key event to process.
+     * @param pressed True if the key is pressed, false if released.
+     */
+    fun onKeyEvent(key: MovementKeyEvent, pressed: Boolean)
 
     /**
-     * Triggers downward movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun down(pressed: Boolean = false)
-
-    /**
-     * Triggers leftward movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun left(pressed: Boolean = false)
-
-    /**
-     * Triggers rightward movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun right(pressed: Boolean = false)
-
-    /**
-     * Triggers upward-left diagonal movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun upLeft(pressed: Boolean = false)
-
-    /**
-     * Triggers upward-right diagonal movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun upRight(pressed: Boolean = false)
-
-    /**
-     * Triggers downward-left diagonal movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun downLeft(pressed: Boolean = false)
-
-    /**
-     * Triggers downward-right diagonal movement.
-     * @param pressed Whether the movement is pressed (true) or released (false).
-     * */
-    fun downRight(pressed: Boolean = false)
-
-    /** Triggers stop all movement input (no direction). */
-    fun none()
+     * Handles multiple movement key events simultaneously.
+     *
+     * This is useful for processing combined directional inputs,
+     * or clear other key events.
+     *
+     * @param key The primary movement key event.
+     * @param keys Additional movement key events to process together.
+     */
+    fun onKeyEvent(key: MovementKeyEvent, vararg keys: MovementKeyEvent)
 }
