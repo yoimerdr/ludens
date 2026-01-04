@@ -3,6 +3,7 @@ package com.yoimerdr.compose.ludens.core.infrastructure.extension.key
 import com.yoimerdr.compose.ludens.core.domain.model.key.GraphicsKeyEvent
 import com.yoimerdr.compose.ludens.core.domain.model.key.InputKeyEvent
 import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
+import com.yoimerdr.compose.ludens.core.domain.model.key.MovementKeyEvent
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.GraphicsKey
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
@@ -62,3 +63,31 @@ fun InputKey.toEvent(
     code = code,
     timeout = timeout
 )
+
+/**
+ * Converts an [InputKey] to a [MovementKeyEvent].
+ *
+ * Creates a movement key event for directional input handling.
+ * This function validates that the input key is a valid movement key
+ * before conversion.
+ *
+ * @param type The type of key event (Down or Up). Defaults to [KeyEventType.Down].
+ * @param timeout Optional delay in milliseconds before the event is triggered.
+ * @return A [MovementKeyEvent] with the specified parameters.
+ * @throws IllegalArgumentException if the InputKey is not a valid movement key.
+ * @see InputKey.movements
+ */
+fun InputKey.toMovementEvent(
+    type: KeyEventType = KeyEventType.Down,
+    timeout: Int? = null,
+): MovementKeyEvent {
+    if (this !in InputKey.movements) {
+        throw IllegalArgumentException("InputKey $this is not a movement key")
+    }
+
+    return MovementKeyEvent(
+        code = code,
+        type = type,
+        timeout = timeout,
+    )
+}
