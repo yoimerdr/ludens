@@ -1,10 +1,12 @@
 package com.yoimerdr.compose.ludens.features.home.presentation.state
 
 import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
+import com.yoimerdr.compose.ludens.core.domain.port.player.FPSPlayer
 import com.yoimerdr.compose.ludens.core.domain.port.player.InputPlayer
 import com.yoimerdr.compose.ludens.core.domain.port.player.MovementsPlayer
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
+import com.yoimerdr.compose.ludens.ui.state.PluginState
 import io.github.yoimerdr.compose.virtualjoystick.ui.state.JoystickEvent
 import io.github.yoimerdr.compose.virtualjoystick.ui.state.JoystickMoveEnd
 import io.github.yoimerdr.compose.virtualjoystick.ui.state.JoystickSnapshot
@@ -13,6 +15,21 @@ import io.github.yoimerdr.compose.virtualjoystick.ui.state.JoystickSnapshot
  * Sealed interface representing events that can occur in the home screen.
  */
 sealed interface HomeEvent {
+
+    /**
+     * Event triggered when the FPS counter visibility is toggled.
+     *
+     * @property player The FPS player instance
+     */
+    data class ToggleFpsCounter(val player: FPSPlayer) : HomeEvent
+
+    /**
+     * Event triggered when the `YDP_Ludens` plugin has been loaded.
+     *
+     * @property plugin The loaded plugin state
+     */
+    data class OnPluginLoaded(val plugin: PluginState) : HomeEvent
+
     /**
      * Event triggered when a control key button is clicked.
      *
