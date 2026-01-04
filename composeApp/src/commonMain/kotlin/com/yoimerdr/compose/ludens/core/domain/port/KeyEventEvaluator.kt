@@ -28,6 +28,13 @@ interface KeyEventEvaluator {
     fun evaluateKeyEventScript(callback: ((String) -> Unit)? = null)
 
     /**
+     * Prepares a key event.
+     *
+     * @param key The key event to prepare.
+     */
+    fun prepareKeyEvent(key: KeyEvent)
+
+    /**
      * Prepares a key event with timeout control.
      *
      * @param type The type of key event (Up or Down).

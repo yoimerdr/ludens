@@ -36,6 +36,10 @@ class KeyEventEvaluatorAdapter(
         )
     }
 
+    override fun prepareKeyEvent(key: KeyEvent) {
+        this.builder.add(key)
+    }
+
     override fun prepareKeyEvent(
         type: KeyEventType,
         timeout: Boolean,
