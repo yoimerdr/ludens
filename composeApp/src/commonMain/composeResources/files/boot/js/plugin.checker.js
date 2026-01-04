@@ -1,0 +1,1 @@
+'undefined'==typeof YDP_Ludens&&(console.error('The YDP_Ludens plugin is not loaded.'),window.LudensBridge.callNative('LudensLoader',JSON.stringify({isEnabled:!1,isLoading:!1}))),console.info('The YDP_Ludens plugin exists.');
