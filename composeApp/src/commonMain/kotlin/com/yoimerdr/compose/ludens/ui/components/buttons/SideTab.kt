@@ -1,23 +1,43 @@
 package com.yoimerdr.compose.ludens.ui.components.buttons
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.yoimerdr.compose.ludens.app.theme.LudensTheme
+import com.yoimerdr.compose.ludens.ui.components.ProvideContentColorTextStyle
 import com.yoimerdr.compose.ludens.ui.components.layout.Card
+import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
+import com.yoimerdr.compose.ludens.ui.icons.outlined.Apps
+import com.yoimerdr.compose.ludens.ui.icons.outlined.System
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * A customizable side tab component that displays content in a selectable card format.
@@ -31,13 +51,13 @@ import com.yoimerdr.compose.ludens.ui.components.layout.Card
  * @param enabled Whether the tab is enabled for interaction. Defaults to true.
  * @param selected Whether the tab is currently selected. Affects the background color
  * and accessibility state. Defaults to false.
- * @param colors The [CardColors] to use for the tab's appearance. When selected, uses the
+ * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
  * containerColor; when not selected, uses the disabledContainerColor.
- * Defaults to [CardDefaults.elevatedCardColors].
+ * Defaults to [ButtonDefaults.filledTonalButtonColors].
  * @param interactionSource The [MutableInteractionSource] representing the stream of
  * interactions for this tab. If null, a new one will be created.
  * @param onClick Callback to be invoked when the tab is clicked.
- * @param content The content to be displayed inside the tab, provided as a [ColumnScope] receiver.
+ * @param content The content to be displayed inside the tab, provided as a [RowScope] receiver.
  *
  * @see Card
  */
@@ -47,11 +67,14 @@ fun SideTab(
     padding: PaddingValues = PaddingValues(16.dp, 8.dp),
     enabled: Boolean = true,
     selected: Boolean = false,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
+    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
+        disabledContainerColor = Color.Transparent
+    ),
     interactionSource: MutableInteractionSource? = null,
     onClick: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
+
     val colors = colors
         .let {
             it.copy(
@@ -60,37 +83,51 @@ fun SideTab(
             )
         }
 
-    Card(
+    FilledTonalButton(
+        onClick = onClick,
         modifier = modifier
             .semantics {
                 role = Role.Tab
                 this.selected = selected
             },
-        onClick = onClick,
+        interactionSource = interactionSource,
         enabled = enabled,
         colors = colors,
-        padding = padding,
-        content = content,
-        interactionSource = interactionSource
-    )
+        shape = MaterialTheme.shapes.medium,
+    ) {
+        Row(
+            modifier = Modifier
+                .defaultMinSize(
+                    minWidth = ButtonDefaults.MinWidth,
+                    minHeight = ButtonDefaults.MinHeight,
+                ).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            content = content
+        )
+    }
 }
 
 /**
  * A side tab component with separate start and end composable slots.
  *
  * This is a convenience overload that arranges start and end slots horizontally
- * with a spacing between them.
+ * with a spacing between them when expanded, or vertically as an icon button with
+ * text below when collapsed.
  *
  * @param modifier The modifier to be applied to the tab.
  * @param enabled Whether the tab is enabled for interaction. Defaults to true.
+ * @param expanded Whether the tab should be displayed in expanded mode (horizontal layout)
+ * or collapsed mode (vertical icon button layout). Defaults to true.
  * @param selected Whether the tab is currently selected. Affects the background color
  * and accessibility state. Defaults to false.
- * @param colors The [CardColors] to use for the tab's appearance. When selected, uses the
+ * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
  * containerColor; when not selected, uses the disabledContainerColor.
- * Defaults to [CardDefaults.elevatedCardColors].
+ * Defaults to [ButtonDefaults.filledTonalButtonColors].
  * @param onClick Callback to be invoked when the tab is clicked.
- * @param start The start composable to be displayed.
- * @param end The end composable to be displayed.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of
+ * interactions for this tab. If null, a new one will be created.
+ * @param start The start composable to be displayed (typically an icon).
+ * @param end The end composable to be displayed (typically text).
  *
  * @see SideTab
  */
@@ -98,24 +135,75 @@ fun SideTab(
 fun SideTab(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    expanded: Boolean = true,
     selected: Boolean = false,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
+    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
+        disabledContainerColor = Color.Transparent
+    ),
     onClick: () -> Unit,
-    start: @Composable RowScope.() -> Unit,
-    end: @Composable RowScope.() -> Unit,
+    interactionSource: MutableInteractionSource? = null,
+    start: @Composable () -> Unit,
+    end: @Composable () -> Unit,
 ) {
-    SideTab(
-        modifier = modifier,
-        enabled = enabled,
-        selected = selected,
-        colors = colors,
-        onClick = onClick,
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+    val source = interactionSource ?: remember { MutableInteractionSource() }
+    if (expanded) {
+        SideTab(
+            modifier = modifier,
+            enabled = enabled,
+            selected = selected,
+            colors = colors,
+            onClick = onClick,
+            interactionSource = interactionSource,
         ) {
-            start()
-            end()
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                itemVerticalAlignment = Alignment.CenterVertically,
+                maxLines = 1,
+            ) {
+                start()
+                end()
+            }
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .clickable(
+                    enabled = enabled,
+                    interactionSource = source,
+                    onClick = onClick,
+                    indication = null
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            val targetColors = colors
+                .let {
+                    it.copy(
+                        containerColor = if (selected) it.containerColor
+                        else it.disabledContainerColor,
+                    )
+                }
+            ProvideContentColorTextStyle(
+                textStyle = MaterialTheme.typography.labelLarge,
+                contentColor = MaterialTheme.colorScheme.contentColorFor(colors.containerColor)
+            ) {
+                FilledTonalIconButton(
+                    onClick = onClick,
+                    modifier = Modifier
+                        .semantics {
+                            role = Role.Checkbox
+                        },
+                    interactionSource = source,
+                    enabled = enabled,
+                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                        containerColor = targetColors.containerColor,
+                        disabledContainerColor = targetColors.disabledContainerColor
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    content = start,
+                )
+
+                end()
+            }
         }
     }
 }
@@ -124,20 +212,24 @@ fun SideTab(
  * A side tab component with an [ImageVector] icon and text composable slot.
  *
  * This is a convenience overload that simplifies creating tabs with a vector icon
- * and text.
+ * and text. Supports both expanded (horizontal) and collapsed (vertical) layouts.
  *
  * @param modifier The modifier to be applied to the tab.
  * @param enabled Whether the tab is enabled for interaction. Defaults to true.
+ * @param expanded Whether the tab should be displayed in expanded mode (horizontal layout)
+ * or collapsed mode (vertical icon button layout). Defaults to true.
  * @param selected Whether the tab is currently selected. Affects the background color
  * and accessibility state. Defaults to false.
- * @param colors The [CardColors] to use for the tab's appearance. When selected, uses the
+ * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
  * containerColor; when not selected, uses the disabledContainerColor.
- * Defaults to [CardDefaults.elevatedCardColors].
+ * Defaults to [ButtonDefaults.filledTonalButtonColors].
  * @param onClick Callback to be invoked when the tab is clicked.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of
+ * interactions for this tab. If null, a new one will be created.
  * @param icon The [ImageVector] to be displayed as the icon.
  * @param iconDescription Optional content description for the icon for accessibility purposes.
  * Defaults to null.
- * @param text The text composable to be displayed, provided as a [RowScope] receiver.
+ * @param text The text composable to be displayed.
  *
  * @see SideTab
  * @see Icon
@@ -146,19 +238,25 @@ fun SideTab(
 fun SideTab(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    expanded: Boolean = true,
     selected: Boolean = false,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
+    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
+        disabledContainerColor = Color.Transparent
+    ),
     onClick: () -> Unit,
+    interactionSource: MutableInteractionSource? = null,
     icon: ImageVector,
     iconDescription: String? = null,
-    text: @Composable RowScope.() -> Unit,
+    text: @Composable () -> Unit,
 ) {
     SideTab(
         modifier = modifier,
         enabled = enabled,
         selected = selected,
+        expanded = expanded,
         colors = colors,
         onClick = onClick,
+        interactionSource = interactionSource,
         start = {
             Icon(
                 imageVector = icon,
@@ -167,4 +265,33 @@ fun SideTab(
         },
         end = text
     )
+}
+
+@Preview
+@Composable
+private fun SideTabPreview() {
+    LudensTheme {
+        Card(
+            modifier = Modifier.sizeIn(
+                maxWidth = 200.dp
+            )
+        ) {
+            SideTab(
+                selected = true,
+                icon = LudensIcons.Default.Apps,
+                onClick = {},
+            ) {
+                Text("Tab 1")
+            }
+
+            SideTab(
+                selected = true,
+                expanded = false,
+                icon = LudensIcons.Default.System,
+                onClick = {},
+            ) {
+                Text("System")
+            }
+        }
+    }
 }
