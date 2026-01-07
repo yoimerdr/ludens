@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoSettings
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformApplication
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformContext
+import com.yoimerdr.compose.ludens.core.presentation.platform.PlatformLocale
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
@@ -17,6 +18,8 @@ expect fun Scope.createDataStore(): DataStore<ProtoSettings>
 expect fun Scope.createPlatformContext(): PlatformContext
 
 expect fun Scope.createPlatformApplication(): PlatformApplication
+
+expect fun Scope.createPlatformLocale(): PlatformLocale
 
 @Module
 @ComponentScan("com.yoimerdr.compose.ludens.core")
@@ -35,5 +38,10 @@ object CoreModule {
     @Single
     fun providesPlatformApplication(scope: Scope): PlatformApplication {
         return scope.createPlatformApplication()
+    }
+
+    @Single
+    fun providesPlatformLocale(scope: Scope): PlatformLocale {
+        return scope.createPlatformLocale()
     }
 }

@@ -6,6 +6,8 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
@@ -21,21 +23,18 @@ object SettingsFactory {
      * Creates a complete Settings instance with default values.
      *
      * @param tool Tool settings (default: default tool settings).
-     * @param control Control settings (default: default control settings).
-     * @param positions List of positionable items (default: all positionable types at origin).
+     * @param control Control settings (default: default control settings with positions).
      * @param theme The application's theme configuration (default: default theme setting).
      * @return A fully configured Settings instance.
      */
     fun settings(
         tool: ToolSettings = toolSettings(),
         control: ControlSettings = controlSettings(),
-        positions: List<PositionableItem> = this.positions(),
-        theme: SystemTheme = this.theme(),
+        system: SystemSettings = systemSettings(),
     ) = Settings(
         tool = tool,
         control = control,
-        positions = positions,
-        theme = theme,
+        system = system,
     )
 
     /**
@@ -43,6 +42,25 @@ object SettingsFactory {
      */
     fun theme(): SystemTheme = SystemTheme.System
 
+    /**
+     * Provides the default language/locale setting.
+     */
+    fun language(): SystemLanguage = SystemLanguage.System
+
+    /**
+     * Creates default system settings.
+     *
+     * @param theme The application's theme configuration (default: System).
+     * @param language The application's language/locale setting (default: System).
+     * @return A SystemSettings instance with the specified values.
+     */
+    fun systemSettings(
+        theme: SystemTheme = this.theme(),
+        language: SystemLanguage = this.language(),
+    ) = SystemSettings(
+        theme = theme,
+        language = language,
+    )
 
     /**
      * Creates a default list of positionable items.
@@ -73,16 +91,19 @@ object SettingsFactory {
      * @param enabled Whether controls are enabled (default: true).
      * @param alpha The default alpha/transparency for controls (default: Medium).
      * @param items List of control items (default: all control items).
+     * @param positions List of positionable items (default: all positionable types at origin).
      * @return A ControlSettings instance with the specified values.
      */
     fun controlSettings(
         enabled: Boolean = true,
         alpha: Alpha = Alpha.Medium,
         items: List<ControlItem> = controlItems(),
+        positions: List<PositionableItem> = this.positions(),
     ) = ControlSettings(
         enabled = enabled,
         alpha = alpha,
         items = items,
+        positions = positions,
     )
 
     /**

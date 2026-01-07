@@ -4,6 +4,7 @@ import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoControlI
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoControlSettings
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoPositionableItem
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoSettings
+import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoSystemSettings
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoToolSettings
 import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlItem
@@ -12,6 +13,8 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
@@ -19,8 +22,7 @@ import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 fun Settings.toProto(): ProtoSettings = ProtoSettings(
     tool = tool.toProto(),
     control = control.toProto(),
-    positions = positions.map { it.toProto() },
-    theme = theme.value
+    system = system.toProto()
 )
 
 fun ToolSettings.toProto(): ProtoToolSettings = ProtoToolSettings(
@@ -28,7 +30,16 @@ fun ToolSettings.toProto(): ProtoToolSettings = ProtoToolSettings(
 )
 
 fun ControlSettings.toProto(): ProtoControlSettings = ProtoControlSettings(
-    enabled = enabled, alpha = alpha.value, items = items.map { it.toProto() })
+    enabled = enabled,
+    alpha = alpha.value,
+    items = items.map { it.toProto() },
+    positions = positions.map { it.toProto() }
+)
+
+fun SystemSettings.toProto(): ProtoSystemSettings = ProtoSystemSettings(
+    theme = theme.value,
+    language = language.value
+)
 
 fun ControlItem.toProto(): ProtoControlItem = ProtoControlItem(
     type = type.value, enabled = enabled, alpha = alpha.value, key = code ?: 0
@@ -41,16 +52,24 @@ fun PositionableItem.toProto(): ProtoPositionableItem = ProtoPositionableItem(
 fun ProtoSettings.toDomain(): Settings = Settings(
     tool = tool?.toDomain() ?: SettingsFactory.toolSettings(),
     control = control?.toDomain() ?: SettingsFactory.controlSettings(),
-    positions = positions.map { it.toDomain() },
-    theme = SystemTheme.from(theme)
+    system = system?.toDomain() ?: SettingsFactory.systemSettings()
 )
 
 fun ProtoToolSettings.toDomain(): ToolSettings = ToolSettings(
     isMuted = isMuted, showFPS = showFPS
 )
 
+fun ProtoSystemSettings.toDomain(): SystemSettings = SystemSettings(
+    theme = SystemTheme.from(theme),
+    language = SystemLanguage.from(language)
+)
+
 fun ProtoControlSettings.toDomain(): ControlSettings = ControlSettings(
-    enabled = enabled, alpha = Alpha.coerce(alpha), items = items.map { it.toDomain() })
+    enabled = enabled,
+    alpha = Alpha.coerce(alpha),
+    items = items.map { it.toDomain() },
+    positions = positions.map { it.toDomain() }
+)
 
 fun ProtoControlItem.toDomain(): ControlItem = ControlItem(
     type = ItemType.from(type),
