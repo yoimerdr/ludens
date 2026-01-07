@@ -12,14 +12,12 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemS
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
 import ludens.composeapp.generated.resources.Res
+import ludens.composeapp.generated.resources.dark
 import ludens.composeapp.generated.resources.en
 import ludens.composeapp.generated.resources.es
-import ludens.composeapp.generated.resources.system_language
-import org.jetbrains.compose.resources.stringResource
-import ludens.composeapp.generated.resources.Res
-import ludens.composeapp.generated.resources.dark
 import ludens.composeapp.generated.resources.light
 import ludens.composeapp.generated.resources.system_default
+import ludens.composeapp.generated.resources.system_language
 import org.jetbrains.compose.resources.stringResource
 
 /**
