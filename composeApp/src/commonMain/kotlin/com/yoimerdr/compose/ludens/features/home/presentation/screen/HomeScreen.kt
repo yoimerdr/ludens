@@ -95,7 +95,7 @@ fun HomeScreen(
         if (!plugin.isLoading && entry.isAvailable) {
             HomeScreenContent(
                 controls = settings.control,
-                positions = settings.positions,
+                positions = settings.control.positions,
                 onEvent = viewModel::onEvent,
                 inputPlayer = inputPlayer,
                 movementsPlayer = movementsPlayer,
