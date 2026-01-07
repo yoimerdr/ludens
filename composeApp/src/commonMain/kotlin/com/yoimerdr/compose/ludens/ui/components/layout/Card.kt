@@ -63,7 +63,7 @@ fun Card(
             modifier = Modifier
                 .padding(padding),
             content = content,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = horizontalAlignment,
         )
     }
