@@ -7,6 +7,8 @@ import com.yoimerdr.compose.ludens.core.infrastructure.platform.AndroidPlatformA
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.AndroidPlatformContext
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformApplication
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformContext
+import com.yoimerdr.compose.ludens.core.presentation.platform.AndroidPlatformLocale
+import com.yoimerdr.compose.ludens.core.presentation.platform.PlatformLocale
 import okio.FileSystem
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.scope.Scope
@@ -24,3 +26,5 @@ actual fun Scope.createPlatformContext(): PlatformContext {
 
 actual fun Scope.createPlatformApplication(): PlatformApplication =
     AndroidPlatformApplication(get())
+
+actual fun Scope.createPlatformLocale(): PlatformLocale = AndroidPlatformLocale

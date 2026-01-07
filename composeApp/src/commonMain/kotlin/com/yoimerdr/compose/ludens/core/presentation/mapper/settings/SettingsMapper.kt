@@ -5,6 +5,7 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
@@ -14,21 +15,30 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyIt
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 
 fun Settings.toUIModel(): SettingsState = SettingsState(
     tool = tool.toUIModel(),
     control = control.toUIModel(),
-    positions = positions.map { it.toUIModel() },
-    theme = theme
+    system = system.toUIModel()
 )
 
 fun ToolSettings.toUIModel(): ToolSettingsState = ToolSettingsState(
     isMuted = isMuted, showFPS = showFPS
 )
 
+fun SystemSettings.toUIModel(): SystemSettingsState = SystemSettingsState(
+    theme = theme,
+    language = language
+)
+
 fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
-    enabled = enabled, alpha = alpha.value, items = items.map { it.toUIModel() })
+    enabled = enabled,
+    alpha = alpha.value,
+    items = items.map { it.toUIModel() },
+    positions = positions.map { it.toUIModel() }
+)
 
 /**
  * Converts domain [ControlItem] to presentation layer [ControlItemState].
@@ -61,16 +71,24 @@ fun PositionableItem.toUIModel(): PositionableItemState = PositionableItemState(
 fun SettingsState.toDomain(): Settings = Settings(
     tool = tool.toDomain(),
     control = control.toDomain(),
-    positions = positions.map { it.toDomain() },
-    theme = theme
+    system = system.toDomain()
 )
 
 fun ToolSettingsState.toDomain(): ToolSettings = ToolSettings(
     isMuted = isMuted, showFPS = showFPS
 )
 
+fun SystemSettingsState.toDomain(): SystemSettings = SystemSettings(
+    theme = theme,
+    language = language
+)
+
 fun ControlSettingsState.toDomain(): ControlSettings = ControlSettings(
-    enabled = enabled, alpha = Alpha.coerce(alpha), items = items.map { it.toDomain() })
+    enabled = enabled,
+    alpha = Alpha.coerce(alpha),
+    items = items.map { it.toDomain() },
+    positions = positions.map { it.toDomain() }
+)
 
 /**
  * Converts presentation layer [ControlItemState] to domain [ControlItem].
