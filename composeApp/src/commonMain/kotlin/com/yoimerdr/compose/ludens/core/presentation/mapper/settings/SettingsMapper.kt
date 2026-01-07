@@ -8,6 +8,7 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlActionItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
@@ -41,9 +42,11 @@ fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
  */
 fun ControlItem.toUIModel(): ControlItemState {
     val action = ControlActionItemState(type, enabled, alpha.value)
-    if (code == null)
-        return action
-    val key = InputKey.from(code) ?: return action
+    var code = code
+    if (code == null || code <= 0)
+        code = type.toInputKey()?.code
+
+    val key = code?.let { InputKey.from(it) } ?: return action
 
     return when (type) {
         in ItemType.keys -> ControlKeyItemState(
