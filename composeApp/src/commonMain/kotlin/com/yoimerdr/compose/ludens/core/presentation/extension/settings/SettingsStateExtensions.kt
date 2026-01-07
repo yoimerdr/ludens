@@ -10,6 +10,11 @@ import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
+import ludens.composeapp.generated.resources.Res
+import ludens.composeapp.generated.resources.dark
+import ludens.composeapp.generated.resources.light
+import ludens.composeapp.generated.resources.system_default
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Type alias representing a pair of a positionable item and its associated control item.
@@ -91,5 +96,15 @@ val SystemTheme.isDarkTheme: Boolean
             SystemTheme.System -> isSystemInDarkTheme()
             SystemTheme.Light -> false
             SystemTheme.Dark -> true
+        }
+    }
+
+val SystemTheme.label: String
+    @Composable
+    get() {
+        return when (this) {
+            SystemTheme.Light -> stringResource(Res.string.light)
+            SystemTheme.Dark -> stringResource(Res.string.dark)
+            SystemTheme.System -> stringResource(Res.string.system_default)
         }
     }

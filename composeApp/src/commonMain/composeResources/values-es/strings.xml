@@ -6,6 +6,10 @@
     <string name="loading">Cargando</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="unknown">Desconocido</string>
+    <string name="light">Claro</string>
+    <string name="dark">Oscuro</string>
+    <string name="system_default">Sistema</string>
     <!--Exit application-->
     <string name="exit_app">¿Estás seguro de que deseas salir de la aplicación? Se perderán todos los cambios no guardados en el juego.</string>
 </resources>
