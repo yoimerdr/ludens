@@ -7,6 +7,8 @@ import com.yoimerdr.compose.ludens.core.infrastructure.platform.IOSPlatformAppli
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.IOSPlatformContext
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformApplication
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformContext
+import com.yoimerdr.compose.ludens.core.presentation.platform.IOSPlatformLocale
+import com.yoimerdr.compose.ludens.core.presentation.platform.PlatformLocale
 import kotlinx.cinterop.ExperimentalForeignApi
 import okio.FileSystem
 import org.koin.core.scope.Scope
@@ -35,3 +37,4 @@ actual fun Scope.createDataStore(): DataStore<ProtoSettings> {
 
 actual fun Scope.createPlatformContext(): PlatformContext = IOSPlatformContext()
 actual fun Scope.createPlatformApplication(): PlatformApplication = IOSPlatformApplication()
+actual fun Scope.createPlatformLocale(): PlatformLocale = IOSPlatformLocale
