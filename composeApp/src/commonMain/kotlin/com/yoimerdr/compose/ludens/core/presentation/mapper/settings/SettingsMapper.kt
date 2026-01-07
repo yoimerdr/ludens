@@ -5,6 +5,7 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
@@ -14,16 +15,22 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyIt
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 
 fun Settings.toUIModel(): SettingsState = SettingsState(
     tool = tool.toUIModel(),
     control = control.toUIModel(),
-    theme = theme
+    system = system.toUIModel()
 )
 
 fun ToolSettings.toUIModel(): ToolSettingsState = ToolSettingsState(
     isMuted = isMuted, showFPS = showFPS
+)
+
+fun SystemSettings.toUIModel(): SystemSettingsState = SystemSettingsState(
+    theme = theme,
+    language = language
 )
 
 fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
@@ -64,11 +71,16 @@ fun PositionableItem.toUIModel(): PositionableItemState = PositionableItemState(
 fun SettingsState.toDomain(): Settings = Settings(
     tool = tool.toDomain(),
     control = control.toDomain(),
-    theme = theme
+    system = system.toDomain()
 )
 
 fun ToolSettingsState.toDomain(): ToolSettings = ToolSettings(
     isMuted = isMuted, showFPS = showFPS
+)
+
+fun SystemSettingsState.toDomain(): SystemSettings = SystemSettings(
+    theme = theme,
+    language = language
 )
 
 fun ControlSettingsState.toDomain(): ControlSettings = ControlSettings(

@@ -28,8 +28,13 @@ message ProtoToolSettings {
   bool showFPS = 3;
 }
 
+message ProtoSystemSettings {
+  int32 theme = 1;
+  int32 language = 2;
+}
+
 message ProtoSettings {
   ProtoControlSettings control = 1;
   ProtoToolSettings tool = 2;
-  int32 theme = 3;
+  ProtoSystemSettings system = 3;
 }

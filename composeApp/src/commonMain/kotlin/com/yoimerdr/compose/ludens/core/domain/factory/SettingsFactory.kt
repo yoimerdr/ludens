@@ -6,6 +6,8 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
@@ -28,11 +30,11 @@ object SettingsFactory {
     fun settings(
         tool: ToolSettings = toolSettings(),
         control: ControlSettings = controlSettings(),
-        theme: SystemTheme = this.theme(),
+        system: SystemSettings = systemSettings(),
     ) = Settings(
         tool = tool,
         control = control,
-        theme = theme,
+        system = system,
     )
 
     /**
@@ -40,6 +42,25 @@ object SettingsFactory {
      */
     fun theme(): SystemTheme = SystemTheme.System
 
+    /**
+     * Provides the default language/locale setting.
+     */
+    fun language(): SystemLanguage = SystemLanguage.System
+
+    /**
+     * Creates default system settings.
+     *
+     * @param theme The application's theme configuration (default: System).
+     * @param language The application's language/locale setting (default: System).
+     * @return A SystemSettings instance with the specified values.
+     */
+    fun systemSettings(
+        theme: SystemTheme = this.theme(),
+        language: SystemLanguage = this.language(),
+    ) = SystemSettings(
+        theme = theme,
+        language = language,
+    )
 
     /**
      * Creates a default list of positionable items.
