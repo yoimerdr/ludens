@@ -19,7 +19,6 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettings
 fun Settings.toUIModel(): SettingsState = SettingsState(
     tool = tool.toUIModel(),
     control = control.toUIModel(),
-    positions = positions.map { it.toUIModel() },
     theme = theme
 )
 
@@ -28,7 +27,11 @@ fun ToolSettings.toUIModel(): ToolSettingsState = ToolSettingsState(
 )
 
 fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
-    enabled = enabled, alpha = alpha.value, items = items.map { it.toUIModel() })
+    enabled = enabled,
+    alpha = alpha.value,
+    items = items.map { it.toUIModel() },
+    positions = positions.map { it.toUIModel() }
+)
 
 /**
  * Converts domain [ControlItem] to presentation layer [ControlItemState].
@@ -61,7 +64,6 @@ fun PositionableItem.toUIModel(): PositionableItemState = PositionableItemState(
 fun SettingsState.toDomain(): Settings = Settings(
     tool = tool.toDomain(),
     control = control.toDomain(),
-    positions = positions.map { it.toDomain() },
     theme = theme
 )
 
@@ -70,7 +72,11 @@ fun ToolSettingsState.toDomain(): ToolSettings = ToolSettings(
 )
 
 fun ControlSettingsState.toDomain(): ControlSettings = ControlSettings(
-    enabled = enabled, alpha = Alpha.coerce(alpha), items = items.map { it.toDomain() })
+    enabled = enabled,
+    alpha = Alpha.coerce(alpha),
+    items = items.map { it.toDomain() },
+    positions = positions.map { it.toDomain() }
+)
 
 /**
  * Converts presentation layer [ControlItemState] to domain [ControlItem].

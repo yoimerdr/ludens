@@ -19,7 +19,6 @@ import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 fun Settings.toProto(): ProtoSettings = ProtoSettings(
     tool = tool.toProto(),
     control = control.toProto(),
-    positions = positions.map { it.toProto() },
     theme = theme.value
 )
 
@@ -28,7 +27,11 @@ fun ToolSettings.toProto(): ProtoToolSettings = ProtoToolSettings(
 )
 
 fun ControlSettings.toProto(): ProtoControlSettings = ProtoControlSettings(
-    enabled = enabled, alpha = alpha.value, items = items.map { it.toProto() })
+    enabled = enabled,
+    alpha = alpha.value,
+    items = items.map { it.toProto() },
+    positions = positions.map { it.toProto() }
+)
 
 fun ControlItem.toProto(): ProtoControlItem = ProtoControlItem(
     type = type.value, enabled = enabled, alpha = alpha.value, key = code ?: 0
@@ -41,7 +44,6 @@ fun PositionableItem.toProto(): ProtoPositionableItem = ProtoPositionableItem(
 fun ProtoSettings.toDomain(): Settings = Settings(
     tool = tool?.toDomain() ?: SettingsFactory.toolSettings(),
     control = control?.toDomain() ?: SettingsFactory.controlSettings(),
-    positions = positions.map { it.toDomain() },
     theme = SystemTheme.from(theme)
 )
 
@@ -50,7 +52,11 @@ fun ProtoToolSettings.toDomain(): ToolSettings = ToolSettings(
 )
 
 fun ProtoControlSettings.toDomain(): ControlSettings = ControlSettings(
-    enabled = enabled, alpha = Alpha.coerce(alpha), items = items.map { it.toDomain() })
+    enabled = enabled,
+    alpha = Alpha.coerce(alpha),
+    items = items.map { it.toDomain() },
+    positions = positions.map { it.toDomain() }
+)
 
 fun ProtoControlItem.toDomain(): ControlItem = ControlItem(
     type = ItemType.from(type),

@@ -14,6 +14,7 @@ message ProtoControlSettings {
   bool enabled = 1;
   float alpha = 2;
   repeated ProtoControlItem items = 3;
+  repeated ProtoPositionableItem positions = 4;
 }
 
 message ProtoPositionableItem {
@@ -30,6 +31,5 @@ message ProtoToolSettings {
 message ProtoSettings {
   ProtoControlSettings control = 1;
   ProtoToolSettings tool = 2;
-  repeated ProtoPositionableItem positions = 3;
-  int32 theme = 4;
+  int32 theme = 3;
 }
