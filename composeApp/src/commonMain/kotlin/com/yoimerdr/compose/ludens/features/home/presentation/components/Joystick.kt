@@ -9,7 +9,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.yoimerdr.compose.ludens.core.domain.port.player.MovementsPlayer
+import com.yoimerdr.compose.ludens.app.ui.providers.LocalMovementsPlayer
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.PositionableControlItem
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
@@ -37,7 +37,6 @@ import kotlin.math.roundToInt
  * If [joystick] is null or disabled, the joystick will not be rendered.
  *
  * @param modifier The modifier to be applied to the joystick container
- * @param player The movements player instance that will handle the movement commands
  * @param onEvent Callback invoked when a movement event occurs, passing a [HomeEvent.OnPlayerMovement]
  * @param joystick Optional positionable control item configuration that defines the joystick's
  * position (x, y coordinates) and appearance (enabled state, alpha transparency).
@@ -48,7 +47,6 @@ import kotlin.math.roundToInt
 @Composable
 fun Joystick(
     modifier: Modifier = Modifier,
-    player: MovementsPlayer,
     onEvent: (HomeEvent) -> Unit,
     joystick: PositionableControlItem?,
     directions: DirectionType = DirectionType.Complete,
@@ -57,6 +55,7 @@ fun Joystick(
     if (joystick == null || !joystick.second.enabled)
         return
 
+    val player = LocalMovementsPlayer.current
     val state = rememberJoystickState(directionType = directions)
     val holder = rememberJoystickEventHolder(state)
 

@@ -54,10 +54,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onLoad: ((PluginState) -> Unit)? = null,
 ) {
-    val navigator = LocalWebViewNavigator.current
-    val inputPlayer = LocalInputPlayer.current
-    val movementsPlayer = LocalMovementsPlayer.current
-
     // settings state
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -85,7 +81,6 @@ fun HomeScreen(
                     drawLayer(webGraphicsLayer)
                 },
                 fileUrl = entry.url,
-                navigator = navigator
             ) {
                 onLoad?.invoke(it)
                 viewModel.onEvent(HomeEvent.OnPluginLoaded(it))
@@ -97,8 +92,6 @@ fun HomeScreen(
                 controls = settings.control,
                 positions = settings.control.positions,
                 onEvent = viewModel::onEvent,
-                inputPlayer = inputPlayer,
-                movementsPlayer = movementsPlayer,
                 onConfiguration = {
                     nav.navigateTo(Destination.Settings)
                 }

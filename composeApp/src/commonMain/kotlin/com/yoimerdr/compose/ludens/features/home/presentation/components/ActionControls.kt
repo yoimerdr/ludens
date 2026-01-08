@@ -20,9 +20,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.yoimerdr.compose.ludens.app.ui.providers.LocalInputPlayer
 import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
-import com.yoimerdr.compose.ludens.core.domain.port.player.InputPlayer
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.PositionableControlItem
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
@@ -94,7 +94,6 @@ private fun ActionButton(
  * specified.
  *
  * @param modifier The modifier to be applied to the container box
- * @param player The input player instance that handles key events
  * @param items List of positionable control items containing position, key mappings, and visual settings.
  * Only items with types in [ItemType.keys] and enabled state will be displayed.
  * @param onEvent Callback invoked when a control key is pressed or released, passing a [HomeEvent.OnClickControlKey]
@@ -102,10 +101,10 @@ private fun ActionButton(
 @Composable
 fun ActionControls(
     modifier: Modifier = Modifier,
-    player: InputPlayer,
     items: List<PositionableControlItem>,
     onEvent: (HomeEvent) -> Unit,
 ) {
+    val player = LocalInputPlayer.current
     val keyControls = ItemType.keys
     val keyItems = items.filter { it.second.type in keyControls && it.second.enabled }
 

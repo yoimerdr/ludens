@@ -18,6 +18,7 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.WebViewState
+import com.yoimerdr.compose.ludens.app.ui.providers.LocalWebViewNavigator
 import com.yoimerdr.compose.ludens.features.home.presentation.components.LudensLoaderHandler.onLoad
 import com.yoimerdr.compose.ludens.ui.components.webview.rememberWebViewJsBridge
 import com.yoimerdr.compose.ludens.ui.components.webview.setup
@@ -71,16 +72,15 @@ private object LudensLoaderHandler : IJsMessageHandler {
  *
  * @param modifier The modifier to be applied to the web view
  * @param fileUrl The URL/path of the HTML file to load from compose resources
- * @param navigator The web view navigator for controlling navigation and JavaScript execution
  * @param onLoad Optional callback invoked when the game plugin is loaded, receiving the plugin state
  */
 @Composable
 fun WebGame(
     modifier: Modifier = Modifier,
     fileUrl: String,
-    navigator: WebViewNavigator,
     onLoad: ((PluginState) -> Unit)? = null,
 ) {
+    val navigator = LocalWebViewNavigator.current
     val state = rememberSaveable(saver = WebStateSaver) {
         WebViewState(WebContent.NavigatorOnly)
     }

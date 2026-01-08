@@ -29,8 +29,6 @@ import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
  * globally disabled (controls.enabled is false), only the configuration button
  * remains visible.
  *
- * @param movementsPlayer The movements player instance for handling joystick input
- * @param inputPlayer The input player instance for handling action button input
  * @param controls The control settings state containing enabled/disabled status and control item configurations
  * @param positions List of positionable item states defining the position (x, y coordinates) of each control element
  * @param onEvent Callback invoked when control events occur (joystick movements or button presses)
@@ -38,8 +36,6 @@ import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
  */
 @Composable
 fun BoxScope.HomeScreenContent(
-    movementsPlayer: MovementsPlayer,
-    inputPlayer: InputPlayer,
     controls: ControlSettingsState,
     positions: List<PositionableItemState>,
     onEvent: (HomeEvent) -> Unit,
@@ -61,14 +57,12 @@ fun BoxScope.HomeScreenContent(
         joystick = items.getEnabled(ItemType.Joystick)
             .firstOrNull(),
         onEvent = onEvent,
-        player = movementsPlayer,
         modifier = Modifier
             .align(Alignment.BottomStart)
     )
 
     ActionControls(
         items = items,
-        player = inputPlayer,
         modifier = Modifier.align(Alignment.BottomEnd),
         onEvent = onEvent
     )
