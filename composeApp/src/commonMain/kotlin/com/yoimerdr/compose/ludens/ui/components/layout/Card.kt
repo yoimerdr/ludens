@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 
 /**
  * A customizable card component that wraps Material3's Card with additional features.
@@ -27,7 +27,8 @@ import androidx.compose.ui.unit.dp
  * @param modifier The modifier to be applied to the card.
  * @param onClick Optional click handler. If null, creates a non-clickable card; if provided,
  * creates a clickable card with the specified action.
- * @param padding The padding to apply to the content inside the card. Defaults to 16.dp on all sides.
+ * @param padding The padding to apply to the content inside the card.
+ * Defaults to medium spacing on all sides.
  * @param horizontalAlignment The horizontal alignment of content within the card's column.
  * Defaults to [Alignment.Start].
  * @param enabled Whether the card is enabled for interaction. Only applies when onClick is provided.
@@ -48,7 +49,7 @@ import androidx.compose.ui.unit.dp
 fun Card(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    padding: PaddingValues = PaddingValues(16.dp),
+    padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
     shape: Shape = CardDefaults.elevatedShape,
@@ -59,11 +60,12 @@ fun Card(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val wrapper: @Composable ColumnScope.() -> Unit = {
+        val spacing = LocalSpacing.current
         Column(
             modifier = Modifier
                 .padding(padding),
             content = content,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(spacing.medium),
             horizontalAlignment = horizontalAlignment,
         )
     }

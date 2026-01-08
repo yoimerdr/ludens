@@ -28,36 +28,40 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
-import com.yoimerdr.compose.ludens.ui.components.layout.Card
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.components.provider.ProvideContentColorTextStyle
 
 /**
  * A customizable side tab component that displays content in a selectable card format.
  *
  * This composable creates a tab-like button that can be used in side navigation or tabbed
- * interfaces. It automatically applies appropriate semantics for accessibility.
+ * interfaces. It automatically applies appropriate semantics for accessibility and supports
+ * custom styling through Material 3 button colors.
  *
  * @param modifier The modifier to be applied to the tab.
- * @param padding The padding to apply to the content inside the tab.
- * Defaults to 16.dp horizontal and 8.dp vertical.
- * @param enabled Whether the tab is enabled for interaction. Defaults to true.
- * @param selected Whether the tab is currently selected. Affects the background color
- * and accessibility state. Defaults to false.
+ * @param padding The padding values to apply inside the tab content. Defaults to medium
+ * horizontal and small vertical spacing from [LocalSpacing].
+ * @param enabled Whether the tab is enabled for interaction. Defaults to `true`.
+ * @param selected Whether the tab is currently selected. When `true`, applies the container
+ * color; when `false`, applies the disabled container color. Defaults to `false`.
  * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
- * containerColor; when not selected, uses the disabledContainerColor.
- * Defaults to [ButtonDefaults.filledTonalButtonColors].
+ * `containerColor`; when not selected, uses the `disabledContainerColor`.
+ * Defaults to [ButtonDefaults.filledTonalButtonColors] with transparent disabled container.
  * @param interactionSource The [MutableInteractionSource] representing the stream of
- * interactions for this tab. If null, a new one will be created.
- * @param onClick Callback to be invoked when the tab is clicked.
+ * interactions for this tab. If `null`, a new one will be created internally.
+ * @param onClick Callback invoked when the tab is clicked.
  * @param content The content to be displayed inside the tab, provided as a [RowScope] receiver.
+ * Content is displayed in a horizontal row layout.
  *
- * @see Card
+ * @see SideTab
+ * @see FilledTonalButton
  */
 @Composable
 fun SideTab(
     modifier: Modifier = Modifier,
-    padding: PaddingValues = PaddingValues(16.dp, 8.dp),
+    padding: PaddingValues = LocalSpacing.current.let {
+        PaddingValues(it.medium, it.small)
+    },
     enabled: Boolean = true,
     selected: Boolean = false,
     colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
@@ -103,26 +107,28 @@ fun SideTab(
 /**
  * A side tab component with separate start and end composable slots.
  *
- * This is a convenience overload that arranges start and end slots horizontally
- * with a spacing between them when expanded, or vertically as an icon button with
- * text below when collapsed.
+ * This convenience overload arranges content in two configurable layouts:
+ * - **Expanded mode**: Displays start and end slots horizontally in a row with spacing.
+ * - **Collapsed mode**: Displays start as an icon button with end content below in a vertical column.
  *
  * @param modifier The modifier to be applied to the tab.
- * @param enabled Whether the tab is enabled for interaction. Defaults to true.
+ * @param enabled Whether the tab is enabled for interaction. Defaults to `true`.
  * @param expanded Whether the tab should be displayed in expanded mode (horizontal layout)
- * or collapsed mode (vertical icon button layout). Defaults to true.
- * @param selected Whether the tab is currently selected. Affects the background color
- * and accessibility state. Defaults to false.
+ * or collapsed mode (vertical icon button layout). Defaults to `true`.
+ * @param selected Whether the tab is currently selected. When `true`, applies the container
+ * color; when `false`, applies the disabled container color. Defaults to `false`.
  * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
- * containerColor; when not selected, uses the disabledContainerColor.
- * Defaults to [ButtonDefaults.filledTonalButtonColors].
- * @param onClick Callback to be invoked when the tab is clicked.
+ * `containerColor`; when not selected, uses the `disabledContainerColor`.
+ * Defaults to [ButtonDefaults.filledTonalButtonColors] with transparent disabled container.
+ * @param onClick Callback invoked when the tab is clicked.
  * @param interactionSource The [MutableInteractionSource] representing the stream of
- * interactions for this tab. If null, a new one will be created.
- * @param start The start composable to be displayed (typically an icon).
- * @param end The end composable to be displayed (typically text).
+ * interactions for this tab. If `null`, a new one will be created internally.
+ * @param start The start composable to be displayed, typically an icon.
+ * @param end The end composable to be displayed, typically text or a label.
  *
  * @see SideTab
+ * @see FlowRow
+ * @see FilledTonalIconButton
  */
 @Composable
 fun SideTab(
@@ -140,6 +146,7 @@ fun SideTab(
 ) {
     val source = interactionSource ?: remember { MutableInteractionSource() }
     if (expanded) {
+        val spacing = LocalSpacing.current
         SideTab(
             modifier = modifier,
             enabled = enabled,
@@ -149,7 +156,7 @@ fun SideTab(
             interactionSource = interactionSource,
         ) {
             FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(spacing.small),
                 itemVerticalAlignment = Alignment.CenterVertically,
                 maxLines = 1,
             ) {
@@ -204,25 +211,26 @@ fun SideTab(
 /**
  * A side tab component with an [ImageVector] icon and text composable slot.
  *
- * This is a convenience overload that simplifies creating tabs with a vector icon
- * and text. Supports both expanded (horizontal) and collapsed (vertical) layouts.
+ * This convenience overload simplifies creating tabs with a vector icon and custom text content.
+ * Supports both expanded (horizontal) and collapsed (vertical icon button) layouts. The icon is
+ * automatically wrapped in an [Icon] composable with optional accessibility description.
  *
  * @param modifier The modifier to be applied to the tab.
- * @param enabled Whether the tab is enabled for interaction. Defaults to true.
+ * @param enabled Whether the tab is enabled for interaction. Defaults to `true`.
  * @param expanded Whether the tab should be displayed in expanded mode (horizontal layout)
- * or collapsed mode (vertical icon button layout). Defaults to true.
- * @param selected Whether the tab is currently selected. Affects the background color
- * and accessibility state. Defaults to false.
+ * or collapsed mode (vertical icon button layout). Defaults to `true`.
+ * @param selected Whether the tab is currently selected. When `true`, applies the container
+ * color; when `false`, applies the disabled container color. Defaults to `false`.
  * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
- * containerColor; when not selected, uses the disabledContainerColor.
- * Defaults to [ButtonDefaults.filledTonalButtonColors].
- * @param onClick Callback to be invoked when the tab is clicked.
+ * `containerColor`; when not selected, uses the `disabledContainerColor`.
+ * Defaults to [ButtonDefaults.filledTonalButtonColors] with transparent disabled container.
+ * @param onClick Callback invoked when the tab is clicked.
  * @param interactionSource The [MutableInteractionSource] representing the stream of
- * interactions for this tab. If null, a new one will be created.
- * @param icon The [ImageVector] to be displayed as the icon.
- * @param iconDescription Optional content description for the icon for accessibility purposes.
- * Defaults to null.
- * @param text The text composable to be displayed.
+ * interactions for this tab. If `null`, a new one will be created internally.
+ * @param icon The [ImageVector] to be displayed as the tab's icon.
+ * @param iconDescription Optional content description for the icon, used for accessibility
+ * purposes. Defaults to `null`.
+ * @param text The text composable to be displayed alongside the icon.
  *
  * @see SideTab
  * @see Icon
