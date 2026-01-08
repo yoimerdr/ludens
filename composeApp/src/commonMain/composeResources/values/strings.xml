@@ -17,4 +17,8 @@
     <string name="system_language">System</string>
     <string name="en">English</string>
     <string name="es">Español</string>
+    <!--Controls-->
+    <string name="key_joystick">Joystick</string>
+    <string name="key_button">%1$s button (%2$s)</string> <!--(keySimpleName, inputKeyName) 'X button (Enter)'-->
+    <string name="key_settings">Settings</string>
 </resources>
