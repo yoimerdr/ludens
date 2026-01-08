@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -18,7 +17,6 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -31,13 +29,8 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.yoimerdr.compose.ludens.app.theme.LudensTheme
-import com.yoimerdr.compose.ludens.ui.components.ProvideContentColorTextStyle
 import com.yoimerdr.compose.ludens.ui.components.layout.Card
-import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
-import com.yoimerdr.compose.ludens.ui.icons.outlined.Apps
-import com.yoimerdr.compose.ludens.ui.icons.outlined.System
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.yoimerdr.compose.ludens.ui.components.provider.ProvideContentColorTextStyle
 
 /**
  * A customizable side tab component that displays content in a selectable card format.
@@ -265,33 +258,4 @@ fun SideTab(
         },
         end = text
     )
-}
-
-@Preview
-@Composable
-private fun SideTabPreview() {
-    LudensTheme {
-        Card(
-            modifier = Modifier.sizeIn(
-                maxWidth = 200.dp
-            )
-        ) {
-            SideTab(
-                selected = true,
-                icon = LudensIcons.Default.Apps,
-                onClick = {},
-            ) {
-                Text("Tab 1")
-            }
-
-            SideTab(
-                selected = true,
-                expanded = false,
-                icon = LudensIcons.Default.System,
-                onClick = {},
-            ) {
-                Text("System")
-            }
-        }
-    }
 }

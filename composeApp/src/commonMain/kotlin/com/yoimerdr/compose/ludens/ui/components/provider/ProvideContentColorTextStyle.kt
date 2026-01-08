@@ -1,9 +1,10 @@
-package com.yoimerdr.compose.ludens.ui.components
+package com.yoimerdr.compose.ludens.ui.components.provider
 
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.NonSkippableComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.TextStyle
  * @param content The composable content that will use the provided color and text style.
  */
 @Composable
+@NonSkippableComposable
 fun ProvideContentColorTextStyle(
     contentColor: Color,
     textStyle: TextStyle,
