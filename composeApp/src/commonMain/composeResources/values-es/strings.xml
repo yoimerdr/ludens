@@ -26,4 +26,9 @@
     <string name="stc_about_website">Sitio web</string>
     <string name="stc_about_description">Diseñado para ejecutar juegos RPG Maker</string>
     <string name="stc_about_version">Versión %1$s</string>
+    <!--Settings - Tab options-->
+    <string name="stc_tabs_controls">Controles</string>
+    <string name="stc_tabs_tools">Herramientas</string>
+    <string name="stc_tabs_system">Sistema</string>
+    <string name="stc_tabs_about">Acerca de</string>
 </resources>
