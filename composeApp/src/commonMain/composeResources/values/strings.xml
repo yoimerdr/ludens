@@ -21,4 +21,9 @@
     <string name="key_joystick">Joystick</string>
     <string name="key_button">%1$s button (%2$s)</string> <!--(keySimpleName, inputKeyName) 'X button (Enter)'-->
     <string name="key_settings">Settings</string>
+    <!--Settings - About-->
+    <string name="stc_about_issues">Report issues</string>
+    <string name="stc_about_website">Website</string>
+    <string name="stc_about_description">Designed to run RPG Maker games.</string>
+    <string name="stc_about_version">Version %1$s</string>
 </resources>
