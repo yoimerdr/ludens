@@ -1,3 +1,4 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -10,6 +11,22 @@ plugins {
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.squareup.wire)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.buildKonfig)
+}
+
+// Using the full extension type to bypass the "unresolved reference" accessor issue
+buildkonfig {
+    packageName = "com.yoimerdr.compose.ludens.konfig.generated"
+
+    defaultConfigs {
+        buildConfigField(Type.STRING, "LUDENS_VERSION", "0.1.0-beta")
+        buildConfigField(Type.STRING, "LUDENS_WEBSITE_URL", "https://github.com/yoimerdr/ludens")
+        buildConfigField(
+            Type.STRING,
+            "LUDENS_ISSUES_URL",
+            "https://github.com/yoimerdr/ludens/issues"
+        )
+    }
 }
 
 kotlin {
@@ -122,6 +139,7 @@ dependencies {
 }
 
 // Trigger Common Metadata Generation from Native tasks
-tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
-    dependsOn("kspCommonMainKotlinMetadata")
-}
+tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }
+    .configureEach {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }

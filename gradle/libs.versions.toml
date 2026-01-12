@@ -24,6 +24,7 @@ koinAnnotations = "2.3.1"
 datastore = "1.1.7"
 protobuf = "4.33.2"
 ksp = "2.3.3"
+buildKonfig = "0.17.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -67,3 +68,4 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 google-protobuf = { id = "com.google.protobuf", version = "0.9.6" }
 squareup-wire = { id = "com.squareup.wire", version = "5.4.0" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
