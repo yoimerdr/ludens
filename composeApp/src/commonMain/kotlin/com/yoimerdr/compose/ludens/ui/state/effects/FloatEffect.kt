@@ -88,6 +88,22 @@ object FloatEffectDefaults {
         }
     }
 
+    fun event(
+        value: Float,
+        animationSpec: AnimationSpec<Float>,
+        delay: Long? = null,
+        onStart: OnEffect = null,
+        onComplete: OnEffect = null,
+    ): FloatEffectEvent {
+        return SingleFloatEffectEvent(
+            value = value,
+            animationSpec = animationSpec,
+            delay = delay ?: 0L,
+            onStart = onStart,
+            onComplete = onComplete,
+        )
+    }
+
     /**
      * Compares two [FloatEffectEvent] instances for equality.
      *

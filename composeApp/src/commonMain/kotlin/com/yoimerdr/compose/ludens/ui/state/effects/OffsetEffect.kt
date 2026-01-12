@@ -66,9 +66,9 @@ object OffsetEffectDefaults {
     /**
      * Creates a default full offset effect event with predefined animation values.
      *
-     * This should be used with [FullOffsetEffectEvent.copy] to specify the target offset.
+     * This should be used with [OffsetEffectEvent.copy] to specify the target offset.
      */
-    fun fullOffsetEvent(): FullOffsetEffectEvent = defaultFullOffsetEvent
+    fun event(): OffsetEffectEvent = defaultFullOffsetEvent
 
     /**
      * Creates a customizable full offset effect event.
@@ -79,13 +79,13 @@ object OffsetEffectDefaults {
      * @param onStart Callback invoked when the animation starts.
      * @param onComplete Callback invoked when the animation completes.
      */
-    fun fullOffsetEvent(
+    fun event(
         offset: Offset,
         animationSpec: AnimationSpec<Offset>? = null,
         delay: Long? = null,
         onStart: OnEffect = null,
         onComplete: OnEffect = null,
-    ): FullOffsetEffectEvent {
+    ): OffsetEffectEvent {
         return defaultFullOffsetEvent.let {
             it.copy(
                 offset = offset,
@@ -98,13 +98,6 @@ object OffsetEffectDefaults {
     }
 
     /**
-     * Creates a default axis offset effect event with predefined animation values.
-     *
-     * This should be used with [AxisOffsetEffectEvent.copy] to specify the target axis values.
-     */
-    fun axisOffsetEvent(): AxisOffsetEffectEvent = defaultAxisOffsetEvent
-
-    /**
      * Creates a customizable axis offset effect event.
      *
      * @param x The target X coordinate, or null to keep the current X value.
@@ -114,14 +107,14 @@ object OffsetEffectDefaults {
      * @param onStart Callback invoked when the animation starts.
      * @param onComplete Callback invoked when the animation completes.
      */
-    fun axisOffsetEvent(
-        x: Float? = null,
+    fun event(
+        x: Float?,
         y: Float? = null,
         animationSpec: AnimationSpec<Offset>? = null,
         delay: Long? = null,
         onStart: OnEffect = null,
         onComplete: OnEffect = null,
-    ): AxisOffsetEffectEvent {
+    ): OffsetEffectEvent {
         return defaultAxisOffsetEvent.let {
             it.copy(
                 x = x,
@@ -256,6 +249,9 @@ class FullOffsetEffectEvent(
         return FullOffsetEffectEvent(
             offset = offset,
             animationSpec = animationSpec,
+            delay = delay,
+            onStart = onStart,
+            onComplete = onComplete,
         )
     }
 
@@ -533,7 +529,7 @@ inline operator fun OffsetEffect.getValue(thisObj: Any?, property: KProperty<*>)
  * @param onComplete Callback invoked when the animation completes.
  *
  * @see OffsetEffect.trigger
- * @see OffsetEffectDefaults.fullOffsetEvent
+ * @see OffsetEffectDefaults.event
  */
 suspend fun OffsetEffect.trigger(
     offset: Offset,
@@ -543,7 +539,7 @@ suspend fun OffsetEffect.trigger(
     onComplete: OnEffect = null,
 ) {
     trigger(
-        OffsetEffectDefaults.fullOffsetEvent(
+        OffsetEffectDefaults.event(
             offset = offset,
             animationSpec = animationSpec,
             delay = delay,
@@ -566,7 +562,7 @@ suspend fun OffsetEffect.trigger(
  * @param onComplete Callback invoked when the animation completes.
  *
  * @see OffsetEffect.tryTrigger
- * @see OffsetEffectDefaults.fullOffsetEvent
+ * @see OffsetEffectDefaults.event
  */
 fun OffsetEffect.tryTrigger(
     offset: Offset,
@@ -576,7 +572,7 @@ fun OffsetEffect.tryTrigger(
     onComplete: OnEffect = null,
 ) {
     tryTrigger(
-        OffsetEffectDefaults.fullOffsetEvent(
+        OffsetEffectDefaults.event(
             offset = offset,
             animationSpec = animationSpec,
             delay = delay,
@@ -600,7 +596,7 @@ fun OffsetEffect.tryTrigger(
  * @param onComplete Callback invoked when the animation completes.
  *
  * @see OffsetEffect.trigger
- * @see OffsetEffectDefaults.axisOffsetEvent
+ * @see OffsetEffectDefaults.event
  */
 suspend fun OffsetEffect.trigger(
     x: Float?,
@@ -611,7 +607,7 @@ suspend fun OffsetEffect.trigger(
     onComplete: OnEffect = null,
 ) {
     trigger(
-        OffsetEffectDefaults.axisOffsetEvent(
+        OffsetEffectDefaults.event(
             x = x,
             y = y,
             animationSpec = animationSpec,
@@ -637,7 +633,7 @@ suspend fun OffsetEffect.trigger(
  * @param onComplete Callback invoked when the animation completes.
  *
  * @see OffsetEffect.tryTrigger
- * @see OffsetEffectDefaults.axisOffsetEvent
+ * @see OffsetEffectDefaults.event
  */
 fun OffsetEffect.tryTrigger(
     x: Float?,
@@ -648,7 +644,7 @@ fun OffsetEffect.tryTrigger(
     onComplete: OnEffect = null,
 ) {
     tryTrigger(
-        OffsetEffectDefaults.axisOffsetEvent(
+        OffsetEffectDefaults.event(
             x = x,
             y = y,
             animationSpec = animationSpec,
