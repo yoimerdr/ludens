@@ -1,5 +1,15 @@
 package com.yoimerdr.compose.ludens.ui.state.effects
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import kotlin.reflect.KProperty
+
 /**
  * Represents the state of an effect or operation.
  */
@@ -155,3 +165,142 @@ interface Effect<E : EffectEvent> {
  */
 val Effect<*>.isRunning: Boolean
     get() = state !is Idle
+
+/**
+ * A wrapper around an [Effect] that queues and executes effect events sequentially.
+ *
+ * This class manages a queue of effect events and ensures they are executed in order,
+ * preventing concurrent execution. Events are processed through a channel with unlimited
+ * capacity by default, guaranteeing that no events are lost.
+ *
+ * @param T The type of the underlying [Effect] implementation.
+ * @param E The type of [EffectEvent] this effect accepts.
+ * @param scope The [CoroutineScope] used for launching the event processing coroutine.
+ * @param root The underlying effect implementation that will process the events.
+ *
+ * @see Effect
+ * @see EffectEvent
+ */
+@Stable
+class StackedEffect<T : Effect<E>, E : EffectEvent>(
+    scope: CoroutineScope,
+    val root: T,
+    capacity: Int = Channel.UNLIMITED,
+    onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+) : Effect<E> by root {
+    private val channel = Channel<Set<E>>(
+        capacity = capacity,
+        onBufferOverflow = onBufferOverflow
+    )
+
+    init {
+        scope.launch {
+            for (events in channel) {
+                events.forEach {
+                    root.trigger(
+                        event = it
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Triggers the effect with the given events, suspending until completion.
+     *
+     * @param event The event configuration for this effect execution.
+     * @param events Other sequential event configurations to execute.
+     */
+    suspend fun trigger(
+        event: E,
+        vararg events: E,
+    ) {
+        channel.send(
+            setOf(event, *events)
+        )
+    }
+
+    /**
+     * Attempts to trigger the effect without suspending.
+     *
+     * @param event The event configuration for this effect execution.
+     * @param events Other sequential event configurations to execute.
+     */
+    fun tryTrigger(
+        event: E,
+        vararg events: E,
+    ) {
+        channel.trySend(
+            setOf(event, *events)
+        )
+    }
+
+    override suspend fun trigger(
+        event: E,
+    ) {
+        channel.send(
+            setOf(event)
+        )
+    }
+
+
+    override fun tryTrigger(
+        event: E,
+    ) {
+        channel.trySend(
+            setOf(event)
+        )
+    }
+
+    /**
+     * Closes the event channel, preventing new events from being queued.
+     *
+     * @param cause Optional throwable that caused the channel to close.
+     */
+    fun close(cause: Throwable? = null) {
+        channel.close(cause)
+    }
+}
+
+/**
+ * Permits property delegation of `val`s using `by` for [StackedEffect].
+ * */
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T : Effect<E>, E : EffectEvent> StackedEffect<T, E>.getValue(
+    thisObj: Any?,
+    property: KProperty<*>,
+): T = root
+
+/**
+ * Creates and remembers a [StackedEffect] that wraps the provided effect.
+ *
+ * The stacked effect will survive recompositions and uses the provided or remembered
+ * [CoroutineScope] for processing queued events. The effect is remembered based on
+ * the provided scope and root effect, recreating it only when these change.
+ *
+ * @param T The type of the underlying [Effect] implementation.
+ * @param E The type of [EffectEvent] this effect accepts.
+ * @param root The effect implementation to wrap in a stacked effect.
+ * @param scope The coroutine scope for event processing.
+ * @param capacity The capacity of the internal event channel.
+ * @param onBufferOverflow The buffer overflow strategy for the internal event channel.
+ *
+ * @see StackedEffect
+ * @see rememberCoroutineScope
+ */
+@Composable
+fun <T : Effect<E>, E : EffectEvent> rememberStackedEffect(
+    root: T,
+    scope: CoroutineScope = rememberCoroutineScope(),
+    capacity: Int = Channel.UNLIMITED,
+    onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+): StackedEffect<T, E> {
+    return remember(scope, root, capacity, onBufferOverflow) {
+        StackedEffect(
+            scope = scope,
+            root = root,
+            capacity = capacity,
+            onBufferOverflow = onBufferOverflow
+        )
+    }
+}

@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.takeOrElse
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -378,9 +379,10 @@ class AxisOffsetEffectEvent(
  * Default implementation of [OffsetEffect] that manages offset-based animations.
  *
  * This effect executes animations sequentially, running each event to completion before processing the next.
- * For handling multiple concurrent events, use [StackedOffsetEffect] instead.
+ * For handling multiple concurrent events, use [StackedEffect] with this as [StackedEffect.root] instead.
  *
  * @property scope The coroutine scope used to launch animations.
+ * @property defaultOffset The default offset value when the effect is idle.
  */
 @Stable
 class DefaultOffsetEffect(
@@ -451,65 +453,7 @@ class DefaultOffsetEffect(
     override fun asAnimatable(): Animatable<Offset, AnimationVector2D> = _offset
 }
 
-/**
- * An implementation of [OffsetEffect] that queues and processes multiple events sequentially.
- *
- * This effect uses a channel to buffer incoming events and processes them in order.
- * When multiple events are triggered rapidly, they are queued and executed one after another,
- * ensuring smooth animation sequences without interruption.
- *
- * @property root The underlying [OffsetEffect] used to execute animations.
- * @param scope The coroutine scope used to launch animations and manage the event queue.
- */
-@Stable
-class StackedOffsetEffect(
-    scope: CoroutineScope,
-    private val root: OffsetEffect = DefaultOffsetEffect(scope),
-) : OffsetEffect by root {
-
-    private val channel = Channel<OffsetEffectEvent>(
-        capacity = Channel.BUFFERED,
-    )
-
-    init {
-        scope.launch {
-            for (event in channel) {
-                triggerEffect(event)
-            }
-        }
-    }
-
-    private suspend fun CoroutineScope.triggerEffect(event: OffsetEffectEvent) {
-        root.trigger(
-            event = event
-        )
-    }
-
-    override suspend fun trigger(
-        event: OffsetEffectEvent,
-    ) {
-        channel.send(
-            event
-        )
-    }
-
-    override fun tryTrigger(
-        event: OffsetEffectEvent,
-    ) {
-        channel.trySend(
-            event
-        )
-    }
-
-    /**
-     * Closes the event channel, preventing new events from being queued.
-     *
-     * @param cause Optional throwable that caused the channel to close.
-     */
-    fun close(cause: Throwable? = null) {
-        channel.close(cause)
-    }
-}
+typealias StackedOffsetEffect = StackedEffect<OffsetEffect, OffsetEffectEvent>
 
 /**
  * Permits property delegation of `val`s using `by` for [OffsetEffect].
@@ -716,14 +660,48 @@ fun AxisOffsetEffectEvent.toFullEvent(
  * Remembers an [OffsetEffect] instance that persists across recompositions.
  *
  * @param scope The coroutine scope used for animations.
+ * @param defaultOffset The default offset value when the effect is idle.
  */
 @Composable
 fun rememberOffsetEffect(
     scope: CoroutineScope = rememberCoroutineScope(),
+    defaultOffset: Offset = Offset.Zero,
 ): OffsetEffect {
-    return remember(scope) {
+    return remember(scope, defaultOffset) {
         DefaultOffsetEffect(
-            scope = scope
+            scope = scope,
+            defaultOffset = defaultOffset,
         )
     }
+}
+
+/**
+ * Remembers a [StackedOffsetEffect] instance that persists across recompositions.
+ *
+ * @param scope The coroutine scope for event processing.
+ * @param root The effect implementation to wrap in a stacked effect.
+ * @param defaultOffset The default offset value when the effect is idle.
+ * @param capacity The capacity of the internal event channel.
+ * @param onBufferOverflow The buffer overflow strategy for the internal event channel.
+ *
+ * @see rememberStackedEffect
+ * @see rememberOffsetEffect
+ */
+@Composable
+fun rememberStackedOffsetEffect(
+    scope: CoroutineScope = rememberCoroutineScope(),
+    defaultOffset: Offset = Offset.Zero,
+    root: OffsetEffect = rememberOffsetEffect(
+        scope = scope,
+        defaultOffset = defaultOffset,
+    ),
+    capacity: Int = Channel.UNLIMITED,
+    onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+): StackedOffsetEffect {
+    return rememberStackedEffect(
+        root = root,
+        capacity = capacity,
+        scope = scope,
+        onBufferOverflow = onBufferOverflow,
+    )
 }

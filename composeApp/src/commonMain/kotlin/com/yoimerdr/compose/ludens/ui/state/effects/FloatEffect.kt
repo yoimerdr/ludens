@@ -352,10 +352,12 @@ class DualFloatEffectEvent(
  * Default implementation of [FloatEffect] that manages float-based animations.
  *
  * This effect executes animations sequentially, running each event to completion before processing the next.
- * For handling multiple concurrent events, use [StackedFloatEffect] instead.
+ * For handling multiple concurrent events, use [StackedEffect] with this as [StackedEffect.root] instead.
  *
  * @property scope The coroutine scope used to launch animations.
  * @property defaultValue The default float value when the effect is idle.
+ *
+ * @see StackedEffect
  */
 @Stable
 class DefaultFloatEffect(
@@ -407,84 +409,57 @@ class DefaultFloatEffect(
     override fun asAnimatable(): Animatable<Float, AnimationVector1D> = _value
 }
 
-/**
- * An implementation of [FloatEffect] that queues and processes multiple events sequentially.
- *
- * This effect uses a channel to buffer incoming events and processes them in order.
- * When multiple events are triggered rapidly, they are queued and executed one after another,
- * ensuring smooth animation sequences without interruption.
- *
- * @property root The underlying [FloatEffect] used to execute animations.
- * @param scope The coroutine scope used to launch animations and manage the event queue.
- */
-@Stable
-class StackedFloatEffect(
-    scope: CoroutineScope,
-    defaultValue: Float = 0f,
-    private val root: FloatEffect = DefaultFloatEffect(
-        scope,
-        defaultValue
-    ),
-) : FloatEffect by root {
-
-    private val channel = Channel<FloatEffectEvent>(
-        capacity = Channel.BUFFERED, onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-
-    init {
-        scope.launch {
-            for (event in channel) {
-                triggerEffect(event)
-            }
-        }
-    }
-
-    private suspend fun CoroutineScope.triggerEffect(event: FloatEffectEvent) {
-        root.trigger(
-            event = event
-        )
-    }
-
-    override suspend fun trigger(
-        event: FloatEffectEvent,
-    ) {
-        channel.send(
-            event
-        )
-    }
-
-    override fun tryTrigger(
-        event: FloatEffectEvent,
-    ) {
-        channel.trySend(
-            event
-        )
-    }
-
-    /**
-     * Closes the event channel, preventing new events from being queued.
-     *
-     * @param cause Optional throwable that caused the channel to close.
-     */
-    fun close(cause: Throwable? = null) {
-        channel.close(cause)
-    }
-}
+typealias StackedFloatEffect = StackedEffect<FloatEffect, FloatEffectEvent>
 
 /**
  * Remembers a [FloatEffect] instance that persists across recompositions.
  *
  * @param scope The coroutine scope used for animations.
+ * @param defaultValue The default float value when the effect is idle.
+ *
  */
 @Composable
 fun rememberFloatEffect(
     scope: CoroutineScope = rememberCoroutineScope(),
+    defaultValue: Float = 0f,
 ): FloatEffect {
-    return remember(scope) {
+    return remember(scope, defaultValue) {
         DefaultFloatEffect(
             scope = scope,
+            defaultValue = defaultValue,
         )
     }
+}
+
+/**
+ * Remembers a [StackedFloatEffect] instance that persists across recompositions.
+ *
+ * @param scope The coroutine scope for event processing.
+ * @param root The effect implementation to wrap in a stacked effect.
+ * @param defaultValue The default float value when the effect is idle.
+ * @param capacity The capacity of the internal event channel.
+ * @param onBufferOverflow The buffer overflow strategy for the internal event channel.
+ *
+ * @see rememberStackedEffect
+ * @see rememberFloatEffect
+ * */
+@Composable
+fun rememberStackedFloatEffect(
+    scope: CoroutineScope = rememberCoroutineScope(),
+    defaultValue: Float = 0f,
+    root: FloatEffect = rememberFloatEffect(
+        scope = scope,
+        defaultValue = defaultValue
+    ),
+    capacity: Int = Channel.UNLIMITED,
+    onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+): StackedFloatEffect {
+    return rememberStackedEffect(
+        scope = scope,
+        root = root,
+        capacity = capacity,
+        onBufferOverflow = onBufferOverflow,
+    )
 }
 
 /**
