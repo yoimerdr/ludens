@@ -5,8 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.layer.GraphicsLayer
-import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,12 +28,9 @@ fun NavGraph(
         mutableStateOf(PluginState())
     }
 
-    val webGraphicsLayer = rememberGraphicsLayer()
-
     NavHomeGraph(
         nav = navController,
         features = features,
-        webGraphicsLayer = webGraphicsLayer,
     ) {
         plugin = it
     }
@@ -46,8 +41,7 @@ fun NavGraph(
         startDestination = Destination.Splash.route,
     ) {
         composable(
-            route = Destination.Splash.route,
-            arguments = Destination.Splash.arguments
+            route = Destination.Splash.route, arguments = Destination.Splash.arguments
         ) {
             SplashScreen(navController) {
                 features = it
@@ -72,7 +66,6 @@ fun NavGraph(
 private fun NavHomeGraph(
     nav: NavHostController,
     features: WebFeaturesState,
-    webGraphicsLayer: GraphicsLayer,
     onLoad: ((PluginState) -> Unit)? = null,
 ) {
     val currentRoute = nav.currentBackStackEntryAsState().value?.destination?.route
@@ -82,7 +75,6 @@ private fun NavHomeGraph(
     HomeScreen(
         nav = nav,
         features = features,
-        webGraphicsLayer = webGraphicsLayer,
         onLoad = onLoad,
     )
 }

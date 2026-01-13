@@ -2,11 +2,11 @@ package com.yoimerdr.compose.ludens.features.home.presentation.sections
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
-import com.yoimerdr.compose.ludens.core.domain.port.player.InputPlayer
-import com.yoimerdr.compose.ludens.core.domain.port.player.MovementsPlayer
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.getEnabled
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.withPositionable
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
@@ -15,6 +15,8 @@ import com.yoimerdr.compose.ludens.features.home.presentation.components.ActionC
 import com.yoimerdr.compose.ludens.features.home.presentation.components.ConfigurationButton
 import com.yoimerdr.compose.ludens.features.home.presentation.components.Joystick
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
+import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Displays the main content of the home screen including game controls.
@@ -39,8 +41,12 @@ fun BoxScope.HomeScreenContent(
     controls: ControlSettingsState,
     positions: List<PositionableItemState>,
     onEvent: (HomeEvent) -> Unit,
+    showControls: Boolean = true,
     onConfiguration: () -> Unit,
 ) {
+    if (!showControls)
+        return
+
     val items = if (controls.enabled)
         controls.items
             .withPositionable(positions)
@@ -65,5 +71,20 @@ fun BoxScope.HomeScreenContent(
         items = items,
         modifier = Modifier.align(Alignment.BottomEnd),
         onEvent = onEvent
+    )
+}
+
+@Composable
+fun BoxScope.HomeScreenContent(
+    viewModel: HomeViewModel = koinViewModel(),
+    onConfiguration: () -> Unit,
+) {
+    val controls by viewModel.controlState.collectAsStateWithLifecycle()
+
+    HomeScreenContent(
+        controls = controls,
+        positions = controls.positions,
+        onEvent = viewModel::onEvent,
+        onConfiguration = onConfiguration
     )
 }

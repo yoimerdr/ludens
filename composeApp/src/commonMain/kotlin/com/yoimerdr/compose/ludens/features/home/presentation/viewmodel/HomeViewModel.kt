@@ -14,6 +14,8 @@ import com.yoimerdr.compose.ludens.core.infrastructure.extension.player.up
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.player.upLeft
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.player.upRight
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeState
 import com.yoimerdr.compose.ludens.ui.state.isAvailable
@@ -21,6 +23,8 @@ import io.github.yoimerdr.compose.virtualjoystick.core.control.Direction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -55,6 +59,22 @@ class HomeViewModel(
             initialValue = HomeState()
         )
 
+    val loadingState: StateFlow<Boolean> = _state
+        .derivedStateIn(true) { isLoading }
+
+
+    /**
+     * The control settings state (on-screen controls configuration).
+     */
+    val controlState: StateFlow<ControlSettingsState> = _state
+        .derivedStateIn(ControlSettingsState()) { settings.control }
+
+    /**
+     * The tool settings state (audio and FPS display).
+     */
+    val toolState: StateFlow<ToolSettingsState> = _state
+        .derivedStateIn(ToolSettingsState()) { settings.tool }
+
     init {
         // Load application settings and update state when they change
         viewModelScope.launch {
@@ -67,6 +87,25 @@ class HomeViewModel(
                 }
             }
         }
+    }
+
+    /**
+     * Creates a derived StateFlow by mapping and caching a specific property from the source StateFlow.
+     *
+     * @param initialValue The initial value for the derived state.
+     * @param mapper A function that extracts the desired property from the source state.
+     */
+    private fun <T, R> StateFlow<T>.derivedStateIn(
+        initialValue: R,
+        mapper: T.() -> R,
+    ): StateFlow<R> {
+        return map { it.mapper() }
+            .distinctUntilChanged()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = initialValue
+            )
     }
 
     /**
