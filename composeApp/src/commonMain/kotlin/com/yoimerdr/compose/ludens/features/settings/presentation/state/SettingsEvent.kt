@@ -1,6 +1,7 @@
 package com.yoimerdr.compose.ludens.features.settings.presentation.state
 
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
+import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
@@ -96,6 +97,19 @@ sealed interface SettingsEvent {
      * @param theme The theme to apply.
      */
     data class OnChangeTheme(val theme: SystemTheme) : SettingsEvent
+
+    /**
+     * Updates the position of a control.
+     *
+     * @param type The control type.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     */
+    data class UpdateControlPosition(
+        val type: PositionableType,
+        val x: Float,
+        val y: Float,
+    ) : SettingsEvent
 
     /**
      * Resets all settings to default values.
