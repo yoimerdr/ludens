@@ -25,6 +25,7 @@
     <string name="key_settings">Settings</string>
     <!--Settings-->
     <string name="stc_text_all_controls">All controls</string>
+    <string name="stc_text_restarting_confirmation">This action will restart the game when you exit the settings. Do you want to proceed?</string>
     <!--Settings - About-->
     <string name="stc_about_issues">Report issues</string>
     <string name="stc_about_website">Website</string>

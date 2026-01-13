@@ -25,6 +25,10 @@ interface SettingsMode {
     object Initializing : SettingsMode
     /** Normal idle state. */
     object Idle : SettingsMode
+    /** Control movement mode is active. */
+    object MovableControls : SettingsMode
+    /** Waiting for mute confirmation. */
+    object PendingMuteConfirmation : SettingsMode
 }
 
 /**
