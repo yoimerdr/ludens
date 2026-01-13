@@ -5,8 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
-import com.yoimerdr.compose.ludens.core.domain.port.player.InputPlayer
-import com.yoimerdr.compose.ludens.core.domain.port.player.MovementsPlayer
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.getEnabled
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.withPositionable
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
@@ -31,6 +29,7 @@ import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
  *
  * @param controls The control settings state containing enabled/disabled status and control item configurations
  * @param positions List of positionable item states defining the position (x, y coordinates) of each control element
+ * @param showControls Whether to show the game controls (joystick, buttons)
  * @param onEvent Callback invoked when control events occur (joystick movements or button presses)
  * @param onConfiguration Callback invoked when the configuration button is clicked
  */
@@ -38,32 +37,36 @@ import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 fun BoxScope.HomeScreenContent(
     controls: ControlSettingsState,
     positions: List<PositionableItemState>,
+    showControls: Boolean = true,
     onEvent: (HomeEvent) -> Unit,
     onConfiguration: () -> Unit,
 ) {
-    val items = if (controls.enabled)
-        controls.items
-            .withPositionable(positions)
-    else emptyList()
+    if (showControls) {
 
-    ConfigurationButton(
-        modifier = Modifier.align(Alignment.TopEnd),
-        settings = items.getEnabled(ItemType.Settings)
-            .firstOrNull(),
-        onConfiguration = onConfiguration,
-    )
+        val items = if (controls.enabled)
+            controls.items
+                .withPositionable(positions)
+        else emptyList()
 
-    Joystick(
-        joystick = items.getEnabled(ItemType.Joystick)
-            .firstOrNull(),
-        onEvent = onEvent,
-        modifier = Modifier
-            .align(Alignment.BottomStart)
-    )
+        ConfigurationButton(
+            modifier = Modifier.align(Alignment.TopEnd),
+            settings = items.getEnabled(ItemType.Settings)
+                .firstOrNull(),
+            onConfiguration = onConfiguration,
+        )
 
-    ActionControls(
-        items = items,
-        modifier = Modifier.align(Alignment.BottomEnd),
-        onEvent = onEvent
-    )
+        Joystick(
+            joystick = items.getEnabled(ItemType.Joystick)
+                .firstOrNull(),
+            onEvent = onEvent,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+        )
+
+        ActionControls(
+            items = items,
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onEvent = onEvent
+        )
+    }
 }

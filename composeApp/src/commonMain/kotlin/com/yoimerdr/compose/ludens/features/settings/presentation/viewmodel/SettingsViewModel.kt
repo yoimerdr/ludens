@@ -57,6 +57,22 @@ class SettingsViewModel(
         initialValue = SettingsState()
     )
 
+    val systemState: StateFlow<SystemSettingsState> = _state.map {
+        it.settings.system
+    }.distinctUntilChanged().stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = SystemSettingsState()
+        )
+
+    val modeState: StateFlow<SettingsMode> = _state.map {
+        it.mode
+    }.distinctUntilChanged().stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = SettingsMode.Idle
+        )
+
     /**
      * The original settings loaded from storage.
      */
@@ -72,9 +88,7 @@ class SettingsViewModel(
                 val model = settings.toUIModel()
                 _state.update {
                     it.copy(
-                        settings = model,
-                        mode = if (sourceSettings == null)
-                            SettingsMode.Idle
+                        settings = model, mode = if (sourceSettings == null) SettingsMode.Idle
                         else it.mode
                     )
                 }

@@ -3,29 +3,39 @@ package com.yoimerdr.compose.ludens.app
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.yoimerdr.compose.ludens.app.di.KoinInjection
 import com.yoimerdr.compose.ludens.app.navigation.NavGraph
 import com.yoimerdr.compose.ludens.app.theme.LudensTheme
 import com.yoimerdr.compose.ludens.app.ui.components.BackPopup
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalProviders
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
+import com.yoimerdr.compose.ludens.core.presentation.extension.settings.isDarkTheme
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import org.koin.dsl.KoinAppDeclaration
 
 @Composable
-fun LudensClient() {
-    val nav = rememberNavController()
+fun LudensClient(
+    language: SystemLanguage? = null,
+    nav: NavHostController = rememberNavController(),
+    settingsViewModel: SettingsViewModel = koinInject(),
+) {
+    BackPopup(nav)
 
-    LudensTheme {
-        BackPopup(nav,)
-
-        Scaffold(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            NavGraph(nav,)
-        }
+    LocalProviders(
+        language = language
+    ) {
+        NavGraph(
+            navController = nav,
+            settingsViewModel = settingsViewModel
+        )
     }
 }
 
@@ -35,8 +45,21 @@ fun LudensClient() {
 @Preview
 fun App(configuration: KoinAppDeclaration? = null) {
     KoinInjection(configuration) {
-        LocalProviders {
-            LudensClient()
+        val settingsViewModel: SettingsViewModel = koinInject()
+
+        val state by settingsViewModel.systemState.collectAsStateWithLifecycle()
+
+        LudensTheme(
+            darkTheme = state.theme.isDarkTheme
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                LudensClient(
+                    language = state.language,
+                    settingsViewModel = settingsViewModel
+                )
+            }
         }
     }
 }

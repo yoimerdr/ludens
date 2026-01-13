@@ -13,9 +13,6 @@ import androidx.navigation.NavController
 import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.app.navigation.navigateTo
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
-import com.yoimerdr.compose.ludens.app.ui.providers.LocalInputPlayer
-import com.yoimerdr.compose.ludens.app.ui.providers.LocalMovementsPlayer
-import com.yoimerdr.compose.ludens.app.ui.providers.LocalWebViewNavigator
 import com.yoimerdr.compose.ludens.features.home.presentation.components.WebGame
 import com.yoimerdr.compose.ludens.features.home.presentation.sections.HomeScreenContent
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
@@ -44,6 +41,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Defaults to a new remembered graphics layer.
  * @param viewModel The home view model managing screen state and event handling.
  * Defaults to a Koin-injected instance.
+ * @param showControls Whether to show the game controls (joystick, buttons)
  * @param onLoad Optional callback invoked when the game plugin is loaded, receiving the plugin state
  */
 @Composable
@@ -52,6 +50,7 @@ fun HomeScreen(
     features: WebFeaturesState,
     webGraphicsLayer: GraphicsLayer = rememberGraphicsLayer(),
     viewModel: HomeViewModel = koinViewModel(),
+    showControls: Boolean = true,
     onLoad: ((PluginState) -> Unit)? = null,
 ) {
     // settings state
@@ -94,7 +93,8 @@ fun HomeScreen(
                 onEvent = viewModel::onEvent,
                 onConfiguration = {
                     nav.navigateTo(Destination.Settings)
-                }
+                },
+                showControls = showControls
             )
         }
     }
