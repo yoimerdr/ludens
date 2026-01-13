@@ -36,6 +36,7 @@ import org.koin.compose.viewmodel.koinViewModel
 /**
  * Displays a preview of a control with its alpha transparency applied.
  *
+ * @param settings The current control settings state.
  * @param control The control item to preview.
  * @param keys The set of key control types.
  * @param editableKeys The set of available input keys for binding.
@@ -43,6 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 private fun ControlAlphaPreview(
+    settings: ControlSettingsState,
     control: ControlItemState,
     keys: Set<ItemType>,
     editableKeys: Set<InputKey>,
@@ -50,14 +52,18 @@ private fun ControlAlphaPreview(
 ) {
     when (control.type) {
         in keys -> {
-            if (control is ControlKeyItemState) ControlButton(
-                control = control, enabled = control.enabled, items = editableKeys
-            ) {
-                onEvent(
-                    SettingsEvent.UpdateControlKey(
-                        control.type, it
+            if (control is ControlKeyItemState) {
+                ControlButton(
+                    control = control,
+                    enabled = settings.enabled && control.enabled,
+                    items = editableKeys
+                ) {
+                    onEvent(
+                        SettingsEvent.UpdateControlKey(
+                            control.type, it
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -157,6 +163,7 @@ fun ControlsSettingsSection(
                 },
                 alphaSample = {
                     ControlAlphaPreview(
+                        settings = settings,
                         control = control,
                         keys = keyControls,
                         editableKeys = editableKeys,
