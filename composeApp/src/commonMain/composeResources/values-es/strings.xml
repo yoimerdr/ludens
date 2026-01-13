@@ -10,6 +10,8 @@
     <string name="light">Claro</string>
     <string name="dark">Oscuro</string>
     <string name="system_default">Sistema</string>
+    <string name="change">Cambiar</string>
+    <string name="reset">Restablecer</string>
     <!--Exit application-->
     <string name="exit_app">¿Estás seguro de que deseas salir de la aplicación? Se perderán todos los cambios no guardados en el juego.</string>
     <!--languages-->
@@ -37,4 +39,8 @@
     <string name="stc_tools_move_controls">Mover los controles</string>
     <string name="stc_tools_mute_audio">Silenciar el audio</string>
     <string name="stc_tools_show_fps">Mostrar los FPS</string>
+    <!--Settings - System-->
+    <string name="stc_system_language">Idioam</string>
+    <string name="stc_system_appearance">Apariencia</string>
+    <string name="stc_system_reset_default">Restablecer la configuración predeterminada</string>
 </resources>

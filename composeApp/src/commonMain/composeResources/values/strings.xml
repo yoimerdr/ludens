@@ -10,6 +10,8 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="system_default">System</string>
+    <string name="change">Change</string>
+    <string name="reset">Reset</string>
     <!--Exit application-->
     <string name="exit_app">Are you sure you want to exit the application? Any unsaved changes in the game will be lost.</string>
     <!--languages-->
@@ -37,4 +39,8 @@
     <string name="stc_tools_move_controls">Move the controls</string>
     <string name="stc_tools_mute_audio">Mute audio</string>
     <string name="stc_tools_show_fps">Show FPS</string>
+    <!--Settings - System-->
+    <string name="stc_system_language">Language</string>
+    <string name="stc_system_appearance">Appearance</string>
+    <string name="stc_system_reset_default">Reset to default settings</string>
 </resources>
