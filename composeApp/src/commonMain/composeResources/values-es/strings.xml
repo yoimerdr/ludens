@@ -6,6 +6,12 @@
     <string name="loading">Cargando</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="unknown">Desconocido</string>
+    <string name="light">Claro</string>
+    <string name="dark">Oscuro</string>
+    <string name="system_default">Sistema</string>
+    <string name="change">Cambiar</string>
+    <string name="reset">Restablecer</string>
     <!--Exit application-->
     <string name="exit_app">¿Estás seguro de que deseas salir de la aplicación? Se perderán todos los cambios no guardados en el juego.</string>
     <!--languages-->
@@ -13,4 +19,29 @@
     <string name="system_language">Sistema</string>
     <string name="en">English</string>
     <string name="es">Español</string>
+    <!--Controls-->
+    <string name="key_joystick">Joystick</string>
+    <string name="key_button">Botón %1$s (%2$s)</string> <!--(keySimpleName, inputKeyName) 'Boton X (Enter)'-->
+    <string name="key_settings">Ajustes</string>
+    <!--Settings-->
+    <string name="stc_text_all_controls">Todos los controles</string>
+    <string name="stc_text_restarting_confirmation">Esta acción reiniciará el juego cuando salgas de la configuración. ¿Deseas continuar?</string>
+    <!--Settings - About-->
+    <string name="stc_about_issues">Reportar problemas</string>
+    <string name="stc_about_website">Sitio web</string>
+    <string name="stc_about_description">Diseñado para ejecutar juegos RPG Maker</string>
+    <string name="stc_about_version">Versión %1$s</string>
+    <!--Settings - Tab options-->
+    <string name="stc_tabs_controls">Controles</string>
+    <string name="stc_tabs_tools">Herramientas</string>
+    <string name="stc_tabs_system">Sistema</string>
+    <string name="stc_tabs_about">Acerca de</string>
+    <!--Settings - Tools-->
+    <string name="stc_tools_move_controls">Mover los controles</string>
+    <string name="stc_tools_mute_audio">Silenciar el audio</string>
+    <string name="stc_tools_show_fps">Mostrar los FPS</string>
+    <!--Settings - System-->
+    <string name="stc_system_language">Idioma</string>
+    <string name="stc_system_appearance">Apariencia</string>
+    <string name="stc_system_reset_default">Restablecer la configuración predeterminada</string>
 </resources>

@@ -7,14 +7,23 @@ import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
+import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
 import ludens.composeapp.generated.resources.Res
+import ludens.composeapp.generated.resources.dark
 import ludens.composeapp.generated.resources.en
 import ludens.composeapp.generated.resources.es
+import ludens.composeapp.generated.resources.key_button
+import ludens.composeapp.generated.resources.key_joystick
+import ludens.composeapp.generated.resources.key_settings
+import ludens.composeapp.generated.resources.light
+import ludens.composeapp.generated.resources.system_default
 import ludens.composeapp.generated.resources.system_language
+import ludens.composeapp.generated.resources.unknown
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -100,10 +109,73 @@ val SystemTheme.isDarkTheme: Boolean
         }
     }
 
+/**
+ * Gets the localized label string for the current [SystemTheme].
+ *
+ * This extension property provides a user-friendly, localized display name.
+ */
+val SystemTheme.label: String
+    @Composable
+    get() {
+        return when (this) {
+            SystemTheme.Light -> stringResource(Res.string.light)
+            SystemTheme.Dark -> stringResource(Res.string.dark)
+            SystemTheme.System -> stringResource(Res.string.system_default)
+        }
+    }
+
+/**
+ * Gets the localized label string for the current [SystemLanguage].
+ *
+ * This extension property provides a user-friendly, localized display name.
+ */
 val SystemLanguage.label: String
     @Composable
     get() = when (this) {
         SystemLanguage.English -> stringResource(Res.string.en)
         SystemLanguage.Spanish -> stringResource(Res.string.es)
         else -> stringResource(Res.string.system_language)
+    }
+
+/**
+ * Gets the localized label string for the current [ControlItemState].
+ *
+ * This extension property generates a descriptive label for control items based on their type.
+ * For key-based controls, it includes the key binding information. For other control types,
+ * it returns their standard localized names.
+ *
+ * The label format varies by item type:
+ * - For key types (A, B, X, Y, etc.): Returns a formatted string
+ * - For [ItemType.Joystick]: Returns "Joystick"
+ * - For [ItemType.Settings]: Returns "Settings"
+ * - For unknown types: Returns "Unknown"
+ */
+val ControlItemState.label: String
+    @Composable
+    get() {
+        val keys = ItemType.keys
+        val type = type
+        val unknow = stringResource(Res.string.unknown)
+        if (type in keys) {
+            val defaultKey = type
+                .toInputKey()
+
+            val input = when (this) {
+                is ControlKeyItemState -> this.key
+                else -> null
+            } ?: defaultKey
+
+            return stringResource(
+                Res.string.key_button,
+                type.simpleName,
+                input?.name?.ifBlank { unknow } ?: unknow
+            )
+        }
+
+        return when (type) {
+            ItemType.Joystick -> stringResource(Res.string.key_joystick)
+            ItemType.Settings -> stringResource(Res.string.key_settings)
+            else -> unknow
+        }
+
     }

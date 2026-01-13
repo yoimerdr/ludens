@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.extensions.modifier.contentPadding
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.accept
@@ -59,33 +63,37 @@ fun Modifier.widthInDialog(
  */
 @Composable
 fun ConfirmationDialog(
-    modifier: Modifier = Modifier,
     showDialog: Boolean,
-    title: String = stringResource(Res.string.are_sure),
     message: String,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    colors: CardColors = CardDefaults.elevatedCardColors(),
+    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    title: String = stringResource(Res.string.are_sure),
     confirmText: String = stringResource(Res.string.accept),
     dismissText: String = stringResource(Res.string.cancel),
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
 ) {
     if (showDialog) {
+        val spacing = LocalSpacing.current
         Dialog(
             onDismissRequest = onDismiss,
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             ElevatedCard(
                 modifier = modifier,
+                colors = colors,
+                elevation = elevation,
             ) {
                 Column(
                     modifier = Modifier
                         .contentPadding(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(spacing.medium)
                 ) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
 
@@ -93,14 +101,13 @@ fun ConfirmationDialog(
                     Text(
                         text = message,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
                     )
 
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(spacing.medium)
                     ) {
                         OutlinedButton(
                             onClick = onDismiss,
@@ -109,8 +116,6 @@ fun ConfirmationDialog(
                         ) {
                             Text(
                                 text = dismissText,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                style = MaterialTheme.typography.labelLarge
                             )
                         }
 
@@ -122,8 +127,6 @@ fun ConfirmationDialog(
                         ) {
                             Text(
                                 text = confirmText,
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                style = MaterialTheme.typography.labelLarge
                             )
                         }
                     }
