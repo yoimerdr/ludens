@@ -18,11 +18,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
-import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
+import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.language
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.AboutSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ControlsSettingsSection
@@ -31,31 +33,27 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.secction.Syste
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ToolsSettings
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.state.PluginState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import com.yoimerdr.compose.ludens.ui.state.isAvailable
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * The main settings content layout displaying the side navigation and selected section.
  *
- * @param section The currently selected settings section.
  * @param language The current system language.
- * @param settings The current settings state.
  * @param features The current web features state.
  * @param plugin The current plugin state.
  * @param onClose Callback invoked when the settings screen is closed.
- * @param onEvent Callback invoked when a settings event occurs.
  */
 @Composable
 fun SettingsContents(
-    settings: SettingsState,
     features: WebFeaturesState,
     plugin: PluginState,
     onClose: () -> Unit,
-    section: SettingsSection = SettingsSection.Controls,
-    language: SystemLanguage = SystemLanguage.System,
-    onEvent: (SettingsEvent) -> Unit,
+    viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val counter = LocalFPSPlayer.current
     val spacing = LocalSpacing.current
@@ -83,7 +81,7 @@ fun SettingsContents(
 
     LaunchedEffect(plugin.isLoading) {
         if (plugin.isAvailable) {
-            onEvent(SettingsEvent.UpdateShowFps(counter.isVisible))
+            viewModel.onEvent(SettingsEvent.UpdateShowFps(counter.isVisible))
         }
     }
 
@@ -94,67 +92,96 @@ fun SettingsContents(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Start
+        SettingsContents(
+            features = features,
+            plugin = plugin,
+            viewModel = viewModel,
+            horizontalPadding = horizontalPadding,
+            verticalPadding = verticalPadding,
+            color = color,
+            onClose = onClose
+        )
+    }
+
+}
+
+/**
+ * Internal settings content layout with precalculated padding values.
+ *
+ * @param features The current web features state.
+ * @param plugin The current plugin state.
+ * @param viewModel The settings view model.
+ * @param horizontalPadding The horizontal padding values.
+ * @param verticalPadding The vertical padding values.
+ * @param color The background color for the content area.
+ * @param onClose Callback invoked when the settings screen is closed.
+ */
+@Composable
+private fun SettingsContents(
+    features: WebFeaturesState,
+    plugin: PluginState,
+    viewModel: SettingsViewModel,
+    horizontalPadding: PaddingValues,
+    verticalPadding: PaddingValues,
+    color: Color,
+    onClose: () -> Unit,
+) {
+    val section by viewModel.sectionState.collectAsStateWithLifecycle()
+
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(horizontalPadding)
+                .padding(verticalPadding)
+                .fillMaxHeight(),
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(horizontalPadding)
-                    .padding(verticalPadding)
-                    .fillMaxHeight(),
-            ) {
-                SideTabOptions(
-                    section = section,
-                    onBack = onClose,
-                    onEvent = onEvent,
-                    language = language
-                )
-            }
+            SideTabOptions(
+                section = section,
+                onEvent = viewModel::onEvent,
+                onBack = onClose
+            )
+        }
 
-            Box(
-                modifier = Modifier
-                    .background(color)
-                    .fillMaxHeight()
-                    .padding(horizontalPadding)
-                    .padding(verticalPadding)
-            ) {
-                when (section) {
-                    SettingsSection.Controls -> {
-                        ControlsSettingsSection(
-                            settings = settings.control,
-                            onEvent = onEvent,
-                        )
-                    }
-
-                    SettingsSection.Tools -> {
-                        ToolsSettings(
-                            features = features,
-                            settings = settings.tool,
-                            plugin = plugin,
-                            onEvent = onEvent,
-                        )
-                    }
-
-                    SettingsSection.System -> {
-                        SystemSettingsSection(
-                            settings = settings.system,
-                            onEvent = onEvent,
-                        )
-                    }
-
-                    SettingsSection.About -> {
-                        AboutSection(
-
-                        )
-                    }
-
-                    else -> {}
+        Box(
+            modifier = Modifier
+                .background(color)
+                .fillMaxHeight()
+                .padding(horizontalPadding)
+                .padding(verticalPadding)
+        ) {
+            when (section) {
+                SettingsSection.Controls -> {
+                    ControlsSettingsSection(
+                        viewModel = viewModel
+                    )
                 }
-            }
 
+                SettingsSection.Tools -> {
+                    ToolsSettings(
+                        features = features,
+                        plugin = plugin,
+                        viewModel = viewModel
+                    )
+                }
+
+                SettingsSection.System -> {
+                    SystemSettingsSection(
+                        viewModel = viewModel
+                    )
+                }
+
+                SettingsSection.About -> {
+                    AboutSection(
+
+                    )
+                }
+
+                else -> {}
+            }
         }
 
     }
-
 }

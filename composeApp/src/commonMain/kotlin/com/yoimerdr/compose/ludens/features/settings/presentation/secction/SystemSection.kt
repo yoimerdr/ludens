@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.label
@@ -31,6 +32,7 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.components.Opt
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionName
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.buttons.FilledTonalToggleButton
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
@@ -44,6 +46,7 @@ import ludens.composeapp.generated.resources.stc_system_appearance
 import ludens.composeapp.generated.resources.stc_system_language
 import ludens.composeapp.generated.resources.stc_system_reset_default
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A button to reset all settings to default values.
@@ -260,4 +263,27 @@ fun SystemSettingsSection(
             ResetAction(onEvent)
         }
     }
+}
+
+/**
+ * The system settings section with view model integration.
+ *
+ * @param viewModel The settings view model.
+ * @param modifier The modifier to be applied to the section container.
+ * @param state The scroll state of the options list.
+ */
+@Composable
+fun SystemSettingsSection(
+    modifier: Modifier = Modifier,
+    state: LazyListState = rememberLazyListState(),
+    viewModel: SettingsViewModel = koinViewModel(),
+) {
+    val system by viewModel.systemState.collectAsStateWithLifecycle()
+
+    SystemSettingsSection(
+        modifier = modifier,
+        settings = system,
+        state = state,
+        onEvent = viewModel::onEvent
+    )
 }

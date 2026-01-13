@@ -7,9 +7,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.label
@@ -21,6 +23,7 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.components.Con
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionName
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
 import io.github.yoimerdr.compose.virtualjoystick.core.control.BackgroundType
@@ -28,6 +31,7 @@ import io.github.yoimerdr.compose.virtualjoystick.ui.view.JoystickBackground
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_text_all_controls
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Displays a preview of a control with its alpha transparency applied.
@@ -167,3 +171,25 @@ fun ControlsSettingsSection(
     }
 }
 
+/**
+ * The controls settings section with view model integration.
+ *
+ * @param viewModel The settings view model.
+ * @param modifier The modifier to be applied to the section container.
+ * @param state The scroll state of the options list.
+ */
+@Composable
+fun ControlsSettingsSection(
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = koinViewModel(),
+    state: LazyListState = rememberLazyListState(),
+) {
+    val controls by viewModel.controlState.collectAsStateWithLifecycle()
+
+    ControlsSettingsSection(
+        modifier = modifier,
+        settings = controls,
+        state = state,
+        onEvent = viewModel::onEvent
+    )
+}

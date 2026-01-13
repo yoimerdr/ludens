@@ -3,12 +3,15 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.secction
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolActionOption
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolSwitchOption
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SingleTap
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
@@ -20,6 +23,7 @@ import ludens.composeapp.generated.resources.stc_tools_move_controls
 import ludens.composeapp.generated.resources.stc_tools_mute_audio
 import ludens.composeapp.generated.resources.stc_tools_show_fps
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * The tools settings section displaying tool configuration options.
@@ -90,4 +94,33 @@ fun ToolsSettings(
             )
         }
     }
+}
+
+/**
+ * The tools settings section with view model integration.
+ *
+ * @param features The current web features state.
+ * @param plugin The current plugin state.
+ * @param viewModel The settings view model.
+ * @param modifier The modifier to be applied to the section container.
+ * @param state The scroll state of the options list.
+ */
+@Composable
+fun ToolsSettings(
+    features: WebFeaturesState,
+    plugin: PluginState,
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = koinViewModel(),
+    state: LazyListState = rememberLazyListState(),
+) {
+    val tools by viewModel.toolState.collectAsStateWithLifecycle()
+
+    ToolsSettings(
+        modifier = modifier,
+        features = features,
+        settings = tools,
+        plugin = plugin,
+        state = state,
+        onEvent = viewModel::onEvent
+    )
 }

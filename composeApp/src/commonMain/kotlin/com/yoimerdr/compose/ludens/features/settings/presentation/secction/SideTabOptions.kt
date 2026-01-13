@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -15,18 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
@@ -92,7 +83,6 @@ private fun SettingsTabOption(
  * A vertical navigation panel displaying settings section tabs.
  *
  * @param section The currently selected section.
- * @param language The current system language.
  * @param onBack Callback invoked when the back button is clicked.
  * @param onEvent Callback invoked when a section tab is selected.
  * @param modifier The modifier to be applied to the panel.
@@ -102,7 +92,6 @@ private fun SettingsTabOption(
 @Composable
 fun SideTabOptions(
     section: SettingsSection,
-    language: SystemLanguage,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
     color: Color = MaterialTheme.colorScheme.surface,
@@ -110,13 +99,10 @@ fun SideTabOptions(
     onEvent: (SettingsEvent.OnSelectSection) -> Unit,
 ) {
     val spacing = LocalSpacing.current
-    var maxWidth by remember(language) { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
 
     Surface(
         modifier = modifier
             .sizeIn(
-                minWidth = maxWidth,
                 maxWidth = 192.dp
             ),
         color = color
@@ -143,23 +129,13 @@ fun SideTabOptions(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 items(SettingsSection.entries) {
-                    Box(
-                        modifier = Modifier.onSizeChanged { size ->
-                            with(density) {
-                                val dp = size.width.toDp()
-                                maxWidth = max(maxWidth, dp)
-                            }
-                        },
-                    ) {
-                        SettingsTabOption(
-                            modifier = Modifier.widthIn(min = maxWidth),
-                            selected = section == it,
-                            option = it,
-                            onClick = {
-                                onEvent(SettingsEvent.OnSelectSection(it))
-                            }
-                        )
-                    }
+                    SettingsTabOption(
+                        selected = section == it,
+                        option = it,
+                        onClick = {
+                            onEvent(SettingsEvent.OnSelectSection(it))
+                        }
+                    )
                 }
             }
         }

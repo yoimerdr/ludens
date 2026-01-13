@@ -15,6 +15,7 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettin
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsMode
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -54,8 +55,41 @@ class SettingsViewModel(
     val state: StateFlow<SettingsState> = _state.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = SettingsState()
+        initialValue = SettingsState(
+            mode = SettingsMode.Idle
+        )
     )
+
+    /**
+     * The current behavioral mode of the settings screen.
+     */
+    val modeState: StateFlow<SettingsMode> = _state
+        .derivedStateIn(SettingsMode.Idle) { mode }
+
+    /**
+     * The currently selected settings section.
+     */
+    val sectionState: StateFlow<SettingsSection> = _state
+        .derivedStateIn(SettingsSection.Controls) { section }
+
+    /**
+     * The system settings state (theme and language).
+     */
+    val systemState: StateFlow<SystemSettingsState> = _state
+        .derivedStateIn(SystemSettingsState()) { settings.system }
+
+    /**
+     * The tool settings state (audio and FPS display).
+     */
+    val toolState: StateFlow<ToolSettingsState> = _state
+        .derivedStateIn(ToolSettingsState()) { settings.tool }
+
+    /**
+     * The control settings state (on-screen controls configuration).
+     */
+    val controlState: StateFlow<ControlSettingsState> = _state
+        .derivedStateIn(ControlSettingsState()) { settings.control }
+
 
     /**
      * The original settings loaded from storage.
@@ -105,6 +139,25 @@ class SettingsViewModel(
                 copy(system = it)
             }
         }
+    }
+
+    /**
+     * Creates a derived StateFlow by mapping and caching a specific property from the source StateFlow.
+     *
+     * @param initialValue The initial value for the derived state.
+     * @param mapper A function that extracts the desired property from the source state.
+     */
+    private fun <T, R> StateFlow<T>.derivedStateIn(
+        initialValue: R,
+        mapper: T.() -> R,
+    ): StateFlow<R> {
+        return map { it.mapper() }
+            .distinctUntilChanged()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = initialValue
+            )
     }
 
     /**

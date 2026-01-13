@@ -11,7 +11,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.app.navigation.navigateTo
-import com.yoimerdr.compose.ludens.core.presentation.extension.settings.withPositionable
 import com.yoimerdr.compose.ludens.features.settings.presentation.layout.SettingsContents
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.MovableControlsSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
@@ -43,12 +42,12 @@ fun SettingsScreen(
     plugin: PluginState,
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val mode by viewModel.modeState.collectAsStateWithLifecycle()
 
-    BackHandler(state.mode !is SettingsMode.Initializing) {
-        if (state.mode is SettingsMode.MovableControls)
+    BackHandler(mode !is SettingsMode.Initializing) {
+        if (mode is SettingsMode.MovableControls)
             viewModel.onEvent(SettingsEvent.UpdateControlMovementMode(false))
-        else if (state.mode is SettingsMode.PendingMuteConfirmation)
+        else if (mode is SettingsMode.PendingMuteConfirmation)
             viewModel.onEvent(SettingsEvent.ResolveMuted(false))
         else if (viewModel.requireRestart)
             nav.navigateTo(Destination.Splash)
@@ -62,7 +61,7 @@ fun SettingsScreen(
             message = stringResource(Res.string.stc_text_restarting_confirmation),
             modifier = Modifier
                 .widthInDialog(),
-            showDialog = state.mode is SettingsMode.PendingMuteConfirmation,
+            showDialog = mode is SettingsMode.PendingMuteConfirmation,
             onConfirm = {
                 viewModel.onEvent(SettingsEvent.ResolveMuted(true))
             },
@@ -71,30 +70,25 @@ fun SettingsScreen(
             }
         )
 
-        when (state.mode) {
+        when (mode) {
             is SettingsMode.MovableControls -> {
-                val controls = state.settings.control
                 SafeContent {
                     MovableControlsSettingsSection(
-                        showControls = controls.enabled,
-                        items = controls.items.withPositionable(controls.positions),
-                        onEvent = viewModel::onEvent
+                        viewModel = viewModel
                     )
                 }
             }
 
             else -> {
                 SettingsContents(
-                    settings = state.settings,
                     features = features,
                     plugin = plugin,
-                    section = state.section,
                     onClose = {
                         if (viewModel.requireRestart)
                             nav.navigateTo(Destination.Splash)
                         else nav.popBackStack()
                     },
-                    onEvent = viewModel::onEvent,
+                    viewModel = viewModel,
                 )
             }
         }

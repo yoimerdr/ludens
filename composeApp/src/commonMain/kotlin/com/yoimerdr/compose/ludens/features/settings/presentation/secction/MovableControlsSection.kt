@@ -5,18 +5,22 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.PositionableControlItem
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.getEnabled
+import com.yoimerdr.compose.ludens.core.presentation.extension.settings.withPositionable
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.CloseIconButton
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.KeyActionButton
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.drag.Draggable
 import com.yoimerdr.compose.ludens.ui.components.drag.DraggableMode
 import com.yoimerdr.compose.ludens.ui.components.drag.DraggablePosition
@@ -24,6 +28,7 @@ import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
 import io.github.yoimerdr.compose.virtualjoystick.core.control.BackgroundType
 import io.github.yoimerdr.compose.virtualjoystick.ui.view.JoystickBackground
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * The draggable settings button control.
@@ -199,4 +204,22 @@ fun BoxScope.MovableControlsSettingsSection(
     }
 
     CloseMovables(onEvent)
+}
+
+/**
+ * The movable controls section with view model integration.
+ *
+ * @param viewModel The settings view model.
+ */
+@Composable
+fun BoxScope.MovableControlsSettingsSection(
+    viewModel: SettingsViewModel = koinViewModel(),
+) {
+    val controls by viewModel.controlState.collectAsStateWithLifecycle()
+
+    MovableControlsSettingsSection(
+        showControls = controls.enabled,
+        items = controls.items.withPositionable(controls.positions),
+        onEvent = viewModel::onEvent
+    )
 }
