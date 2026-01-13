@@ -58,6 +58,30 @@ sealed interface SettingsEvent {
         SettingsEvent
 
     /**
+     * Requests to enter or exit control movement mode.
+     *
+     * @param enabled Whether to enable movement mode.
+     */
+    data class UpdateControlMovementMode(val enabled: Boolean) :
+        SettingsEvent
+
+    /**
+     * Updates the mute state of the application.
+     *
+     * @param enabled Whether audio is muted.
+     */
+    data class UpdateAudioMuted(val enabled: Boolean) :
+        SettingsEvent
+
+    /**
+     * Updates the FPS counter visibility.
+     *
+     * @param enabled Whether the FPS counter is visible.
+     */
+    data class UpdateShowFps(val enabled: Boolean) :
+        SettingsEvent
+
+    /**
      * Resets all settings to default values.
      */
     data object RestoreDefaultSettings : SettingsEvent

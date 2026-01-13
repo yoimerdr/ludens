@@ -33,4 +33,8 @@
     <string name="stc_tabs_tools">Herramientas</string>
     <string name="stc_tabs_system">Sistema</string>
     <string name="stc_tabs_about">Acerca de</string>
+    <!--Settings - Tools-->
+    <string name="stc_tools_move_controls">Mover los controles</string>
+    <string name="stc_tools_mute_audio">Silenciar el audio</string>
+    <string name="stc_tools_show_fps">Mostrar los FPS</string>
 </resources>
