@@ -152,7 +152,7 @@ private fun AppearanceAction(
                 ThemeOption(
                     modifier = Modifier
                         .padding(spacing.extraSmall)
-                        .sizeIn(maxWidth = 120.dp)
+                        .sizeIn(minWidth = 120.dp)
                         .weight(1f),
                     theme = it,
                     selected = it == theme,

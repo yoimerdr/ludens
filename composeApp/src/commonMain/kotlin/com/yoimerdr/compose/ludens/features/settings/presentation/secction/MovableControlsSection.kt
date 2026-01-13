@@ -52,7 +52,9 @@ private fun BoxScope.MovableSettings(
             )
         }) {
 
-        KeyActionButton {
+        KeyActionButton(
+            modifier = Modifier.alpha(settings.second.alpha)
+        ) {
             Icon(
                 LudensIcons.Default.Settings,
                 contentDescription = "Settings",
