@@ -1,0 +1,169 @@
+package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.unit.dp
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.presentation.extension.settings.label
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
+import com.yoimerdr.compose.ludens.features.settings.presentation.components.ControlButton
+import com.yoimerdr.compose.ludens.features.settings.presentation.components.ControlOptionCard
+import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionName
+import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
+import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
+import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
+import io.github.yoimerdr.compose.virtualjoystick.core.control.BackgroundType
+import io.github.yoimerdr.compose.virtualjoystick.ui.view.JoystickBackground
+import ludens.composeapp.generated.resources.Res
+import ludens.composeapp.generated.resources.stc_text_all_controls
+import org.jetbrains.compose.resources.stringResource
+
+/**
+ * Displays a preview of a control with its alpha transparency applied.
+ *
+ * @param control The control item to preview.
+ * @param keys The set of key control types.
+ * @param editableKeys The set of available input keys for binding.
+ * @param onEvent Callback invoked when a control key is updated.
+ */
+@Composable
+private fun ControlAlphaPreview(
+    control: ControlItemState,
+    keys: Set<ItemType>,
+    editableKeys: Set<InputKey>,
+    onEvent: (SettingsEvent.UpdateControlKey) -> Unit,
+) {
+    when (control.type) {
+        in keys -> {
+            if (control is ControlKeyItemState) ControlButton(
+                control = control, enabled = control.enabled, items = editableKeys
+            ) {
+                onEvent(
+                    SettingsEvent.UpdateControlKey(
+                        control.type, it
+                    )
+                )
+            }
+        }
+
+        ItemType.Joystick -> {
+            JoystickBackground(
+                modifier = Modifier.size(48.dp).alpha(control.alpha),
+                type = BackgroundType.DpadModern
+            )
+        }
+
+        ItemType.Settings -> {
+            ControlButton(
+                modifier = Modifier.alpha(control.alpha)
+            ) {
+                Icon(
+                    LudensIcons.Default.Settings,
+                    contentDescription = null,
+                )
+            }
+        }
+
+        else -> {}
+    }
+}
+
+/**
+ * The controls settings section displaying control configuration options.
+ *
+ * @param settings The current control settings state.
+ * @param onEvent Callback invoked when a settings event occurs.
+ * @param modifier The modifier to be applied to the section container.
+ * @param state The scroll state of the options list.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ControlsSettingsSection(
+    modifier: Modifier = Modifier,
+    settings: ControlSettingsState,
+    state: LazyListState = rememberLazyListState(),
+    onEvent: (SettingsEvent) -> Unit,
+) {
+    val keyControls = ItemType.keys
+    val editableKeys = InputKey.controls
+
+    OptionsContainer(
+        modifier = modifier, state = state
+    ) {
+        if (settings.items.size > 1) {
+            item {
+                ControlOptionCard(
+                    checked = settings.enabled,
+                    enabledAlpha = settings.enabled,
+                    onCheckedChange = {
+                        onEvent(
+                            SettingsEvent.UpdateControlsEnabled(
+                                it
+                            )
+                        )
+                    },
+                    alpha = settings.alpha,
+                    onAlphaChange = {
+                        onEvent(
+                            SettingsEvent.UpdateControlsAlpha(
+                                it
+                            )
+                        )
+                    },
+                ) {
+                    OptionName(
+                        text = stringResource(Res.string.stc_text_all_controls)
+                    )
+                }
+            }
+        }
+        items(settings.items) { control ->
+            ControlOptionCard(
+                useSwitchField = control.type != ItemType.Settings,
+                enabled = if (control.type != ItemType.Settings) settings.enabled
+                else true,
+                enabledAlpha = if (control.type != ItemType.Settings) control.enabled && settings.enabled
+                else true,
+                checked = control.enabled,
+                onCheckedChange = {
+                    onEvent(
+                        SettingsEvent.UpdateControlEnabled(
+                            control.type, it
+                        )
+                    )
+                },
+                alpha = control.alpha,
+                onAlphaChange = {
+                    onEvent(
+                        SettingsEvent.UpdateControlAlpha(
+                            control.type, it
+                        )
+                    )
+                },
+                alphaSample = {
+                    ControlAlphaPreview(
+                        control = control,
+                        keys = keyControls,
+                        editableKeys = editableKeys,
+                        onEvent = onEvent
+                    )
+                }) {
+                OptionName(
+                    text = control.label
+                )
+            }
+        }
+    }
+}
+

@@ -21,6 +21,8 @@
     <string name="key_joystick">Joystick</string>
     <string name="key_button">Botón %1$s (%2$s)</string> <!--(keySimpleName, inputKeyName) 'Boton X (Enter)'-->
     <string name="key_settings">Ajustes</string>
+    <!--Settings-->
+    <string name="stc_text_all_controls">Todos los controles</string>
     <!--Settings - About-->
     <string name="stc_about_issues">Reportar problemas</string>
     <string name="stc_about_website">Sitio web</string>
