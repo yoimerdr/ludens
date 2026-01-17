@@ -81,14 +81,17 @@ object SettingsFactory {
      *
      * @param isMuted Whether audio is muted (default: false).
      * @param showFPS Whether to show FPS counter (default: false).
+     * @param useWebGL Whether to use WebGL for rendering (default: false).
      * @return A ToolSettings instance with the specified values.
      */
     fun toolSettings(
         isMuted: Boolean = false,
         showFPS: Boolean = false,
+        useWebGL: Boolean = false,
     ) = ToolSettings(
         isMuted = isMuted,
         showFPS = showFPS,
+        useWebGL = useWebGL,
     )
 
     /**

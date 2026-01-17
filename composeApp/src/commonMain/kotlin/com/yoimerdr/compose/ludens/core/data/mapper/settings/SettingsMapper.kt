@@ -32,7 +32,7 @@ fun Settings.toProto(): ProtoSettings = ProtoSettings(
 )
 
 fun ToolSettings.toProto(): ProtoToolSettings = ProtoToolSettings(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun ControlSettings.toProto(): ProtoControlSettings = ProtoControlSettings(
@@ -72,7 +72,7 @@ fun ProtoSettings.toDomain(): Settings = Settings(
 )
 
 fun ProtoToolSettings.toDomain(): ToolSettings = ToolSettings(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun ProtoSystemSettings.toDomain(): SystemSettings = SystemSettings(

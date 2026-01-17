@@ -30,7 +30,7 @@ fun Settings.toUIModel(): SettingsState = SettingsState(
 )
 
 fun ToolSettings.toUIModel(): ToolSettingsState = ToolSettingsState(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun SystemSettings.toUIModel(): SystemSettingsState = SystemSettingsState(
@@ -90,7 +90,7 @@ fun SettingsState.toDomain(): Settings = Settings(
 )
 
 fun ToolSettingsState.toDomain(): ToolSettings = ToolSettings(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun SystemSettingsState.toDomain(): SystemSettings = SystemSettings(

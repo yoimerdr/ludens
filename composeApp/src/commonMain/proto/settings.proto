@@ -24,6 +24,7 @@ message ProtoPositionableItem {
 }
 
 message ProtoToolSettings {
+  bool useWebGL = 1;
   bool isMuted = 2;
   bool showFPS = 3;
 }
