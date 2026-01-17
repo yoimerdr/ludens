@@ -8,16 +8,21 @@ package com.yoimerdr.compose.ludens.core.domain.model.settings
 enum class ItemType(val value: Int) {
     /** The joystick control */
     Joystick(0),
+
     /** The A action button */
     KeyA(1),
+
     /** The B action button */
     KeyB(2),
+
     /** The X action button */
     KeyX(3),
+
     /** The Y action button */
     KeyY(4),
-    /** The settings button */
-    Settings(5);
+
+    /** The fast actions button */
+    Actions(5);
 
     companion object {
         /**
@@ -34,6 +39,8 @@ enum class ItemType(val value: Int) {
          */
         val keys: Set<ItemType>
             get() = setOf(KeyA, KeyB, KeyX, KeyY)
+
+        val Settings = Actions
     }
 
     /**
@@ -45,7 +52,7 @@ enum class ItemType(val value: Int) {
         return when (this) {
             Joystick -> PositionableType.Joystick
             KeyA, KeyB, KeyX, KeyY -> PositionableType.Keys
-            Settings -> PositionableType.Settings
+            Actions -> PositionableType.Actions
         }
     }
 
@@ -55,7 +62,7 @@ enum class ItemType(val value: Int) {
     val simpleName: String
         get() = when (this) {
             Joystick -> "JS"
-            Settings -> "ST"
+            Actions -> "AT"
             KeyA -> "A"
             KeyB -> "B"
             KeyX -> "X"
@@ -67,6 +74,6 @@ enum class ItemType(val value: Int) {
      *
      * @return A float range representing valid alpha values.
      */
-    fun toRange() = if (this == Settings) 0.35f..1f else .15f..1f
+    fun toRange() = if (this == Actions) 0.35f..1f else .15f..1f
 
 }

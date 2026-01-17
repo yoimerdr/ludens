@@ -33,8 +33,18 @@ message ProtoSystemSettings {
   int32 language = 2;
 }
 
+message ProtoActionItem {
+  int32 type = 1;
+  bool enabled = 2;
+}
+
+message ProtoActionSettings {
+  repeated ProtoActionItem items = 1;
+}
+
 message ProtoSettings {
   ProtoControlSettings control = 1;
   ProtoToolSettings tool = 2;
   ProtoSystemSettings system = 3;
+  ProtoActionSettings action = 4;
 }

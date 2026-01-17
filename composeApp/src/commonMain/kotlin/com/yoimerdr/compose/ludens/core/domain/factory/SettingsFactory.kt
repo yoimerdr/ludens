@@ -1,5 +1,9 @@
 package com.yoimerdr.compose.ludens.core.domain.factory
 
+import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.theme
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionItem
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionSettings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
@@ -31,10 +35,12 @@ object SettingsFactory {
         tool: ToolSettings = toolSettings(),
         control: ControlSettings = controlSettings(),
         system: SystemSettings = systemSettings(),
+        action: ActionSettings = actionSettings(),
     ) = Settings(
         tool = tool,
         control = control,
         system = system,
+        action = action
     )
 
     /**
@@ -105,6 +111,23 @@ object SettingsFactory {
         items = items,
         positions = positions,
     )
+
+    /**
+     * Creates default action settings.
+     *
+     * @param items The list of action items. Defaults to all available action types.
+     * @return An ActionSettings instance with the specified values.
+     */
+    fun actionSettings(
+        items: List<ActionItem> = actionItems(),
+    ) = ActionSettings(items = items)
+
+    /**
+     * Creates a default list of action items.
+     *
+     * @return A list containing all action types.
+     */
+    fun actionItems() = ActionType.entries.map { ActionItem(it, false) }
 
     /**
      * Creates a default list of control items.
