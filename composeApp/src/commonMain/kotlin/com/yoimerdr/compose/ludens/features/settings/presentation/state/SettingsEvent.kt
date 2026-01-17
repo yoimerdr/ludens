@@ -77,14 +77,6 @@ sealed interface SettingsEvent {
         SettingsEvent
 
     /**
-     * Confirms or cancels the silence dialog.
-     *
-     * @param proceed Whether to proceed with the action.
-     */
-    data class ResolveMuted(val proceed: Boolean) :
-        SettingsEvent
-
-    /**
      * Updates the FPS counter visibility.
      *
      * @param enabled Whether the FPS counter is visible.

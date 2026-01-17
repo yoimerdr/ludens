@@ -47,8 +47,8 @@ fun SettingsScreen(
     BackHandler(mode !is SettingsMode.Initializing) {
         if (mode is SettingsMode.MovableControls)
             viewModel.onEvent(SettingsEvent.UpdateControlMovementMode(false))
-        else if (mode is SettingsMode.PendingMuteConfirmation)
-            viewModel.onEvent(SettingsEvent.ResolveMuted(false))
+        else if (mode is SettingsMode.PendingConfirmation)
+            viewModel.rejectRequest()
         else if (viewModel.requireRestart)
             nav.navigateTo(Destination.Splash)
         else nav.popBackStack()
@@ -61,12 +61,12 @@ fun SettingsScreen(
             message = stringResource(Res.string.stc_text_restarting_confirmation),
             modifier = Modifier
                 .widthInDialog(),
-            showDialog = mode is SettingsMode.PendingMuteConfirmation,
+            showDialog = mode is SettingsMode.PendingConfirmation,
             onConfirm = {
-                viewModel.onEvent(SettingsEvent.ResolveMuted(true))
+                viewModel.resolveRequest()
             },
             onDismiss = {
-                viewModel.onEvent(SettingsEvent.ResolveMuted(false))
+                viewModel.rejectRequest()
             }
         )
 

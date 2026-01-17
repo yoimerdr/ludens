@@ -9,26 +9,44 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsStat
 enum class SettingsSection {
     /** Control settings section. */
     Controls,
+
     /** Tools settings section. */
     Tools,
+
     /** System settings section. */
     System,
+
     /** About section. */
     About,
 }
 
 /**
+ * User confirmation requests in the settings screen.
+ */
+sealed interface SettingsRequest {
+    /** Request for mute. */
+    data class RequestMute(
+        val value: Boolean,
+    ) : SettingsRequest
+}
+
+/**
  * Behavioral states of the settings screen.
  */
-interface SettingsMode {
+sealed interface SettingsMode {
     /** Initial loading state. */
     object Initializing : SettingsMode
+
     /** Normal idle state. */
     object Idle : SettingsMode
+
     /** Control movement mode is active. */
     object MovableControls : SettingsMode
-    /** Waiting for mute confirmation. */
-    object PendingMuteConfirmation : SettingsMode
+
+    /** Pending confirmation mode with pending request. */
+    data class PendingConfirmation(
+        val request: SettingsRequest,
+    ) : SettingsMode
 }
 
 /**

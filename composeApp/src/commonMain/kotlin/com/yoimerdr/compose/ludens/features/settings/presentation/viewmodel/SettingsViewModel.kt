@@ -15,6 +15,7 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettin
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsMode
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsRequest
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsState
 import kotlinx.coroutines.FlowPreview
@@ -96,9 +97,6 @@ class SettingsViewModel(
      */
     var sourceSettings: SettingsStateModel? = null
         private set
-
-    private var _silenceValue: Boolean? = null
-    private var _isSilenceFromDefaults: Boolean? = null
 
     init {
         viewModelScope.launch {
@@ -308,36 +306,29 @@ class SettingsViewModel(
     /**
      * Resolves the mute confirmation dialog.
      *
-     * @param event The event containing whether to proceed with muting.
+     * @param request The request containing the mute value.
      */
-    fun resolveMute(event: SettingsEvent.ResolveMuted) {
-        if (_silenceValue == null) return
-
-        if (event.proceed) {
-            updateTools { copy(isMuted = _silenceValue!!) }
-
-            if (_isSilenceFromDefaults == true) {
-                updateState {
-                    copy(settings = SettingsStateModel.default)
-                }
-            }
+    private fun resolveMute(request: SettingsRequest.RequestMute): Boolean {
+        updateTools {
+            copy(isMuted = request.value)
         }
 
-        _silenceValue = null
-        clearMode()
-        _isSilenceFromDefaults = null
+        return true
     }
 
     /**
-     * Updates the mute state of the application.
+     * Updates the mute state of the application requesting a confirmation.
      *
      * @param event The event containing the mute state.
      */
     fun requestMuteChange(event: SettingsEvent.UpdateAudioMuted) {
-        _silenceValue = event.enabled
-        updateState {
-            copy(mode = SettingsMode.PendingMuteConfirmation)
-        }
+        updateMode(
+            SettingsMode.PendingConfirmation(
+                SettingsRequest.RequestMute(
+                    event.enabled
+                )
+            )
+        )
     }
 
     /**
@@ -395,7 +386,6 @@ class SettingsViewModel(
     fun restoreDefaultSettings() {
         val default = SettingsStateModel.default
         if (default.tool.isMuted != settings.tool.isMuted) {
-            _isSilenceFromDefaults = true
             onEvent(SettingsEvent.UpdateAudioMuted(default.tool.isMuted))
         } else updateSettings { default }
     }
@@ -449,7 +439,6 @@ class SettingsViewModel(
             is SettingsEvent.UpdateControlsAlpha -> updateControlsAlpha(event)
             is SettingsEvent.UpdateControlEnabled -> updateControlEnabled(event)
             is SettingsEvent.UpdateControlAlpha -> updateControlAlpha(event)
-            is SettingsEvent.ResolveMuted -> resolveMute(event)
             is SettingsEvent.UpdateAudioMuted -> requestMuteChange(event)
             is SettingsEvent.UpdateShowFps -> updateShowFps(event)
             is SettingsEvent.UpdateControlPosition -> updateControlPosition(event)
@@ -459,6 +448,27 @@ class SettingsViewModel(
             is SettingsEvent.OnSelectSection -> onSelectSection(event)
             is SettingsEvent.OnChangeTheme -> onChangeTheme(event)
             is SettingsEvent.OnChangeLanguage -> onChangeLanguage(event)
+            else -> {}
+        }
+    }
+
+    fun rejectRequest() {
+        clearMode()
+    }
+
+    fun resolveRequest() {
+        when (val mode = _state.value.mode) {
+            is SettingsMode.PendingConfirmation -> {
+                val resolved = when (mode.request) {
+                    is SettingsRequest.RequestMute -> resolveMute(mode.request)
+                    else -> false
+                }
+
+                if (resolved) {
+                    clearMode()
+                }
+            }
+
             else -> {}
         }
     }
