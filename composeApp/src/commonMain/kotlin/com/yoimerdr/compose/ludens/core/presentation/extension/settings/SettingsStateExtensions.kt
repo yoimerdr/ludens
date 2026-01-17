@@ -4,11 +4,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
@@ -85,6 +87,27 @@ fun List<ControlItemState>.withPositionable(
         source[item.type.toPositionable()]?.let {
             it to item
         }
+    }
+}
+
+/**
+ * Filters a list of action items to get only enabled items of specific types.
+ *
+ * This extension function filters the list to include only enabled items whose type
+ * matches the specified [ActionType] values.
+ *
+ * @param type The primary [ActionType] to filter by.
+ * @param types Additional [ActionType] values to include in the filter.
+ * @return A filtered list containing only enabled items matching the specified types.
+ */
+fun List<ActionItemState>.getEnabled(
+    type: ActionType,
+    vararg types: ActionType,
+): List<ActionItemState> {
+    val source = setOf(type) + types
+
+    return filter {
+        it.enabled && it.type in source
     }
 }
 

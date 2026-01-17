@@ -1,5 +1,7 @@
 package com.yoimerdr.compose.ludens.core.data.mapper.settings
 
+import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoActionItem
+import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoActionSettings
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoControlItem
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoControlSettings
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoPositionableItem
@@ -7,6 +9,9 @@ import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoSettings
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoSystemSettings
 import com.yoimerdr.compose.ludens.core.data.source.local.settings.ProtoToolSettings
 import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionItem
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionSettings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
@@ -22,11 +27,12 @@ import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 fun Settings.toProto(): ProtoSettings = ProtoSettings(
     tool = tool.toProto(),
     control = control.toProto(),
-    system = system.toProto()
+    system = system.toProto(),
+    action = action.toProto()
 )
 
 fun ToolSettings.toProto(): ProtoToolSettings = ProtoToolSettings(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun ControlSettings.toProto(): ProtoControlSettings = ProtoControlSettings(
@@ -41,6 +47,15 @@ fun SystemSettings.toProto(): ProtoSystemSettings = ProtoSystemSettings(
     language = language.value
 )
 
+fun ActionSettings.toProto(): ProtoActionSettings = ProtoActionSettings(
+    items = items.map { it.toProto() }
+)
+
+fun ActionItem.toProto(): ProtoActionItem = ProtoActionItem(
+    type = type.value,
+    enabled = enabled
+)
+
 fun ControlItem.toProto(): ProtoControlItem = ProtoControlItem(
     type = type.value, enabled = enabled, alpha = alpha.value, key = code ?: 0
 )
@@ -52,16 +67,26 @@ fun PositionableItem.toProto(): ProtoPositionableItem = ProtoPositionableItem(
 fun ProtoSettings.toDomain(): Settings = Settings(
     tool = tool?.toDomain() ?: SettingsFactory.toolSettings(),
     control = control?.toDomain() ?: SettingsFactory.controlSettings(),
-    system = system?.toDomain() ?: SettingsFactory.systemSettings()
+    system = system?.toDomain() ?: SettingsFactory.systemSettings(),
+    action = action?.toDomain() ?: SettingsFactory.actionSettings()
 )
 
 fun ProtoToolSettings.toDomain(): ToolSettings = ToolSettings(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun ProtoSystemSettings.toDomain(): SystemSettings = SystemSettings(
     theme = SystemTheme.from(theme),
     language = SystemLanguage.from(language)
+)
+
+fun ProtoActionSettings.toDomain(): ActionSettings = ActionSettings(
+    items = items.map { it.toDomain() }
+)
+
+fun ProtoActionItem.toDomain(): ActionItem = ActionItem(
+    type = ActionType.from(type),
+    enabled = enabled
 )
 
 fun ProtoControlSettings.toDomain(): ControlSettings = ControlSettings(
