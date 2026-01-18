@@ -26,11 +26,13 @@ import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.filled.ArrowLeft
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Apps
-import com.yoimerdr.compose.ludens.ui.icons.outlined.SlideSettings
+import com.yoimerdr.compose.ludens.ui.icons.outlined.AppsList
+import com.yoimerdr.compose.ludens.ui.icons.outlined.BroadActivityFeed
+import com.yoimerdr.compose.ludens.ui.icons.outlined.Games
 import com.yoimerdr.compose.ludens.ui.icons.outlined.System
-import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_tabs_about
+import ludens.composeapp.generated.resources.stc_tabs_actions
 import ludens.composeapp.generated.resources.stc_tabs_controls
 import ludens.composeapp.generated.resources.stc_tabs_system
 import ludens.composeapp.generated.resources.stc_tabs_tools
@@ -52,10 +54,11 @@ private fun SettingsTabOption(
     onClick: () -> Unit,
 ) {
     val icon = when (option) {
-        SettingsSection.Controls -> LudensIcons.Default.SlideSettings
-        SettingsSection.Tools -> LudensIcons.Default.WindowDevTools
+        SettingsSection.Controls -> LudensIcons.Default.Games
+        SettingsSection.Tools -> LudensIcons.Default.Apps
         SettingsSection.System -> LudensIcons.Default.System
-        SettingsSection.About -> LudensIcons.Default.Apps
+        SettingsSection.About -> LudensIcons.Default.BroadActivityFeed
+        SettingsSection.Actions -> LudensIcons.Default.AppsList
     }
 
     val text = stringResource(
@@ -64,6 +67,7 @@ private fun SettingsTabOption(
             SettingsSection.Tools -> Res.string.stc_tabs_tools
             SettingsSection.System -> Res.string.stc_tabs_system
             SettingsSection.About -> Res.string.stc_tabs_about
+            SettingsSection.Actions -> Res.string.stc_tabs_actions
         }
     )
 

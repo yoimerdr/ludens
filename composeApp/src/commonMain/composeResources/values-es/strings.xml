@@ -33,6 +33,7 @@
     <string name="stc_about_version">Versión %1$s</string>
     <!--Settings - Tab options-->
     <string name="stc_tabs_controls">Controles</string>
+    <string name="stc_tabs_actions">Acciones</string>
     <string name="stc_tabs_tools">Herramientas</string>
     <string name="stc_tabs_system">Sistema</string>
     <string name="stc_tabs_about">Acerca de</string>

@@ -10,6 +10,9 @@ enum class SettingsSection {
     /** Control settings section. */
     Controls,
 
+    /** Actions settings section. */
+    Actions,
+
     /** Tools settings section. */
     Tools,
 
