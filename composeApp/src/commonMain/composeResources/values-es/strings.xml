@@ -40,6 +40,7 @@
     <string name="stc_tools_move_controls">Mover los controles</string>
     <string name="stc_tools_mute_audio">Silenciar el audio</string>
     <string name="stc_tools_show_fps">Mostrar los FPS</string>
+    <string name="stc_tools_use_webgl">Usar WebGL</string>
     <!--Settings - System-->
     <string name="stc_system_language">Idioma</string>
     <string name="stc_system_appearance">Apariencia</string>

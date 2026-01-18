@@ -8,6 +8,7 @@ import com.yoimerdr.compose.ludens.core.domain.usecase.UpdateSettingsUseCase
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.default
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toDomain
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
@@ -49,6 +50,7 @@ class SettingsViewModel(
         get() = _state.value.settings
 
     private val _state = MutableStateFlow(SettingsState())
+    private var _requestFromDefaults: Boolean? = null
 
     /**
      * The current settings state exposed as a StateFlow.
@@ -64,32 +66,37 @@ class SettingsViewModel(
     /**
      * The current behavioral mode of the settings screen.
      */
-    val modeState: StateFlow<SettingsMode> = _state
-        .derivedStateIn(SettingsMode.Idle) { mode }
+    val modeState: StateFlow<SettingsMode> = _state.derivedStateIn(SettingsMode.Idle) { mode }
 
     /**
      * The currently selected settings section.
      */
-    val sectionState: StateFlow<SettingsSection> = _state
-        .derivedStateIn(SettingsSection.Controls) { section }
+    val sectionState: StateFlow<SettingsSection> =
+        _state.derivedStateIn(SettingsSection.Controls) { section }
 
     /**
      * The system settings state (theme and language).
      */
-    val systemState: StateFlow<SystemSettingsState> = _state
-        .derivedStateIn(SystemSettingsState()) { settings.system }
+    val systemState: StateFlow<SystemSettingsState> =
+        _state.derivedStateIn(SystemSettingsState()) { settings.system }
 
     /**
      * The tool settings state (audio and FPS display).
      */
-    val toolState: StateFlow<ToolSettingsState> = _state
-        .derivedStateIn(ToolSettingsState()) { settings.tool }
+    val toolState: StateFlow<ToolSettingsState> =
+        _state.derivedStateIn(ToolSettingsState()) { settings.tool }
 
     /**
      * The control settings state (on-screen controls configuration).
      */
-    val controlState: StateFlow<ControlSettingsState> = _state
-        .derivedStateIn(ControlSettingsState()) { settings.control }
+    val controlState: StateFlow<ControlSettingsState> =
+        _state.derivedStateIn(ControlSettingsState()) { settings.control }
+
+    /**
+     * The action settings state (quick action items).
+     */
+    val actionState: StateFlow<ActionSettingsState> =
+        _state.derivedStateIn(ActionSettingsState()) { settings.action }
 
 
     /**
@@ -104,9 +111,7 @@ class SettingsViewModel(
                 val model = settings.toUIModel()
                 _state.update {
                     it.copy(
-                        settings = model,
-                        mode = if (sourceSettings == null)
-                            SettingsMode.Idle
+                        settings = model, mode = if (sourceSettings == null) SettingsMode.Idle
                         else it.mode
                     )
                 }
@@ -317,6 +322,19 @@ class SettingsViewModel(
     }
 
     /**
+     * Resolves the WebGL confirmation dialog.
+     *
+     * @param request The request containing the WebGL value.
+     */
+    private fun resolveWebGL(request: SettingsRequest.RequestWebGL): Boolean {
+        updateTools {
+            copy(useWebGL = request.value)
+        }
+
+        return true
+    }
+
+    /**
      * Updates the mute state of the application requesting a confirmation.
      *
      * @param event The event containing the mute state.
@@ -325,6 +343,21 @@ class SettingsViewModel(
         updateMode(
             SettingsMode.PendingConfirmation(
                 SettingsRequest.RequestMute(
+                    event.enabled
+                )
+            )
+        )
+    }
+
+    /**
+     * Updates the WebGL state of the application requesting a confirmation.
+     *
+     * @param event The event containing the WebGL state.
+     */
+    fun requestWebGLChange(event: SettingsEvent.UpdateUseWebGL) {
+        updateMode(
+            SettingsMode.PendingConfirmation(
+                SettingsRequest.RequestWebGL(
                     event.enabled
                 )
             )
@@ -384,9 +417,15 @@ class SettingsViewModel(
      * Resets all settings to default values.
      */
     fun restoreDefaultSettings() {
+        _requestFromDefaults = true
         val default = SettingsStateModel.default
-        if (default.tool.isMuted != settings.tool.isMuted) {
-            onEvent(SettingsEvent.UpdateAudioMuted(default.tool.isMuted))
+        val defaultTool = default.tool
+        val tool = settings.tool
+
+        if (defaultTool.isMuted != tool.isMuted) {
+            onEvent(SettingsEvent.UpdateAudioMuted(defaultTool.isMuted))
+        } else if (defaultTool.useWebGL != tool.useWebGL) {
+            onEvent(SettingsEvent.UpdateUseWebGL(defaultTool.useWebGL))
         } else updateSettings { default }
     }
 
@@ -441,6 +480,7 @@ class SettingsViewModel(
             is SettingsEvent.UpdateControlAlpha -> updateControlAlpha(event)
             is SettingsEvent.UpdateAudioMuted -> requestMuteChange(event)
             is SettingsEvent.UpdateShowFps -> updateShowFps(event)
+            is SettingsEvent.UpdateUseWebGL -> requestWebGLChange(event)
             is SettingsEvent.UpdateControlPosition -> updateControlPosition(event)
             is SettingsEvent.UpdateControlMovementMode -> updateControlMovementMode(event)
             is SettingsEvent.UpdateControlKey -> updateControlKey(event)
@@ -454,6 +494,7 @@ class SettingsViewModel(
 
     fun rejectRequest() {
         clearMode()
+        _requestFromDefaults = null
     }
 
     fun resolveRequest() {
@@ -461,10 +502,17 @@ class SettingsViewModel(
             is SettingsMode.PendingConfirmation -> {
                 val resolved = when (mode.request) {
                     is SettingsRequest.RequestMute -> resolveMute(mode.request)
+                    is SettingsRequest.RequestWebGL -> resolveWebGL(mode.request)
                     else -> false
                 }
 
-                if (resolved) {
+                if(resolved) {
+                    if(_requestFromDefaults == true) {
+                        updateSettings {
+                            SettingsStateModel.default
+                        }
+                        _requestFromDefaults = null
+                    }
                     clearMode()
                 }
             }
@@ -498,6 +546,8 @@ class SettingsViewModel(
      */
     val requireRestart: Boolean
         get() {
-            return settings.tool.isMuted != sourceSettings?.tool?.isMuted
+            val tool = settings.tool
+            val sourceTool = sourceSettings?.tool ?: return false
+            return tool.isMuted != sourceTool.isMuted || tool.useWebGL != sourceTool.useWebGL
         }
 }

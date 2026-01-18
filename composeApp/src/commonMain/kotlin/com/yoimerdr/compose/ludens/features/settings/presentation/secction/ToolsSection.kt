@@ -16,12 +16,14 @@ import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SingleTap
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
 import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
+import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import com.yoimerdr.compose.ludens.ui.state.PluginState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_tools_move_controls
 import ludens.composeapp.generated.resources.stc_tools_mute_audio
 import ludens.composeapp.generated.resources.stc_tools_show_fps
+import ludens.composeapp.generated.resources.stc_tools_use_webgl
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -85,11 +87,20 @@ fun ToolsSettings(
                 enabled = plugin.isEnabled,
                 checked = settings.showFPS,
                 onCheckedChange = {
-                    onEvent(
-                        SettingsEvent.UpdateShowFps(
-                            it
-                        )
-                    )
+                    onEvent(SettingsEvent.UpdateShowFps(it))
+                }
+            )
+        }
+
+        item {
+            ToolSwitchOption(
+                title = stringResource(Res.string.stc_tools_use_webgl),
+                icon = LudensIcons.Default.WindowDevTools,
+                iconDescription = "WebGL",
+                enabled = features.supportsWebGL,
+                checked = settings.useWebGL,
+                onCheckedChange = {
+                    onEvent(SettingsEvent.UpdateUseWebGL(it))
                 }
             )
         }

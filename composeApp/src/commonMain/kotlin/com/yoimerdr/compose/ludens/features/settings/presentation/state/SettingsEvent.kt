@@ -85,6 +85,13 @@ sealed interface SettingsEvent {
         SettingsEvent
 
     /**
+     * Updates the WebGL state of the application.
+     *
+     * @param enabled Whether WebGL is enabled.
+     * */
+    data class UpdateUseWebGL(val enabled: Boolean) : SettingsEvent
+
+    /**
      * Changes the application language.
      *
      * @param language The language to apply.

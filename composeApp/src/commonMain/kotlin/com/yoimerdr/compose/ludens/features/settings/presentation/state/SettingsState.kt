@@ -24,8 +24,13 @@ enum class SettingsSection {
  * User confirmation requests in the settings screen.
  */
 sealed interface SettingsRequest {
-    /** Request for mute. */
+    /** Request for mute confirmation. */
     data class RequestMute(
+        val value: Boolean,
+    ) : SettingsRequest
+
+    /** Request for WebGL usage confirmation. */
+    data class RequestWebGL(
         val value: Boolean,
     ) : SettingsRequest
 }
