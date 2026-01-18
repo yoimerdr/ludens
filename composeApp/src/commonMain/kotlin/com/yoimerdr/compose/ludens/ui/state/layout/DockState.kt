@@ -109,19 +109,9 @@ class DefaultDockState(
         private set
 
     override val offset: IntOffset
-        get() {
-            if (!isDocked)
-                return IntOffset.Zero
-
-            val (left, top, right, bottom) = bounds
-
-            return when (edge) {
-                Edge.Left -> Offset(-left, 0f)
-                Edge.Right -> Offset(right, 0f)
-                Edge.Top -> Offset(0f, -top)
-                Edge.Bottom -> Offset(0f, bottom)
-            }.round()
-        }
+        get() = if (!isDocked)
+            IntOffset.Zero
+        else rawOffset.round()
 
 
     override fun standby() {
@@ -149,6 +139,29 @@ class DefaultDockState(
     }
 }
 
+/**
+ * Implementation of [DockState] with automatic docking behavior.
+ *
+ * Unlike [DefaultDockState], this implementation applies offsets in both [DockMode.Docked]
+ * and [DockMode.Idle] states, only keeping the element at zero offset when in [DockMode.Static].
+ * This allows the element to automatically dock to edges regardless of whether it's explicitly
+ * docked or idle, making it useful for elements that should always snap to the nearest edge
+ * except when explicitly made static.
+ *
+ * @param initialValue The initial docking mode.
+ * @param initialEdge The initial dock edge.
+ */
+@Stable
+class AutoDockState(
+    initialValue: DockMode = DockMode.Docked,
+    initialEdge: Edge = Edge.Left,
+) : DockState by DefaultDockState(initialValue, initialEdge) {
+    override val offset: IntOffset
+        get() = if (isStatic)
+            IntOffset.Zero
+        else rawOffset.round()
+}
+
 
 /**
  * Whether the element is docked.
@@ -161,6 +174,19 @@ val DockState.isDocked: Boolean
  */
 val DockState.isStatic: Boolean
     get() = mode == DockMode.Static
+
+/** The raw offset for dock the element. */
+val DockState.rawOffset: Offset
+    get() {
+        val (left, top, right, bottom) = bounds
+
+        return when (edge) {
+            Edge.Left -> Offset(-left, 0f)
+            Edge.Right -> Offset(right, 0f)
+            Edge.Top -> Offset(0f, -top)
+            Edge.Bottom -> Offset(0f, bottom)
+        }
+    }
 
 /**
  * Sets the bounds of the element when it is open and determines the dock edge.
@@ -218,6 +244,26 @@ fun rememberDockState(
 ): DockState {
     return remember(initialEdge, initialState) {
         DefaultDockState(
+            initialValue = initialState,
+            initialEdge = initialEdge
+        )
+    }
+}
+
+/**
+ * Creates and remembers an [AutoDockState].
+ *
+ * @param initialState The initial docking mode.
+ * @param initialEdge The initial dock edge.
+ * @see AutoDockState
+ */
+@Composable
+fun rememberAutoDockState(
+    initialState: DockMode = DockMode.Docked,
+    initialEdge: Edge = Edge.Left,
+): DockState {
+    return remember(initialEdge, initialState) {
+        AutoDockState(
             initialValue = initialState,
             initialEdge = initialEdge
         )

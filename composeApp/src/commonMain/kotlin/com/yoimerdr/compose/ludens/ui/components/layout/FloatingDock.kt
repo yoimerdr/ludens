@@ -152,6 +152,7 @@ fun FloatingDockOpenerButton(
  * @param dockState The state managing the docking behavior and mode.
  * @param timeout The timeout in milliseconds before automatically docking when in standby mode.
  * @param animationSpec The animation specification for the offset movement.
+ * @param onDocked A callback that is invoked when the element docks.
  * @param strategy The strategy for determining which edge to dock to.
  * @param floatingState The state managing the floating open/closed status.
  * @param handleButton The button composable displayed when docked, typically showing a handle icon.
@@ -174,6 +175,7 @@ fun FloatingDock(
         dampingRatio = Spring.DampingRatioLowBouncy
     ),
     strategy: DockStrategy = DockStrategy.Auto,
+    onDocked: ((DockState) -> Unit)? = null,
     floatingState: FloatingState = rememberFloatingState(),
     handleButton: @Composable (DockState) -> Unit = ::FloatingDockHandleButton,
     openerButton: @Composable (DockState, FloatingState) -> Unit = ::FloatingDockOpenerButton,
@@ -184,13 +186,14 @@ fun FloatingDock(
         state = dockState,
         timeout = timeout,
         animationSpec = animationSpec,
-        strategy = strategy
+        strategy = strategy,
+        onDocked = onDocked,
     ) {
         val isDocked = dockState.isDocked
         AnimatedVisibility(
             visible = isDocked,
             enter = fadeIn(
-                tween(delayMillis = 600)
+                tween(delayMillis = 700)
             ),
             exit = ExitTransition.None,
         ) {
