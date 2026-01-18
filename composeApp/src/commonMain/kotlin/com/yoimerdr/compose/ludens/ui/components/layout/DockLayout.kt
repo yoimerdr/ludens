@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.findRootCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntOffset
 import com.yoimerdr.compose.ludens.ui.state.layout.DockMode
 import com.yoimerdr.compose.ludens.ui.state.layout.DockState
@@ -38,7 +38,7 @@ fun Modifier.dockable(
     state: DockState,
     strategy: DockStrategy = DockStrategy.Auto,
 ): Modifier {
-    return onGloballyPositioned { coordinates ->
+    return onPlaced { coordinates ->
         val parent =
             coordinates.parentLayoutCoordinates ?: coordinates.findRootCoordinates()
 
@@ -60,6 +60,7 @@ fun Modifier.dockable(
  * @param modifier The modifier to apply to this layout.
  * @param state The dock state controlling the docking behavior.
  * @param animationSpec The animation specification for the offset movement.
+ * @param onDocked A callback that is invoked when the element docks.
  * @param strategy The strategy for determining which edge to dock to.
  * @param content The content to be docked, receiving the dock state as a parameter.
  * @param timeout The timeout in milliseconds before the element docks automatically.
@@ -76,19 +77,21 @@ fun DockLayout(
         dampingRatio = Spring.DampingRatioLowBouncy
     ),
     strategy: DockStrategy = DockStrategy.Auto,
+    onDocked: ((DockState) -> Unit)? = null,
     content: @Composable (DockState) -> Unit,
 ) {
     LaunchedEffect(state.mode) {
         delay(timeout)
         if (state.mode == DockMode.Idle) {
             state.dock()
+            onDocked?.invoke(state)
         }
     }
 
     val offset by animateIntOffsetAsState(
         targetValue = state.offset,
         animationSpec = animationSpec,
-        label = "Move"
+        label = "Move",
     )
 
     Box(
