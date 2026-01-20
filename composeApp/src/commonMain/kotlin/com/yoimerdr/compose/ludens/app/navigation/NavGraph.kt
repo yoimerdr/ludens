@@ -7,12 +7,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.yoimerdr.compose.ludens.app.ui.screens.SplashScreen
+import com.yoimerdr.compose.ludens.features.settings.presentation.screens.SettingsPositionsScreen
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesStateSaver
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
+    settingsViewModel: SettingsViewModel = koinViewModel(),
 ) {
     val features = rememberSaveable(stateSaver = WebFeaturesStateSaver) {
         mutableStateOf(WebFeaturesState())
@@ -39,7 +43,19 @@ fun NavGraph(
         composable(
             route = Destination.Settings.route,
             arguments = Destination.Settings.arguments,
-        ) {}
+        ) {
+
+        }
+
+        composable(
+            route = Destination.SettingsPositions.route,
+            arguments = Destination.SettingsPositions.arguments
+        ) {
+            SettingsPositionsScreen(
+                nav = navController,
+                viewModel = settingsViewModel
+            )
+        }
     }
 
 }

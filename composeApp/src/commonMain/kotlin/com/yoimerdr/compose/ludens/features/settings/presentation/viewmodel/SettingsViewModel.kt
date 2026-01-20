@@ -14,6 +14,7 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyIt
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsCategory
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsMode
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsRequest
@@ -21,9 +22,11 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.Settings
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -49,8 +52,27 @@ class SettingsViewModel(
     private val settings: SettingsStateModel
         get() = _state.value.settings
 
+    /**
+     * Shared flow for emitting settings events to observers.
+     */
+    private val _events = MutableSharedFlow<SettingsEvent>()
+
+    /**
+     * Internal mutable state flow holding the current settings state.
+     */
     private val _state = MutableStateFlow(SettingsState())
-    private var _requestFromDefaults: Boolean? = null
+
+    /**
+     * Flag indicating whether a settings request originated from restoring default settings.
+     * Used to apply all default settings after a pending confirmation is resolved.
+     * Contains the set of categories to reset, or null if no reset is in progress.
+     */
+    private var _requestFromDefaults: Set<SettingsCategory>? = null
+
+    /**
+     * Observable flow of settings events.
+     */
+    val events = _events.asSharedFlow()
 
     /**
      * The current settings state exposed as a StateFlow.
@@ -120,6 +142,7 @@ class SettingsViewModel(
         }
 
         setupAutoupdateSettings()
+        setupEventsCollector()
     }
 
     /**
@@ -140,6 +163,27 @@ class SettingsViewModel(
         viewModelScope.launch {
             _state.map { it.settings.system }.autoupdateSettings {
                 copy(system = it)
+            }
+        }
+    }
+
+    private fun setupEventsCollector() {
+        viewModelScope.launch {
+            events.collect {
+                when (it) {
+                    is SettingsEvent.RequestRejected -> {
+                        _requestFromDefaults = null
+                    }
+
+                    is SettingsEvent.RequestResolved -> {
+                        if (it.success && _requestFromDefaults != null) {
+                            restoreDefaultsByCategory(_requestFromDefaults!!)
+                        }
+                        _requestFromDefaults = null
+                    }
+
+                    else -> {}
+                }
             }
         }
     }
@@ -287,7 +331,8 @@ class SettingsViewModel(
      */
     fun updateControlEnabled(event: SettingsEvent.UpdateControlEnabled) {
         updateControlsItem {
-            if (type == event.type) copy(enabled = event.enabled)
+            if (settings.control.enabled && type == event.type)
+                copy(enabled = event.enabled)
             else this
         }
     }
@@ -299,12 +344,15 @@ class SettingsViewModel(
      */
     fun updateControlAlpha(event: SettingsEvent.UpdateControlAlpha) {
         updateControlsItem {
-            if ((type == ItemType.Settings && type == event.type) || (enabled && settings.control.enabled && type == event.type)) copy(
-                alpha = event.alpha.coerceIn(
-                    type.toRange()
+            if ((type == ItemType.Settings && type == event.type) ||
+                (enabled && settings.control.enabled && type == event.type)
+            ) {
+                copy(
+                    alpha = event.alpha.coerceIn(
+                        type.toRange()
+                    )
                 )
-            )
-            else this
+            } else this
         }
     }
 
@@ -332,6 +380,12 @@ class SettingsViewModel(
         }
 
         return true
+    }
+
+    private fun emitEvent(event: SettingsEvent) {
+        viewModelScope.launch {
+            _events.emit(event)
+        }
     }
 
     /**
@@ -379,24 +433,74 @@ class SettingsViewModel(
      * @param event The event containing the control type and position.
      */
     fun updateControlPosition(event: SettingsEvent.UpdateControlPosition) {
-        updateSettings {
-            copy(control = control.copy(positions = control.positions.map { item ->
-                if (item.type == event.type) item.copy(x = event.x, y = event.y)
-                else item
-            }))
+        updateControls {
+            if (enabled)
+                copy(
+                    positions = positions.map { item ->
+                        if (item.type == event.type) item.copy(x = event.x, y = event.y)
+                        else item
+                    }
+                )
+            else this
         }
     }
 
-    /**
-     * Toggles control movement mode.
-     *
-     * @param event The event containing whether to enable movement mode.
-     */
-    fun updateControlMovementMode(event: SettingsEvent.UpdateControlMovementMode) {
-        updateMode(
-            if (event.enabled) SettingsMode.MovableControls
-            else SettingsMode.Idle
-        )
+    fun restoreDefaultControlPositions(event: SettingsEvent.RestoreDefaultControlPositions) {
+        updateControls {
+            if (enabled) {
+                copy(
+                    positions = positions.map {
+                        if (it.type in event.items)
+                            it.copy(x = 0f, y = 0f)
+                        else it
+                    }
+                )
+            } else this
+        }
+    }
+
+    fun swapPadPositions(event: SettingsEvent.SwapControlPositions) {
+        updateControls {
+            val (items, bounds) = event
+
+            if (!enabled || items.first == items.second)
+                this
+            else {
+                val source = positions.first { items.first == it.type }
+                val target = positions.first { items.second == it.type }
+
+                val sourceX = bounds.left + source.x
+                val sourceY = bounds.top + source.y
+
+                val targetX = bounds.right + target.x
+                val targetY = bounds.bottom + target.y
+
+                val sourceOffsetX = targetX - bounds.left
+                val sourceOffsetY = targetY - bounds.top
+
+                val targetOffsetX = sourceX - bounds.right
+                val targetOffsetY = sourceY - bounds.bottom
+
+                copy(
+                    positions = positions.map { item ->
+                        when (item.type) {
+                            items.first -> item.copy(
+                                x = sourceOffsetX,
+                                y = sourceOffsetY
+                            )
+
+                            items.second -> item.copy(
+                                x = targetOffsetX,
+                                y = targetOffsetY
+                            )
+
+                            else -> item
+                        }
+                    }
+                )
+            }
+
+        }
     }
 
     /**
@@ -414,19 +518,86 @@ class SettingsViewModel(
     }
 
     /**
+     * Applies default values for specific settings categories.
+     *
+     * This method directly applies default values without requiring confirmation,
+     * as it should only be called after any necessary confirmations have been resolved.
+     *
+     * @param categories The set of categories to reset. If empty, resets all categories.
+     */
+    private fun applyDefaultsByCategory(categories: Set<SettingsCategory>) {
+        val default = SettingsStateModel.default
+        val categoriesToReset = categories.ifEmpty { SettingsCategory.All }
+
+        updateSettings {
+            var updated = this
+
+            if (SettingsCategory.Controls in categoriesToReset) {
+                updated = updated.copy(control = default.control)
+            }
+
+            if (SettingsCategory.Tools in categoriesToReset) {
+                updated = updated.copy(tool = default.tool)
+            }
+
+            if (SettingsCategory.System in categoriesToReset) {
+                updated = updated.copy(system = default.system)
+            }
+
+            if (SettingsCategory.Actions in categoriesToReset) {
+                updated = updated.copy(action = default.action)
+            }
+
+            updated
+        }
+    }
+
+    /**
+     * Resets specific settings categories to their default values.
+     *
+     * @param categories The set of categories to reset. If empty, resets all categories.
+     */
+    fun restoreDefaultsByCategory(categories: Set<SettingsCategory>) {
+        val default = SettingsStateModel.default
+        val categories = categories.ifEmpty { SettingsCategory.All }
+
+        // If already processing a request from defaults, apply the changes immediately
+        if (_requestFromDefaults != null) {
+            applyDefaultsByCategory(categories)
+            return
+        }
+
+        // Check if Tools category needs to be reset and if it requires confirmation
+        if (SettingsCategory.Tools in categories) {
+            _requestFromDefaults = categories
+            val defaultTool = default.tool
+            val tool = settings.tool
+
+            // Check if mute state needs confirmation
+            if (defaultTool.isMuted != tool.isMuted) {
+                onEvent(SettingsEvent.UpdateAudioMuted(defaultTool.isMuted))
+                return
+            }
+
+            // Check if WebGL state needs confirmation
+            if (defaultTool.useWebGL != tool.useWebGL) {
+                onEvent(SettingsEvent.UpdateUseWebGL(defaultTool.useWebGL))
+                return
+            }
+        }
+
+        // No confirmation needed, apply defaults directly
+        applyDefaultsByCategory(categories)
+        _requestFromDefaults = null
+    }
+
+    /**
      * Resets all settings to default values.
+     *
+     * This is a convenience method that delegates to [restoreDefaultsByCategory] with all categories.
      */
     fun restoreDefaultSettings() {
-        _requestFromDefaults = true
-        val default = SettingsStateModel.default
-        val defaultTool = default.tool
-        val tool = settings.tool
-
-        if (defaultTool.isMuted != tool.isMuted) {
-            onEvent(SettingsEvent.UpdateAudioMuted(defaultTool.isMuted))
-        } else if (defaultTool.useWebGL != tool.useWebGL) {
-            onEvent(SettingsEvent.UpdateUseWebGL(defaultTool.useWebGL))
-        } else updateSettings { default }
+        restoreDefaultsByCategory(SettingsCategory.All)
     }
 
     /**
@@ -482,21 +653,33 @@ class SettingsViewModel(
             is SettingsEvent.UpdateShowFps -> updateShowFps(event)
             is SettingsEvent.UpdateUseWebGL -> requestWebGLChange(event)
             is SettingsEvent.UpdateControlPosition -> updateControlPosition(event)
-            is SettingsEvent.UpdateControlMovementMode -> updateControlMovementMode(event)
+            is SettingsEvent.RestoreDefaultControlPositions -> restoreDefaultControlPositions(event)
             is SettingsEvent.UpdateControlKey -> updateControlKey(event)
             is SettingsEvent.RestoreDefaultSettings -> restoreDefaultSettings()
+            is SettingsEvent.RestoreDefaultsByCategory -> restoreDefaultsByCategory(event.categories)
             is SettingsEvent.OnSelectSection -> onSelectSection(event)
             is SettingsEvent.OnChangeTheme -> onChangeTheme(event)
             is SettingsEvent.OnChangeLanguage -> onChangeLanguage(event)
+            is SettingsEvent.SwapControlPositions -> swapPadPositions(event)
             else -> {}
         }
+
+        emitEvent(event)
     }
 
+    /**
+     * Rejects the current pending request and resets the mode to Idle.
+     */
     fun rejectRequest() {
         clearMode()
-        _requestFromDefaults = null
+        emitEvent(SettingsEvent.RequestRejected)
     }
 
+    /**
+     * Resolves the current pending request by applying the requested changes.
+     *
+     * After successful resolution, resets the mode to Idle.
+     */
     fun resolveRequest() {
         when (val mode = _state.value.mode) {
             is SettingsMode.PendingConfirmation -> {
@@ -506,13 +689,8 @@ class SettingsViewModel(
                     else -> false
                 }
 
-                if(resolved) {
-                    if(_requestFromDefaults == true) {
-                        updateSettings {
-                            SettingsStateModel.default
-                        }
-                        _requestFromDefaults = null
-                    }
+                emitEvent(SettingsEvent.RequestResolved(resolved))
+                if (resolved) {
                     clearMode()
                 }
             }

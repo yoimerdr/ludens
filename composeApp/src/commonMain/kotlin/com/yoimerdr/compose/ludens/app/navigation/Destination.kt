@@ -9,4 +9,5 @@ sealed class Destination(
     object Splash : Destination("splash")
     object Home : Destination("home")
     object Settings : Destination("settings")
+    object SettingsPositions : Destination("settings/positions")
 }

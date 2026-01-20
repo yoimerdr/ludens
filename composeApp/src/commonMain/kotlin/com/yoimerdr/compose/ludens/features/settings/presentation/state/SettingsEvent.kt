@@ -1,5 +1,7 @@
 package com.yoimerdr.compose.ludens.features.settings.presentation.state
 
+import androidx.compose.ui.geometry.Rect
+import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
@@ -61,12 +63,9 @@ sealed interface SettingsEvent {
         SettingsEvent
 
     /**
-     * Requests to enter or exit control movement mode.
-     *
-     * @param enabled Whether to enable movement mode.
-     */
-    data class UpdateControlMovementMode(val enabled: Boolean) :
-        SettingsEvent
+     * Specific event related to navigation within the settings screen.
+     * */
+    data class NavigateTo(val destination: Destination) : SettingsEvent
 
     /**
      * Updates the mute state of the application.
@@ -119,8 +118,64 @@ sealed interface SettingsEvent {
     ) : SettingsEvent
 
     /**
+     * Swaps the positions of two controls within specified bounds.
+     *
+     * @property item A pair of [PositionableType] representing the two controls to swap.
+     * @property bounds The [Rect] boundary within which the controls should remain after swapping.
+     */
+    data class SwapControlPositions(
+        val item: Pair<PositionableType, PositionableType>,
+        val bounds: Rect,
+    ) : SettingsEvent
+
+    /**
+     * Resets the positions of specific controls to their default values.
+     *
+     *
+     * @property items The set of [PositionableType] to reset to default positions.
+     * If constructed with the no-arg constructor, all positionable controls are reset.
+     */
+    data class RestoreDefaultControlPositions(
+        val items: Set<PositionableType>,
+    ) : SettingsEvent {
+        /**
+         * Constructs a [RestoreDefaultControlPositions] event that resets all positionable controls.
+         */
+        constructor() : this(PositionableType.entries.toSet())
+    }
+
+    /**
      * Resets all settings to default values.
      */
     data object RestoreDefaultSettings : SettingsEvent
+
+    /**
+     * Resets specific settings categories to their default values.
+     *
+     * This event allows selective restoration of settings by category.
+     * If [categories] is empty, all categories will be reset (equivalent to [RestoreDefaultSettings]).
+     * Settings that require confirmation (such as audio mute or WebGL changes) will trigger
+     * appropriate confirmation dialogs before the reset is applied.
+     *
+     * @param categories The set of [SettingsCategory] to reset to defaults.
+     *
+     * @see SettingsCategory
+     * @see RestoreDefaultSettings
+     */
+    data class RestoreDefaultsByCategory(
+        val categories: Set<SettingsCategory>,
+    ) : SettingsEvent
+
+    /**
+     * A pending settings request is rejected.
+     */
+    data object RequestRejected : SettingsEvent
+
+    /**
+     * A pending settings request is resolved.
+     *
+     * @param success Whether the request was successfully resolved.
+     */
+    data class RequestResolved(val success: Boolean) : SettingsEvent
 }
 

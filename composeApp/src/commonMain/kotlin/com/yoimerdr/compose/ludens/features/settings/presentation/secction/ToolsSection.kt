@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolActionOption
@@ -54,7 +55,7 @@ fun ToolsSettings(
         item {
             ToolActionOption(
                 onClick = {
-                    onEvent(SettingsEvent.UpdateControlMovementMode(true))
+                    onEvent(SettingsEvent.NavigateTo(Destination.SettingsPositions))
                 },
                 title = stringResource(Res.string.stc_tools_move_controls),
                 icon = LudensIcons.Default.SingleTap,
