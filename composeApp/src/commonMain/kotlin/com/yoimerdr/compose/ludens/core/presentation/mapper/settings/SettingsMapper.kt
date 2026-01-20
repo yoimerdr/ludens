@@ -46,7 +46,8 @@ fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
 )
 
 fun ActionSettings.toUIModel(): ActionSettingsState = ActionSettingsState(
-    items = items.map { it.toUIModel() }
+    items = items.map { it.toUIModel() },
+    enabled = enabled
 )
 
 fun ActionItem.toUIModel(): ActionItemState = ActionItemState(
@@ -106,7 +107,8 @@ fun ControlSettingsState.toDomain(): ControlSettings = ControlSettings(
 )
 
 fun ActionSettingsState.toDomain(): ActionSettings = ActionSettings(
-    items = items.map { it.toDomain() }
+    items = items.map { it.toDomain() },
+    enabled = enabled
 )
 
 fun ActionItemState.toDomain(): ActionItem = ActionItem(

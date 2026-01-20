@@ -20,7 +20,10 @@ enum class ActionType(val value: Int) {
      *
      * This action type must never be disabled.
      * */
-    Settings(3);
+    Settings(3),
+
+    /** Toggle WebGL rendering */
+    ToggleWebGL(4);
 
     companion object {
         /**

@@ -48,7 +48,8 @@ fun SystemSettings.toProto(): ProtoSystemSettings = ProtoSystemSettings(
 )
 
 fun ActionSettings.toProto(): ProtoActionSettings = ProtoActionSettings(
-    items = items.map { it.toProto() }
+    items = items.map { it.toProto() },
+    enabled = enabled
 )
 
 fun ActionItem.toProto(): ProtoActionItem = ProtoActionItem(
@@ -81,7 +82,8 @@ fun ProtoSystemSettings.toDomain(): SystemSettings = SystemSettings(
 )
 
 fun ProtoActionSettings.toDomain(): ActionSettings = ActionSettings(
-    items = items.map { it.toDomain() }
+    items = items.map { it.toDomain() },
+    enabled = enabled
 )
 
 fun ProtoActionItem.toDomain(): ActionItem = ActionItem(

@@ -119,11 +119,16 @@ object SettingsFactory {
      * Creates default action settings.
      *
      * @param items The list of action items. Defaults to all available action types.
+     * @param enabled Whether the quick action are enabled (default: true).
      * @return An ActionSettings instance with the specified values.
      */
     fun actionSettings(
+        enabled: Boolean = true,
         items: List<ActionItem> = actionItems(),
-    ) = ActionSettings(items = items)
+    ) = ActionSettings(
+        items = items,
+        enabled = enabled,
+    )
 
     /**
      * Creates a default list of action items.
