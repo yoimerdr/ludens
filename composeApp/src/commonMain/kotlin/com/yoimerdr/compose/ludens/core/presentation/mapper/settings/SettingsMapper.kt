@@ -22,6 +22,7 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.Positionable
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
+import kotlinx.collections.immutable.toPersistentList
 
 fun Settings.toUIModel(): SettingsState = SettingsState(
     tool = tool.toUIModel(),
@@ -42,17 +43,25 @@ fun SystemSettings.toUIModel(): SystemSettingsState = SystemSettingsState(
 fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
     enabled = enabled,
     alpha = alpha.value,
-    items = items.map { it.toUIModel() },
-    positions = positions.map { it.toUIModel() }
+    items = items
+        .map { it.toUIModel() }
+        .toPersistentList(),
+    positions = positions
+        .map { it.toUIModel() }
+        .toPersistentList()
 )
 
 fun ActionSettings.toUIModel(): ActionSettingsState = ActionSettingsState(
-    items = items.map { it.toUIModel() }
+    items = items
+        .map { it.toUIModel() }
+        .toPersistentList(),
+    enabled = enabled
 )
 
 fun ActionItem.toUIModel(): ActionItemState = ActionItemState(
     type = type,
-    enabled = enabled
+    enabled = enabled,
+    order = order
 )
 
 /**
@@ -109,12 +118,14 @@ fun ControlSettingsState.toDomain(): ControlSettings = ControlSettings(
 )
 
 fun ActionSettingsState.toDomain(): ActionSettings = ActionSettings(
-    items = items.map { it.toDomain() }
+    items = items.map { it.toDomain() },
+    enabled = enabled
 )
 
 fun ActionItemState.toDomain(): ActionItem = ActionItem(
     type = type,
-    enabled = enabled
+    enabled = enabled,
+    order = order
 )
 
 /**

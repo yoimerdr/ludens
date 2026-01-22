@@ -46,4 +46,10 @@
     <string name="stc_system_language">Language</string>
     <string name="stc_system_appearance">Appearance</string>
     <string name="stc_system_reset_default">Reset to default settings</string>
+    <!--quick actions-->
+    <string name="actions_settings">Go to settings</string>
+    <string name="actions_toggle_controls">Show or hide controls</string>
+    <string name="actions_toggle_fps">Show or hide FPS counter</string>
+    <string name="actions_toggle_mute">Mute or unmute audio</string>
+    <string name="actions_toggle_webgl">Enable or disable WebGL rendering</string>
 </resources>

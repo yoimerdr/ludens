@@ -11,10 +11,12 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
  *
  * @property type The [ActionType] that identifies this action item.
  * @property enabled Whether this action item is currently enabled and interactive.
+ * @property order The display order of this action item in the UI.
  */
 @Immutable
 data class ActionItemState(
     val enabled: Boolean,
     val type: ActionType,
+    val order: Int,
 )
 

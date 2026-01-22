@@ -37,10 +37,12 @@ message ProtoSystemSettings {
 message ProtoActionItem {
   int32 type = 1;
   bool enabled = 2;
+  int32 order = 3;
 }
 
 message ProtoActionSettings {
   repeated ProtoActionItem items = 1;
+  bool enabled = 2;
 }
 
 message ProtoSettings {

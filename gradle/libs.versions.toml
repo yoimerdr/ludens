@@ -26,6 +26,7 @@ protobuf = "4.33.2"
 ksp = "2.3.3"
 buildKonfig = "0.17.1"
 
+kotlinx-collections-immutable = "0.4.0"
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -56,7 +57,8 @@ io-koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref 
 io-koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koinAnnotations" }
 #Preferences
 androidx-datastore-core-okio = { module = "androidx.datastore:datastore-core-okio", version.ref = "datastore" }
-
+# Collections
+kotlinx-collections-immutable = {module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref="kotlinx-collections-immutable"}
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -68,4 +70,3 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 google-protobuf = { id = "com.google.protobuf", version = "0.9.6" }
 squareup-wire = { id = "com.squareup.wire", version = "5.4.0" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }

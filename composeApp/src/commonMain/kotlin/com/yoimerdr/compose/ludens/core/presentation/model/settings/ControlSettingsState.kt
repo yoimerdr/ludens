@@ -1,6 +1,8 @@
 package com.yoimerdr.compose.ludens.core.presentation.model.settings
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 /**
  * Represents the state of on-screen controls in the presentation layer.
@@ -17,6 +19,6 @@ import androidx.compose.runtime.Immutable
 data class ControlSettingsState(
     val enabled: Boolean = false,
     val alpha: Float = 1f,
-    val items: List<ControlItemState> = emptyList(),
-    val positions: List<PositionableItemState> = emptyList(),
+    val items: ImmutableList<ControlItemState> = persistentListOf(),
+    val positions: ImmutableList<PositionableItemState> = persistentListOf(),
 )
