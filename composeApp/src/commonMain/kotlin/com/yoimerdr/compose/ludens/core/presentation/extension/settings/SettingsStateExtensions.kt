@@ -14,10 +14,17 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemS
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
 import ludens.composeapp.generated.resources.Res
+import ludens.composeapp.generated.resources.actions_settings
+import ludens.composeapp.generated.resources.actions_toggle_controls
+import ludens.composeapp.generated.resources.actions_toggle_fps
+import ludens.composeapp.generated.resources.actions_toggle_mute
+import ludens.composeapp.generated.resources.actions_toggle_webgl
 import ludens.composeapp.generated.resources.en
 import ludens.composeapp.generated.resources.es
 import ludens.composeapp.generated.resources.system_language
+import ludens.composeapp.generated.resources.unknown
 import org.jetbrains.compose.resources.stringResource
+import kotlin.jvm.JvmName
 
 /**
  * Type alias representing a pair of a positionable item and its associated control item.
@@ -35,8 +42,7 @@ typealias PositionableControlItem = Pair<PositionableItemState, ControlItemState
  * @return The default [SettingsState] instance.
  */
 val SettingsState.Companion.default: SettingsState
-    get() = SettingsFactory.settings()
-        .toUIModel()
+    get() = SettingsFactory.settings().toUIModel()
 
 /**
  * Filters a list of positionable control items to get only enabled items of specific types.
@@ -48,15 +54,62 @@ val SettingsState.Companion.default: SettingsState
  * @param types Additional [ItemType] values to include in the filter.
  * @return A filtered list containing only enabled items matching the specified types.
  */
+@JvmName("getEnabledPositionable")
 fun List<PositionableControlItem>.getEnabled(
     type: ItemType,
     vararg types: ItemType,
 ): List<PositionableControlItem> {
-    val source = (types.toSet() + type)
+    return this.getEnabled(setOf(type) + types)
+}
+
+/**
+ * Filters a list of positionable control items to get only enabled items of specified types.
+ *
+ * This extension function filters the list to include only enabled items whose type
+ * matches any of the [ItemType] values in the provided set.
+ *
+ * @param types A set of [ItemType] values to filter by.
+ * @return A filtered list containing only enabled items matching the specified types.
+ */
+@JvmName("getEnabledPositionable")
+fun List<PositionableControlItem>.getEnabled(types: Set<ItemType>): List<PositionableControlItem> {
     return this.filter {
         val item = it.second
+        item.enabled && item.type in types
+    }
+}
 
-        item.enabled && item.type in source
+/**
+ * Filters a list of control items to get only enabled items of specific types.
+ *
+ * This extension function filters the list to include only enabled items whose type
+ * matches the specified [ItemType] values.
+ *
+ * @param type The primary [ItemType] to filter by.
+ * @param types Additional [ItemType] values to include in the filter.
+ * @return A filtered list containing only enabled items matching the specified types.
+ */
+@JvmName("getEnabledControl")
+fun List<ControlItemState>.getEnabled(
+    type: ItemType,
+    vararg types: ItemType,
+): List<ControlItemState> {
+    return this.getEnabled(setOf(type) + types)
+}
+
+/**
+ * Filters a list of control items to get only enabled items of specified types.
+ *
+ * This extension function filters the list to include only enabled items whose type
+ * matches any of the [ItemType] values in the provided set.
+ *
+ * @param types A set of [ItemType] values to filter by.
+ * @return A filtered list containing only enabled items matching the specified types.
+ */
+@JvmName("getEnabledControl")
+fun List<ControlItemState>.getEnabled(types: Set<ItemType>): List<ControlItemState> {
+    return this.filter {
+        it.enabled && it.type in types
     }
 }
 
@@ -113,9 +166,7 @@ fun List<ActionItemState>.getEnabled(
  * @return `true` if dark theme should be used, `false` for light theme.
  */
 val SystemTheme.isDarkTheme: Boolean
-    @Composable
-    @ReadOnlyComposable
-    get() {
+    @Composable @ReadOnlyComposable get() {
         return when (this) {
             SystemTheme.System -> isSystemInDarkTheme()
             SystemTheme.Light -> false
@@ -123,10 +174,35 @@ val SystemTheme.isDarkTheme: Boolean
         }
     }
 
+/**
+ * Gets the localized label for the system language setting.
+ *
+ * This property returns a user-friendly, localized string representation of the
+ * [SystemLanguage] value.
+ *
+ * @return A localized string representing the language setting.
+ */
 val SystemLanguage.label: String
-    @Composable
-    get() = when (this) {
+    @Composable get() = when (this) {
         SystemLanguage.English -> stringResource(Res.string.en)
         SystemLanguage.Spanish -> stringResource(Res.string.es)
         else -> stringResource(Res.string.system_language)
+    }
+
+/**
+ * Gets the localized label for the action type.
+ *
+ * This property returns a user-friendly, localized string representation of the
+ * [ActionType] value.
+ *
+ * @return A localized string describing the action, or "Unknown" for unrecognized types.
+ */
+val ActionType.label: String
+    @Composable get() = when (this) {
+        ActionType.Settings -> stringResource(Res.string.actions_settings)
+        ActionType.ToggleControls -> stringResource(Res.string.actions_toggle_controls)
+        ActionType.ToggleFPS -> stringResource(Res.string.actions_toggle_fps)
+        ActionType.ToggleMute -> stringResource(Res.string.actions_toggle_mute)
+        ActionType.ToggleWebGL -> stringResource(Res.string.actions_toggle_webgl)
+        else -> stringResource(Res.string.unknown)
     }

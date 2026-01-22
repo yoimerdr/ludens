@@ -6,6 +6,7 @@
     <string name="loading">Cargando</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="unknown">Desconocido</string>
     <!--Exit application-->
     <string name="exit_app">¿Estás seguro de que deseas salir de la aplicación? Se perderán todos los cambios no guardados en el juego.</string>
     <!--languages-->
@@ -13,4 +14,10 @@
     <string name="system_language">Sistema</string>
     <string name="en">English</string>
     <string name="es">Español</string>
+    <!--quick actions-->
+    <string name="actions_settings">Ir a configuración</string>
+    <string name="actions_toggle_controls">Mostrar u ocultar controles</string>
+    <string name="actions_toggle_fps">Mostrar u ocultar el contador de FPS</string>
+    <string name="actions_toggle_mute">Silenciar o activar el audio</string>
+    <string name="actions_toggle_webgl">Habilitar o deshabilitar el renderizado WebGL</string>
 </resources>
