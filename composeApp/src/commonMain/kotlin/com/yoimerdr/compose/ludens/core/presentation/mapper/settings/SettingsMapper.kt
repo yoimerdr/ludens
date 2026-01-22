@@ -59,7 +59,8 @@ fun ActionSettings.toUIModel(): ActionSettingsState = ActionSettingsState(
 
 fun ActionItem.toUIModel(): ActionItemState = ActionItemState(
     type = type,
-    enabled = enabled
+    enabled = enabled,
+    order = order
 )
 
 /**
@@ -120,7 +121,8 @@ fun ActionSettingsState.toDomain(): ActionSettings = ActionSettings(
 
 fun ActionItemState.toDomain(): ActionItem = ActionItem(
     type = type,
-    enabled = enabled
+    enabled = enabled,
+    order = order
 )
 
 /**

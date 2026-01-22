@@ -54,7 +54,8 @@ fun ActionSettings.toProto(): ProtoActionSettings = ProtoActionSettings(
 
 fun ActionItem.toProto(): ProtoActionItem = ProtoActionItem(
     type = type.value,
-    enabled = enabled
+    enabled = enabled,
+    order = order
 )
 
 fun ControlItem.toProto(): ProtoControlItem = ProtoControlItem(
@@ -88,7 +89,8 @@ fun ProtoActionSettings.toDomain(): ActionSettings = ActionSettings(
 
 fun ProtoActionItem.toDomain(): ActionItem = ActionItem(
     type = ActionType.from(type),
-    enabled = enabled
+    enabled = enabled,
+    order = order
 )
 
 fun ProtoControlSettings.toDomain(): ControlSettings = ControlSettings(

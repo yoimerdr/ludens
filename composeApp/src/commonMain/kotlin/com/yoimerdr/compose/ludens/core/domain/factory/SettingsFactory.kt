@@ -135,7 +135,10 @@ object SettingsFactory {
      *
      * @return A list containing all action types.
      */
-    fun actionItems() = ActionType.entries.map { ActionItem(it, false) }
+    fun actionItems() = ActionType.entries
+        .mapIndexed { index, it ->
+            ActionItem(it, false, index) 
+        }
 
     /**
      * Creates a default list of control items.
