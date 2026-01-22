@@ -1,6 +1,8 @@
 package com.yoimerdr.compose.ludens.core.presentation.model.settings
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 /**
  * Represents the state of quick action items in the presentation layer.
@@ -14,6 +16,6 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class ActionSettingsState(
     val enabled: Boolean = false,
-    val items: List<ActionItemState> = emptyList(),
+    val items: ImmutableList<ActionItemState> = persistentListOf(),
 )
 

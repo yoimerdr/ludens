@@ -21,6 +21,7 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.Positionable
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
+import kotlinx.collections.immutable.toPersistentList
 
 fun Settings.toUIModel(): SettingsState = SettingsState(
     tool = tool.toUIModel(),
@@ -41,12 +42,18 @@ fun SystemSettings.toUIModel(): SystemSettingsState = SystemSettingsState(
 fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
     enabled = enabled,
     alpha = alpha.value,
-    items = items.map { it.toUIModel() },
-    positions = positions.map { it.toUIModel() }
+    items = items
+        .map { it.toUIModel() }
+        .toPersistentList(),
+    positions = positions
+        .map { it.toUIModel() }
+        .toPersistentList()
 )
 
 fun ActionSettings.toUIModel(): ActionSettingsState = ActionSettingsState(
-    items = items.map { it.toUIModel() },
+    items = items
+        .map { it.toUIModel() }
+        .toPersistentList(),
     enabled = enabled
 )
 
