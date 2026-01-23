@@ -25,6 +25,68 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.ArrowRight
 /**
  * A customizable tool option card component for settings screens.
  *
+ * This composable serves as a flexible base for building tool option cards in settings screens.
+ * It wraps an [OptionCard] and provides two customizable content areas arranged horizontally.
+ *
+ * @param modifier The modifier to be applied to the card.
+ * @param onClick Optional callback to be invoked when the card is clicked. If null, the card is not clickable.
+ * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
+ * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
+ * @param enabled Whether the tool option is enabled and can respond to user interactions. Defaults to true.
+ * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
+ * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
+ * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param border Optional border to be drawn around the card.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
+ * @param prefix The composable content to be displayed at the start (left side) of the card, provided as a [RowScope] lambda.
+ * This content is wrapped in a Row with medium spacing and center vertical alignment.
+ * @param content The composable content to be displayed at the end (right side) of the card, provided as a [RowScope] lambda.
+ * Typically used for switches, buttons, or additional controls.
+ *
+ * @see ToolOption Overload with icon and title parameters
+ * @see ToolSwitchOption Variant with integrated switch
+ * @see ToolActionOption Variant with integrated navigation arrow
+ */
+@Composable
+fun ToolOption(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    enabled: Boolean = true,
+    shape: Shape = CardDefaults.elevatedShape,
+    colors: CardColors = CardDefaults.outlinedCardColors(),
+    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    border: BorderStroke? = null,
+    interactionSource: MutableInteractionSource? = null,
+    prefix: @Composable RowScope.() -> Unit,
+    content: @Composable RowScope.() -> Unit,
+) {
+    OptionCard(
+        modifier = modifier,
+        padding = padding,
+        horizontalAlignment = horizontalAlignment,
+        shape = shape,
+        colors = colors,
+        elevation = elevation,
+        border = border,
+        interactionSource = interactionSource,
+        enabled = enabled,
+        onClick = onClick,
+        prefix = {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.medium),
+                verticalAlignment = Alignment.CenterVertically,
+                content = prefix
+            )
+        },
+        suffix = content
+    )
+}
+
+/**
+ * A customizable tool option card component for settings screens.
+ *
  * This composable creates a standardized settings option layout with an icon and title
  * on the left (prefix) and custom content on the right (suffix). It wraps an [OptionCard]
  * to provide consistent styling across tool-related settings.
@@ -41,7 +103,7 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.ArrowRight
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the tool option is enabled and can respond to user interactions. Defaults to true.
  * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.elevatedCardColors].
+ * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
  * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
@@ -59,7 +121,7 @@ fun ToolOption(
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
     shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
+    colors: CardColors = CardDefaults.outlinedCardColors(),
     elevation: CardElevation = CardDefaults.elevatedCardElevation(),
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
