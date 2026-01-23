@@ -119,11 +119,11 @@ object SettingsFactory {
      * Creates default action settings.
      *
      * @param items The list of action items. Defaults to all available action types.
-     * @param enabled Whether the quick action are enabled (default: true).
+     * @param enabled Whether the quick action are enabled (default: false).
      * @return An ActionSettings instance with the specified values.
      */
     fun actionSettings(
-        enabled: Boolean = true,
+        enabled: Boolean = false,
         items: List<ActionItem> = actionItems(),
     ) = ActionSettings(
         items = items,
@@ -137,16 +137,21 @@ object SettingsFactory {
      */
     fun actionItems() = ActionType.entries
         .mapIndexed { index, it ->
-            ActionItem(it, false, index) 
+            ActionItem(
+                type = it,
+                enabled = it == ActionType.Settings,
+                order = index,
+            )
         }
 
     /**
      * Creates a default list of control items.
      *
-     *
+     * @param alpha The default alpha/transparency for controls (default: Medium).
      * @return A list containing all item types, enabled with medium alpha.
      */
     fun controlItems(
+        alpha: Alpha = Alpha.Medium,
     ): List<ControlItem> = ItemType.entries
-        .map { ControlItem(it, true, Alpha.Medium) }
+        .map { ControlItem(it, true, alpha) }
 }

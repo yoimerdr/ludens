@@ -6,6 +6,13 @@ package com.yoimerdr.compose.ludens.core.domain.model.settings
  * @property value The integer value associated with this action type.
  */
 enum class ActionType(val value: Int) {
+    /**
+     * Opens the settings options.
+     *
+     * This action type must never be disabled.
+     * */
+    Settings(3),
+
     /** Toggle the visibility of on-screen controls */
     ToggleControls(0),
 
@@ -14,13 +21,6 @@ enum class ActionType(val value: Int) {
 
     /** Toggle FPS counter display */
     ToggleFPS(2),
-
-    /**
-     * Opens the settings options.
-     *
-     * This action type must never be disabled.
-     * */
-    Settings(3),
 
     /** Toggle WebGL rendering */
     ToggleWebGL(4);
