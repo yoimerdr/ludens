@@ -2,7 +2,6 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.state
 
 import androidx.compose.ui.geometry.Rect
 import com.yoimerdr.compose.ludens.app.navigation.Destination
-import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
@@ -38,28 +37,28 @@ sealed interface SettingsEvent {
     /**
      * Updates the enabled state of a specific control.
      *
-     * @param type The control type.
+     * @param index The control index.
      * @param enabled Whether the control is enabled.
      */
-    data class UpdateControlEnabled(val type: ItemType, val enabled: Boolean) :
+    data class UpdateControlEnabled(val index: Int, val enabled: Boolean) :
         SettingsEvent
 
     /**
      * Updates the alpha transparency of a specific control.
      *
-     * @param type The control type.
+     * @param index The control index.
      * @param alpha The alpha value.
      */
-    data class UpdateControlAlpha(val type: ItemType, val alpha: Float) :
+    data class UpdateControlAlpha(val index: Int, val alpha: Float) :
         SettingsEvent
 
     /**
      * Updates the key binding for a specific control.
      *
-     * @param type The control type.
+     * @param index The control index.
      * @param key The input key to bind.
      */
-    class UpdateControlKey(val type: ItemType, val key: InputKey) :
+    class UpdateControlKey(val index: Int, val key: InputKey) :
         SettingsEvent
 
     /**
@@ -107,12 +106,12 @@ sealed interface SettingsEvent {
     /**
      * Updates the position of a control.
      *
-     * @param type The control type.
+     * @param index The control index.
      * @param x The x coordinate.
      * @param y The y coordinate.
      */
     data class UpdateControlPosition(
-        val type: PositionableType,
+        val index: Int,
         val x: Float,
         val y: Float,
     ) : SettingsEvent
@@ -120,17 +119,16 @@ sealed interface SettingsEvent {
     /**
      * Swaps the positions of two controls within specified bounds.
      *
-     * @property item A pair of [PositionableType] representing the two controls to swap.
+     * @property indices A pair of indices representing the two controls to swap.
      * @property bounds The [Rect] boundary within which the controls should remain after swapping.
      */
     data class SwapControlPositions(
-        val item: Pair<PositionableType, PositionableType>,
+        val indices: Pair<Int, Int>,
         val bounds: Rect,
     ) : SettingsEvent
 
     /**
      * Resets the positions of specific controls to their default values.
-     *
      *
      * @property items The set of [PositionableType] to reset to default positions.
      * If constructed with the no-arg constructor, all positionable controls are reset.

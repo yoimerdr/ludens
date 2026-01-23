@@ -9,7 +9,6 @@ import com.yoimerdr.compose.ludens.core.presentation.extension.settings.default
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toDomain
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionSettingsState
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettingsState
@@ -20,6 +19,9 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.Settings
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsRequest
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsState
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -235,19 +237,6 @@ class SettingsViewModel(
     }
 
     /**
-     * Updates a control item.
-     *
-     * @param transform Function to transform the control item.
-     */
-    private fun updateControlsItem(transform: ControlItemState.() -> ControlItemState) {
-        updateControls {
-            copy(
-                items = items.map(transform)
-            )
-        }
-    }
-
-    /**
      * Updates system settings.
      *
      * @param transform Function to transform system settings.
@@ -303,6 +292,14 @@ class SettingsViewModel(
         updateControls { copy(enabled = event.enabled) }
     }
 
+    private inline fun <T> PersistentList<T>.mutateIndexed(crossinline transform: MutableList<T>.(Int, T) -> Unit): PersistentList<T> {
+        return mutate {
+            it.forEachIndexed { index, item ->
+                it.transform(index, item)
+            }
+        }
+    }
+
     /**
      * Updates the alpha transparency of all controls.
      *
@@ -310,47 +307,50 @@ class SettingsViewModel(
      */
     fun updateControlsAlpha(event: SettingsEvent.UpdateControlsAlpha) {
         updateControls {
-            if (enabled) copy(
-                alpha = event.alpha.coerceIn(ItemType.Joystick.toRange()),
-                items = items.map { item ->
-                    if (item.enabled) item.copy(
-                        alpha = event.alpha.coerceIn(
-                            item.type.toRange()
-                        )
-                    )
-                    else item
-                })
-            else this
+            if (enabled) {
+                val alpha = event.alpha.coerceIn(ItemType.Joystick.toRange())
+
+                val items = items.toPersistentList().mutateIndexed { index, item ->
+                    if (item.enabled) set(index, item.copy(alpha = alpha))
+                }
+
+                copy(
+                    alpha = alpha,
+                    items = items,
+                )
+            } else this
         }
     }
 
     /**
      * Updates the enabled state of a specific control.
      *
-     * @param event The event containing the control type and enabled state.
+     * @param event The event containing the control index and enabled state.
      */
     fun updateControlEnabled(event: SettingsEvent.UpdateControlEnabled) {
-        updateControlsItem {
-            if (settings.control.enabled && type == event.type)
-                copy(enabled = event.enabled)
-            else this
+        updateControls {
+            if (enabled && event.index in items.indices) {
+                val item = items[event.index]
+                copy(
+                    items = items.toPersistentList()
+                        .set(event.index, item.copy(enabled = event.enabled))
+                )
+            } else this
         }
     }
 
     /**
      * Updates the alpha transparency of a specific control.
      *
-     * @param event The event containing the control type and alpha value.
+     * @param event The event containing the control index and alpha value.
      */
     fun updateControlAlpha(event: SettingsEvent.UpdateControlAlpha) {
-        updateControlsItem {
-            if ((type == ItemType.Settings && type == event.type) ||
-                (enabled && settings.control.enabled && type == event.type)
-            ) {
+        updateControls {
+            if (enabled && event.index in items.indices) {
+                val item = items[event.index]
+                val alpha = event.alpha.coerceIn(item.type.toRange())
                 copy(
-                    alpha = event.alpha.coerceIn(
-                        type.toRange()
-                    )
+                    items = items.toPersistentList().set(event.index, item.copy(alpha = alpha))
                 )
             } else this
         }
@@ -430,18 +430,17 @@ class SettingsViewModel(
     /**
      * Updates the position of a control.
      *
-     * @param event The event containing the control type and position.
+     * @param event The event containing the control index and position.
      */
     fun updateControlPosition(event: SettingsEvent.UpdateControlPosition) {
         updateControls {
-            if (enabled)
+            if (enabled && event.index in positions.indices) {
+                val position = positions[event.index]
                 copy(
-                    positions = positions.map { item ->
-                        if (item.type == event.type) item.copy(x = event.x, y = event.y)
-                        else item
-                    }
+                    positions = positions.toPersistentList()
+                        .set(event.index, position.copy(x = event.x, y = event.y))
                 )
-            else this
+            } else this
         }
     }
 
@@ -449,11 +448,10 @@ class SettingsViewModel(
         updateControls {
             if (enabled) {
                 copy(
-                    positions = positions.map {
-                        if (it.type in event.items)
-                            it.copy(x = 0f, y = 0f)
-                        else it
-                    }
+                    positions = positions.toPersistentList()
+                        .mutateIndexed { index, item ->
+                            if (item.type in event.items) set(index, item.copy(x = 0f, y = 0f))
+                        },
                 )
             } else this
         }
@@ -461,13 +459,15 @@ class SettingsViewModel(
 
     fun swapPadPositions(event: SettingsEvent.SwapControlPositions) {
         updateControls {
-            val (items, bounds) = event
+            val (indices, bounds) = event
+            val sourceIndex = indices.first
+            val targetIndex = indices.second
 
-            if (!enabled || items.first == items.second)
-                this
+
+            if (!enabled || sourceIndex == targetIndex || sourceIndex !in positions.indices || targetIndex !in positions.indices) this
             else {
-                val source = positions.first { items.first == it.type }
-                val target = positions.first { items.second == it.type }
+                val source = positions[sourceIndex]
+                val target = positions[targetIndex]
 
                 val sourceX = bounds.left + source.x
                 val sourceY = bounds.top + source.y
@@ -482,21 +482,11 @@ class SettingsViewModel(
                 val targetOffsetY = sourceY - bounds.bottom
 
                 copy(
-                    positions = positions.map { item ->
-                        when (item.type) {
-                            items.first -> item.copy(
-                                x = sourceOffsetX,
-                                y = sourceOffsetY
-                            )
-
-                            items.second -> item.copy(
-                                x = targetOffsetX,
-                                y = targetOffsetY
-                            )
-
-                            else -> item
-                        }
-                    }
+                    positions = positions.toPersistentList()
+                        .mutate {
+                            it[sourceIndex] = source.copy(x = sourceOffsetX, y = sourceOffsetY)
+                            it[targetIndex] = target.copy(x = targetOffsetX, y = targetOffsetY)
+                        },
                 )
             }
 
@@ -506,14 +496,19 @@ class SettingsViewModel(
     /**
      * Updates the key binding for a control.
      *
-     * @param event The event containing the control type and key.
+     * @param event The event containing the control index and key.
      */
     fun updateControlKey(event: SettingsEvent.UpdateControlKey) {
-        updateControlsItem {
-            if (type == event.type && enabled && this is ControlKeyItemState) copy(
-                key = event.key
-            )
-            else this
+        updateControls {
+            if (enabled && event.index in items.indices) {
+                val item = items[event.index]
+                if (item.enabled && item is ControlKeyItemState) {
+                    copy(
+                        items = items.toPersistentList()
+                            .set(event.index, item.copy(key = event.key))
+                    )
+                } else this
+            } else this
         }
     }
 

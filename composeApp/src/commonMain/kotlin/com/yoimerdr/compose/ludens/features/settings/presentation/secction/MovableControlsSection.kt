@@ -37,9 +37,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.app.theme.outlineDark
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
-import com.yoimerdr.compose.ludens.core.presentation.extension.settings.PositionableControlItem
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.getEnabled
-import com.yoimerdr.compose.ludens.core.presentation.extension.settings.withPositionable
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.KeyActionButton
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
@@ -58,6 +58,7 @@ import com.yoimerdr.compose.ludens.ui.state.layout.DockMode
 import com.yoimerdr.compose.ludens.ui.state.layout.rememberAutoDockState
 import io.github.yoimerdr.compose.virtualjoystick.core.control.BackgroundType
 import io.github.yoimerdr.compose.virtualjoystick.ui.view.JoystickBackground
+import kotlinx.collections.immutable.ImmutableList
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -65,75 +66,57 @@ import org.koin.compose.viewmodel.koinViewModel
  * The draggable settings button control.
  *
  * @param settings The settings control item with position data.
+ * @param position The positionable item with position data.
  * @param showFloatingActions Whether to show the floating actions menu instead of settings button.
- * @param onEvent Callback invoked when the control position is updated.
+ * @param onUpdate Callback invoked when the control position is updated.
  */
 @Composable
 private fun BoxScope.MovableSettings(
-    settings: PositionableControlItem,
+    settings: ControlItemState,
+    position: PositionableItemState,
     showFloatingActions: Boolean,
-    onEvent: (SettingsEvent.UpdateControlPosition) -> Unit,
+    onUpdate: ((Offset) -> Unit),
 ) {
-    val item = settings.first
     val state = rememberAutoDockState(initialState = DockMode.Idle)
-    val dragger = rememberClampedDraggableState(
-        initialOffset = Offset(settings.first.x, settings.first.y),
-        onStart = {
+    val dragger =
+        rememberClampedDraggableState(initialOffset = Offset(position.x, position.y), onStart = {
             if (showFloatingActions) {
                 state.static()
             }
-        },
-        onEnd = {
-            onEvent(
-                SettingsEvent.UpdateControlPosition(
-                    type = item.type, x = it.x, y = it.y
-                )
-            )
+        }, onEnd = {
+            onUpdate(it)
             if (showFloatingActions) {
                 state.standby()
             }
-        }
-    )
+        })
 
-    val draggable = Modifier.align(Alignment.TopEnd)
-        .clampedDraggableSource(dragger)
-        .offset { dragger.offset.round() }
-        .clampedDraggable(dragger)
-
+    val draggable = Modifier.align(Alignment.TopEnd).clampedDraggableSource(dragger)
+        .offset { dragger.offset.round() }.clampedDraggable(dragger)
 
     if (showFloatingActions) {
         LaunchedEffect(state.mode) {
-            if (state.mode == DockMode.Idle)
-                dragger.drag(state.edge)
+            if (state.mode == DockMode.Idle) dragger.drag(state.edge)
         }
 
-        FloatingDock(
-            modifier = draggable,
-            dockState = state,
-            handleButton = {
-                FloatingDockHandleButton(
-                    state = it,
-                    tint = outlineDark.copy(
-                        alpha = settings.second.alpha
-                    )
+        FloatingDock(modifier = draggable, dockState = state, handleButton = {
+            FloatingDockHandleButton(
+                state = it, tint = outlineDark.copy(
+                    alpha = settings.alpha
                 )
-            },
-            openerButton = { _, _ ->
-                KeyActionButton(
-                    modifier = Modifier
-                        .alpha(settings.second.alpha)
-                ) {
-                    Icon(
-                        LudensIcons.Outlined.Circle,
-                        contentDescription = "Actions",
-                    )
-                }
+            )
+        }, openerButton = { _, _ ->
+            KeyActionButton(
+                modifier = Modifier.alpha(settings.alpha)
+            ) {
+                Icon(
+                    LudensIcons.Outlined.Circle,
+                    contentDescription = "Actions",
+                )
             }
-        ) {}
+        }) {}
     } else {
         KeyActionButton(
-            modifier = Modifier.alpha(settings.second.alpha)
-                .then(draggable)
+            modifier = Modifier.alpha(settings.alpha).then(draggable)
         ) {
             Icon(
                 LudensIcons.Default.Settings,
@@ -147,37 +130,25 @@ private fun BoxScope.MovableSettings(
  * The draggable joystick control.
  *
  * @param joystick The joystick control item with position data.
- * @param onEvent Callback invoked when the control position is updated.
+ * @param position The positionable item with position data.
+ * @param onUpdate Callback invoked when the control position is updated.
  */
 @Composable
 private fun BoxScope.MovableJoystick(
-    joystick: PositionableControlItem,
-    onEvent: (SettingsEvent.UpdateControlPosition) -> Unit,
+    joystick: ControlItemState,
+    position: PositionableItemState,
+    onUpdate: ((Offset) -> Unit),
 ) {
-    val item = joystick.first
     val dragger = rememberClampedDraggableState(
-        initialOffset = Offset(item.x, item.y),
-        onEnd = {
-            onEvent(
-                SettingsEvent.UpdateControlPosition(
-                    type = item.type, x = it.x, y = it.y
-                )
-            )
-        }
+        initialOffset = Offset(position.x, position.y), onEnd = onUpdate
     )
 
     Box(
-        modifier = Modifier
-            .align(Alignment.BottomStart)
-            .clampedDraggableSource(dragger)
-            .offset { dragger.offset.round() }
-            .clampedDraggable(dragger)
+        modifier = Modifier.align(Alignment.BottomStart).clampedDraggableSource(dragger)
+            .offset { dragger.offset.round() }.clampedDraggable(dragger)
     ) {
         JoystickBackground(
-            type = BackgroundType.DpadModern,
-            modifier = Modifier
-                .size(150.dp)
-                .alpha(joystick.second.alpha)
+            type = BackgroundType.DpadModern, modifier = Modifier.size(150.dp).alpha(joystick.alpha)
         )
     }
 }
@@ -189,11 +160,12 @@ private fun BoxScope.MovableJoystick(
  */
 @Composable
 private fun BoxScope.MovableActions(
-    visible: Boolean = true,
     containerSize: IntSize,
+    visible: Boolean = true,
     padSize: Dp = 150.dp,
     onCloseClick: (() -> Unit)?,
-    onEvent: (SettingsEvent) -> Unit,
+    onSwap: (bounds: Rect) -> Unit,
+    onReset: () -> Unit,
 ) {
     val shape = MaterialTheme.shapes.small
 
@@ -208,48 +180,35 @@ private fun BoxScope.MovableActions(
         exit = fadeOut()
     ) {
         OptionCard(
-            padding = PaddingValues.Zero,
-            elevation = CardDefaults.cardElevation(),
-            shape = shape
+            padding = PaddingValues.Zero, elevation = CardDefaults.cardElevation(), shape = shape
         ) {
-            FlowRow(
-            ) {
+            FlowRow {
                 IconButton(
-                    shape = shape,
-                    onClick = {
+                    shape = shape, onClick = {
                         onCloseClick?.invoke()
-                    }
-                ) {
+                    }) {
                     Icon(
                         LudensIcons.Default.Dismiss,
                         contentDescription = "Close",
                     )
                 }
                 IconButton(
-                    shape = shape,
-                    onClick = {
-                        onEvent(
-                            SettingsEvent.SwapControlPositions(
-                                item = PositionableType.Joystick to PositionableType.Keys,
-                                bounds = Rect(
-                                    left = 0f,
-                                    top = containerSize.height - sizePx,
-                                    right = containerSize.width - sizePx,
-                                    bottom = containerSize.height - sizePx
-                                )
+                    shape = shape, onClick = {
+
+
+                        onSwap(
+                            Rect(
+                                left = 0f,
+                                top = containerSize.height - sizePx,
+                                right = containerSize.width - sizePx,
+                                bottom = containerSize.height - sizePx
                             )
                         )
-                    }
-                ) {
+                    }) {
                     Text("S")
                 }
                 IconButton(
-                    shape = shape,
-                    onClick = {
-                        onEvent(
-                            SettingsEvent.RestoreDefaultControlPositions()
-                        )
-                    }
+                    shape = shape, onClick = onReset
                 ) {
                     Text("R")
                 }
@@ -262,13 +221,15 @@ private fun BoxScope.MovableActions(
 /**
  * The draggable group of key controls arranged in a cross pattern.
  *
- * @param items The list of key control items with position data.
- * @param onEvent Callback invoked when the control position is updated.
+ * @param controls The list of key control items with position data.
+ * @param position The positionable item with position data.
+ * @param onUpdate Callback invoked when the control position is updated.
  */
 @Composable
 private fun BoxScope.MovableKeyControls(
-    items: List<PositionableControlItem>,
-    onEvent: (SettingsEvent) -> Unit,
+    controls: List<ControlItemState>,
+    position: PositionableItemState,
+    onUpdate: ((Offset) -> Unit),
 ) {
     val positions = listOf(
         Alignment.CenterEnd,
@@ -277,29 +238,18 @@ private fun BoxScope.MovableKeyControls(
         Alignment.CenterStart,
     )
 
-    val item = items.first().first
     val dragger = rememberClampedDraggableState(
-        initialOffset = Offset(item.x, item.y),
-        onEnd = {
-            onEvent(
-                SettingsEvent.UpdateControlPosition(
-                    type = PositionableType.Keys, x = it.x, y = it.y
-                )
-            )
-        }
+        initialOffset = Offset(position.x, position.y), onEnd = onUpdate
     )
 
     Box(
-        modifier = Modifier.align(Alignment.BottomEnd)
-            .size(150.dp)
-            .clampedDraggableSource(dragger)
-            .offset { dragger.offset.round() }
-            .clampedDraggable(dragger)
+        modifier = Modifier.align(Alignment.BottomEnd).size(150.dp).clampedDraggableSource(dragger)
+            .offset { dragger.offset.round() }.clampedDraggable(dragger)
     ) {
-        items.zip(positions).forEach {
+        controls.zip(positions).forEach {
             KeyActionButton(
-                text = it.first.second.type.simpleName,
-                modifier = Modifier.align(it.second).alpha(it.first.second.alpha)
+                text = it.first.type.simpleName,
+                modifier = Modifier.align(it.second).alpha(it.first.alpha)
             )
         }
     }
@@ -308,44 +258,73 @@ private fun BoxScope.MovableKeyControls(
 /**
  * The movable controls section for repositioning control elements.
  *
- * @param items The list of positionable control items.
+ * @param positions The list of positionable items.
+ * @param controls The list of control items.
  * @param showControls Whether to show controls other than settings button.
  * @param showFloatingActions Whether to show the floating actions instead of settings button.
  * @param onEvent Callback invoked when a settings event occurs.
  */
 @Composable
 private fun BoxScope.MovableControls(
-    items: List<PositionableControlItem>,
+    positions: ImmutableList<PositionableItemState>,
+    controls: ImmutableList<ControlItemState>,
     showControls: Boolean = true,
     showFloatingActions: Boolean = true,
     onEvent: (SettingsEvent) -> Unit,
 ) {
-    val settings = items.getEnabled(ItemType.Settings).firstOrNull()
+    positions.forEachIndexed { index, item ->
+        val updater = { offset: Offset ->
+            onEvent(
+                SettingsEvent.UpdateControlPosition(
+                    index = index, x = offset.x, y = offset.y
+                )
+            )
+        }
 
-    if (settings != null) {
-        MovableSettings(settings, showFloatingActions, onEvent)
-    }
+        when (item.type) {
+            PositionableType.Actions -> {
+                val settings = controls.getEnabled(ItemType.Actions).firstOrNull()
+                if (settings != null) {
+                    MovableSettings(
+                        settings = settings,
+                        position = item,
+                        showFloatingActions = showFloatingActions,
+                        onUpdate = updater
+                    )
+                }
+            }
 
-    val joystick = items.getEnabled(ItemType.Joystick).firstOrNull()
-    if (joystick != null && showControls) {
-        MovableJoystick(joystick, onEvent)
-    }
+            PositionableType.Joystick -> {
+                val joystick = controls.getEnabled(ItemType.Joystick).firstOrNull()
+                if (showControls && joystick != null) {
+                    MovableJoystick(
+                        joystick = joystick,
+                        position = item,
+                        onUpdate = updater
+                    )
+                }
+            }
 
-    val keyControls = ItemType.keys
-    val keyItems = items.getEnabled(keyControls.first(), *keyControls.drop(1).toTypedArray())
+            else -> {
+                val keys = controls.getEnabled(ItemType.keys)
 
-    if (keyItems.isNotEmpty() && showControls) {
-        MovableKeyControls(
-            keyItems,
-            onEvent,
-        )
+                if (keys.isNotEmpty() && showControls) {
+                    MovableKeyControls(
+                        controls = keys,
+                        position = item,
+                        onUpdate = updater
+                    )
+                }
+            }
+        }
     }
 }
 
 /**
  * The movable controls section for repositioning control elements.
  *
- * @param items The list of positionable control items.
+ * @param controls The list of control items.
+ * @param positions The list of all positions.
  * @param showControls Whether to show controls other than settings button.
  * @param showFloatingActions Whether to show the floating actions instead of settings button.
  * @param onCloseClick Callback invoked when the close button is clicked to exit movement mode.
@@ -353,7 +332,8 @@ private fun BoxScope.MovableControls(
  */
 @Composable
 fun MovableControlsSettingsSection(
-    items: List<PositionableControlItem>,
+    positions: ImmutableList<PositionableItemState>,
+    controls: ImmutableList<ControlItemState>,
     showControls: Boolean = true,
     showFloatingActions: Boolean = true,
     onCloseClick: (() -> Unit)? = null,
@@ -362,28 +342,37 @@ fun MovableControlsSettingsSection(
     var showActions by remember { mutableStateOf(true) }
 
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
-            .clickable(
-                indication = null,
-                interactionSource = null,
-                onClick = {
-                    showActions = !showActions
-                }
-            )
+        modifier = Modifier.fillMaxSize().clickable(
+            indication = null, interactionSource = null, onClick = {
+                showActions = !showActions
+            })
     ) {
         MovableControls(
-            items = items,
+            controls = controls,
+            positions = positions,
             showControls = showControls,
             showFloatingActions = showFloatingActions,
             onEvent = onEvent
         )
         MovableActions(
-            visible = showActions,
-            onCloseClick = onCloseClick,
-            onEvent = onEvent,
-            containerSize = IntSize(
-                constraints.maxWidth,
-                constraints.maxHeight
+            visible = showActions, onCloseClick = onCloseClick,
+            onSwap = {
+                val sourceIndex = positions.indexOfFirst { it.type == PositionableType.Joystick }
+                val targetIndex = positions.indexOfFirst { it.type == PositionableType.Keys }
+
+                onEvent(
+                    SettingsEvent.SwapControlPositions(
+                        indices = sourceIndex to targetIndex,
+                        bounds = it
+                    )
+                )
+            },
+            onReset = {
+                onEvent(
+                    SettingsEvent.RestoreDefaultControlPositions()
+                )
+            }, containerSize = IntSize(
+                constraints.maxWidth, constraints.maxHeight
             )
         )
     }
@@ -406,7 +395,8 @@ fun MovableControlsSettingsSection(
 
     MovableControlsSettingsSection(
         showControls = controls.enabled,
-        items = controls.items.withPositionable(controls.positions),
+        controls = controls.items,
+        positions = controls.positions,
         onEvent = viewModel::onEvent,
         showFloatingActions = actions.items.size > 1,
         onCloseClick = onCloseClick

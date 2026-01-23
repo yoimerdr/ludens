@@ -2,7 +2,7 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.secction
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,6 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 private fun ControlAlphaPreview(
     settings: ControlSettingsState,
     control: ControlItemState,
+    index: Int,
     keys: Set<ItemType>,
     editableKeys: Set<InputKey>,
     onEvent: (SettingsEvent.UpdateControlKey) -> Unit,
@@ -60,7 +61,7 @@ private fun ControlAlphaPreview(
                 ) {
                     onEvent(
                         SettingsEvent.UpdateControlKey(
-                            control.type, it
+                            index, it
                         )
                     )
                 }
@@ -138,7 +139,7 @@ fun ControlsSettingsSection(
                 }
             }
         }
-        items(settings.items) { control ->
+        itemsIndexed(settings.items) { index, control ->
             ControlOptionCard(
                 useSwitchField = control.type != ItemType.Settings,
                 enabled = if (control.type != ItemType.Settings) settings.enabled
@@ -149,7 +150,7 @@ fun ControlsSettingsSection(
                 onCheckedChange = {
                     onEvent(
                         SettingsEvent.UpdateControlEnabled(
-                            control.type, it
+                            index, it
                         )
                     )
                 },
@@ -157,7 +158,7 @@ fun ControlsSettingsSection(
                 onAlphaChange = {
                     onEvent(
                         SettingsEvent.UpdateControlAlpha(
-                            control.type, it
+                            index, it
                         )
                     )
                 },
@@ -165,6 +166,7 @@ fun ControlsSettingsSection(
                     ControlAlphaPreview(
                         settings = settings,
                         control = control,
+                        index = index,
                         keys = keyControls,
                         editableKeys = editableKeys,
                         onEvent = onEvent
