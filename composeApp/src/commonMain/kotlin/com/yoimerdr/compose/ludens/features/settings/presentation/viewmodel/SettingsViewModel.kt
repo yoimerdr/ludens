@@ -2,6 +2,7 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.usecase.GetSettingsUseCase
 import com.yoimerdr.compose.ludens.core.domain.usecase.UpdateSettingsUseCase
@@ -167,6 +168,12 @@ class SettingsViewModel(
                 copy(system = it)
             }
         }
+        viewModelScope.launch {
+            _state.map { it.settings.action }.autoupdateSettings {
+                copy(action = it)
+            }
+        }
+
     }
 
     private fun setupEventsCollector() {
@@ -283,6 +290,12 @@ class SettingsViewModel(
         }
     }
 
+    private fun updateAction(transform: ActionSettingsState.() -> ActionSettingsState) {
+        updateSettings {
+            copy(action = transform(action))
+        }
+    }
+
     /**
      * Updates the enabled state of all controls.
      *
@@ -290,6 +303,15 @@ class SettingsViewModel(
      */
     fun updateControlsEnabled(event: SettingsEvent.UpdateControlsEnabled) {
         updateControls { copy(enabled = event.enabled) }
+    }
+
+    /**
+     * Updates the enabled state of all actions.
+     *
+     * @param event The event containing the enabled state.
+     */
+    fun updateActionsEnabled(event: SettingsEvent.UpdateActionsEnabled) {
+        updateAction { copy(enabled = event.enabled) }
     }
 
     private inline fun <T> PersistentList<T>.mutateIndexed(crossinline transform: MutableList<T>.(Int, T) -> Unit): PersistentList<T> {
@@ -633,6 +655,48 @@ class SettingsViewModel(
 
     }
 
+    fun swapActionOrder(event: SettingsEvent.SwapActionOrder) {
+        updateAction {
+            val sourceIndex = event.indices.first
+            val targetIndex = event.indices.second
+            val indices = items.indices
+            if (enabled && sourceIndex in indices && targetIndex in indices) {
+                val source = items[sourceIndex]
+                val target = items[targetIndex]
+
+                val items = items.toPersistentList().mutate {
+                    it[sourceIndex] = source.copy(order = target.order)
+                    it[targetIndex] = target.copy(order = source.order)
+                    it.sortBy { item -> item.order }
+                }
+
+                copy(items = items)
+            } else this
+        }
+    }
+
+    fun updateActionEnabled(event: SettingsEvent.UpdateActionEnabled) {
+        updateAction {
+            val source = items.getOrNull(event.index)
+            if (enabled && source != null && source.type != ActionType.Settings) {
+                val (enabled, disabled) = items.partition { it.enabled }
+
+                val last = if (event.enabled) enabled.lastOrNull() ?: disabled.first()
+                else disabled.lastOrNull() ?: enabled.last()
+
+                val items = items.toPersistentList().mutate {
+                    it[event.index] = source.copy(
+                        enabled = event.enabled,
+                        order = last.order + 1,
+                    )
+                    it.sortBy { item -> item.order }
+                }
+
+                copy(items = items)
+            } else this
+        }
+    }
+
     /**
      * Handles settings events.
      *
@@ -641,6 +705,7 @@ class SettingsViewModel(
     fun onEvent(event: SettingsEvent) {
         when (event) {
             is SettingsEvent.UpdateControlsEnabled -> updateControlsEnabled(event)
+            is SettingsEvent.UpdateActionsEnabled -> updateActionsEnabled(event)
             is SettingsEvent.UpdateControlsAlpha -> updateControlsAlpha(event)
             is SettingsEvent.UpdateControlEnabled -> updateControlEnabled(event)
             is SettingsEvent.UpdateControlAlpha -> updateControlAlpha(event)
@@ -656,6 +721,8 @@ class SettingsViewModel(
             is SettingsEvent.OnChangeTheme -> onChangeTheme(event)
             is SettingsEvent.OnChangeLanguage -> onChangeLanguage(event)
             is SettingsEvent.SwapControlPositions -> swapPadPositions(event)
+            is SettingsEvent.SwapActionOrder -> swapActionOrder(event)
+            is SettingsEvent.UpdateActionEnabled -> updateActionEnabled(event)
             else -> {}
         }
 

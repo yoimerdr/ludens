@@ -175,5 +175,28 @@ sealed interface SettingsEvent {
      * @param success Whether the request was successfully resolved.
      */
     data class RequestResolved(val success: Boolean) : SettingsEvent
+
+    /**
+     * Updates the enabled state of a specific action.
+     *
+     * @param index The action index.
+     * @param enabled Whether the action is enabled.
+     */
+    data class UpdateActionEnabled(val index: Int, val enabled: Boolean) : SettingsEvent
+
+    /**
+     * Swaps the order of two actions in the quick actions list.
+     *
+     * @param indices A pair of indices representing the two actions to swap.
+     */
+    data class SwapActionOrder(val indices: Pair<Int, Int>) : SettingsEvent
+
+    /**
+     * Updates the enabled state of all actions (that can be disabled).
+     *
+     * @param enabled Whether actions are enabled.
+     */
+    data class UpdateActionsEnabled(val enabled: Boolean) :
+        SettingsEvent
 }
 

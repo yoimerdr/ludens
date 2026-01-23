@@ -27,6 +27,7 @@ import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
 import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.language
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.AboutSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ActionSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ControlsSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.SideTabOptions
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.SystemSettingsSection
@@ -176,6 +177,12 @@ private fun SettingsContents(
                 SettingsSection.About -> {
                     AboutSection(
 
+                    )
+                }
+
+                SettingsSection.Actions -> {
+                    ActionSettingsSection(
+                        viewModel = viewModel
                     )
                 }
 
