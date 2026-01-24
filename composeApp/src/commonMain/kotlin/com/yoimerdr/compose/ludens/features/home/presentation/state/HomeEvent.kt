@@ -7,6 +7,7 @@ import com.yoimerdr.compose.ludens.core.domain.port.player.MovementsPlayer
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.ui.state.PluginState
+import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import io.github.yoimerdr.compose.virtualjoystick.ui.state.JoystickEvent
 import io.github.yoimerdr.compose.virtualjoystick.ui.state.JoystickMoveEnd
 import io.github.yoimerdr.compose.virtualjoystick.ui.state.JoystickSnapshot
@@ -29,6 +30,13 @@ sealed interface HomeEvent {
      * @property plugin The loaded plugin state
      */
     data class OnPluginLoaded(val plugin: PluginState) : HomeEvent
+
+    /**
+     * Event triggered when the web features have been loaded.
+     *
+     * @property features The loaded web features state
+     * */
+    data class OnWebFeaturesLoaded(val features: WebFeaturesState) : HomeEvent
 
     /**
      * Event triggered when a control key button is clicked.

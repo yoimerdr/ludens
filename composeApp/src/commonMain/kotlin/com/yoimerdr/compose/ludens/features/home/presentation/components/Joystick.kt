@@ -10,7 +10,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalMovementsPlayer
-import com.yoimerdr.compose.ludens.core.presentation.extension.settings.PositionableControlItem
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.filled.DpadDown
@@ -48,11 +49,12 @@ import kotlin.math.roundToInt
 fun Joystick(
     modifier: Modifier = Modifier,
     onEvent: (HomeEvent) -> Unit,
-    joystick: PositionableControlItem?,
+    joystick: ControlItemState?,
+    position: PositionableItemState,
     directions: DirectionType = DirectionType.Complete,
 ) {
     // null settings mean not enabled
-    if (joystick == null || !joystick.second.enabled)
+    if (joystick == null || !joystick.enabled)
         return
 
     val player = LocalMovementsPlayer.current
@@ -85,10 +87,9 @@ fun Joystick(
         backgroundType = BackgroundType.DpadModern,
         modifier = modifier.size(150.dp)
             .offset {
-                val positions = joystick.first
-                IntOffset(positions.x.roundToInt(), positions.y.roundToInt())
+                IntOffset(position.x.roundToInt(), position.y.roundToInt())
             }
-            .alpha(joystick.second.alpha)
+            .alpha(joystick.alpha)
     ) {
         drawDirectionalImage {
             when (it) {

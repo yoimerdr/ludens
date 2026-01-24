@@ -1,80 +1,87 @@
 package com.yoimerdr.compose.ludens.app.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.yoimerdr.compose.ludens.app.ui.screens.SplashScreen
 import com.yoimerdr.compose.ludens.features.home.presentation.screen.HomeScreen
+import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
+import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
+import com.yoimerdr.compose.ludens.ui.components.provider.ProvideWebPlugin
 import com.yoimerdr.compose.ludens.ui.state.PluginState
-import com.yoimerdr.compose.ludens.ui.state.PluginStateSaver
-import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
-import com.yoimerdr.compose.ludens.ui.state.WebFeaturesStateSaver
+import org.koin.compose.viewmodel.koinViewModel
+
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
+    homeViewModel: HomeViewModel = koinViewModel(),
 ) {
-    var features by rememberSaveable(stateSaver = WebFeaturesStateSaver) {
-        mutableStateOf(WebFeaturesState())
-    }
+    val plugin by homeViewModel.pluginState.collectAsStateWithLifecycle()
+    val features by homeViewModel.featuresState.collectAsStateWithLifecycle()
 
-    var plugin by rememberSaveable(stateSaver = PluginStateSaver) {
-        mutableStateOf(PluginState())
-    }
-
-    NavHomeGraph(
-        nav = navController,
+    ProvideWebPlugin(
+        plugin = plugin,
         features = features,
     ) {
-        plugin = it
-    }
+        NavHomeGraph(
+            nav = navController,
+            viewModel = homeViewModel,
+        )
 
-
-    NavHost(
-        navController = navController,
-        startDestination = Destination.Splash.route,
-    ) {
-        composable(
-            route = Destination.Splash.route, arguments = Destination.Splash.arguments
+        NavHost(
+            navController = navController,
+            startDestination = Destination.Splash.route,
         ) {
-            SplashScreen(navController) {
-                features = it
+            composable(
+                route = Destination.Splash.route,
+                arguments = Destination.Splash.arguments,
+            ) {
+                SplashScreen(navController) {
+                    homeViewModel.handle(HomeEvent.OnWebFeaturesLoaded(it))
+                }
             }
+
+            composable(
+                route = Destination.Home.route,
+                arguments = Destination.Home.arguments,
+            ) {}
+
+            composable(
+                route = Destination.Settings.route,
+                arguments = Destination.Settings.arguments,
+            ) {}
         }
-
-        composable(
-            route = Destination.Home.route,
-            arguments = Destination.Home.arguments,
-        ) {}
-
-        composable(
-            route = Destination.Settings.route,
-            arguments = Destination.Settings.arguments,
-        ) {}
     }
-
 }
 
 
 @Composable
 private fun NavHomeGraph(
     nav: NavHostController,
-    features: WebFeaturesState,
+    viewModel: HomeViewModel,
     onLoad: ((PluginState) -> Unit)? = null,
 ) {
     val currentRoute = nav.currentBackStackEntryAsState().value?.destination?.route
     val show = currentRoute != null && currentRoute != Destination.Splash.route
-    if (!show) return
 
-    HomeScreen(
-        nav = nav,
-        features = features,
-        onLoad = onLoad,
-    )
+    AnimatedVisibility(
+        visible = show,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        HomeScreen(
+            nav = nav,
+            onLoad = onLoad,
+            viewModel = viewModel,
+            showControls = currentRoute?.contains(Destination.Settings.route) == false
+        )
+    }
 }
