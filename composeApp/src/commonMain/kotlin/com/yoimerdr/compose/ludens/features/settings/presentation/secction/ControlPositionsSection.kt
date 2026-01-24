@@ -16,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,6 +53,8 @@ import com.yoimerdr.compose.ludens.ui.components.drag.clampedDraggableSource
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDock
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDockHandleButton
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
+import com.yoimerdr.compose.ludens.ui.icons.outlined.ArrowReset
+import com.yoimerdr.compose.ludens.ui.icons.outlined.ArrowSwap
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Circle
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Dismiss
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
@@ -189,18 +190,19 @@ private fun BoxScope.MovableActions(
         ) {
             FlowRow {
                 IconButton(
-                    shape = shape, onClick = {
+                    shape = shape,
+                    onClick = {
                         onCloseClick?.invoke()
-                    }) {
+                    },
+                ) {
                     Icon(
                         LudensIcons.Default.Dismiss,
                         contentDescription = "Close",
                     )
                 }
                 IconButton(
-                    shape = shape, onClick = {
-
-
+                    shape = shape,
+                    onClick = {
                         onSwap(
                             Rect(
                                 left = 0f,
@@ -209,13 +211,21 @@ private fun BoxScope.MovableActions(
                                 bottom = containerSize.height - sizePx
                             )
                         )
-                    }) {
-                    Text("S")
+                    },
+                ) {
+                    Icon(
+                        imageVector = LudensIcons.Default.ArrowSwap,
+                        contentDescription = "Swap",
+                    )
                 }
                 IconButton(
-                    shape = shape, onClick = onReset
+                    shape = shape,
+                    onClick = onReset,
                 ) {
-                    Text("R")
+                    Icon(
+                        imageVector = LudensIcons.Default.ArrowReset,
+                        contentDescription = "Reset",
+                    )
                 }
             }
         }
