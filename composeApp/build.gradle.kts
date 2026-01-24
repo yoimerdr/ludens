@@ -59,6 +59,8 @@ kotlin {
             api(libs.io.koin.annotations)
             // DataStore
             implementation(libs.androidx.datastore.core.okio)
+            // Collections
+            implementation(libs.kotlinx.collections.immutable)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

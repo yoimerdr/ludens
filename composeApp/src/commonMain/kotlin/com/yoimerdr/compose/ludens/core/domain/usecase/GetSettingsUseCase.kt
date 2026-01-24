@@ -2,7 +2,7 @@ package com.yoimerdr.compose.ludens.core.domain.usecase
 
 import com.yoimerdr.compose.ludens.core.domain.repository.SettingsFlow
 import com.yoimerdr.compose.ludens.core.domain.repository.SettingsRepository
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
 /**
  * Use case for retrieving application settings.
@@ -12,7 +12,7 @@ import org.koin.core.annotation.Factory
  *
  * @property repository The settings repository for data retrieval.
  */
-@Factory
+@Single
 class GetSettingsUseCase(
     private val repository: SettingsRepository,
 ) {

@@ -1,5 +1,6 @@
 package com.yoimerdr.compose.ludens.core.presentation.platform
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -8,7 +9,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalResources
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import java.util.Locale
 
@@ -61,18 +61,26 @@ object AndroidPlatformLocale : PlatformLocale {
     }
 
     @Composable
-    @Suppress("DEPRECATION")
-    override fun provides(value: SystemLanguage?): ProvidedValue<*> {
+    private fun rememberLocaleContext(language: SystemLanguage?): Context {
+        val context = LocalContext.current
         val configuration = LocalConfiguration.current
 
-        val language = validateLocale(value)
-        Locale.setDefault(language)
-        configuration.setLocale(language)
+        val locale = validateLocale(language)
 
-        val resources = LocalResources.current
-        resources.updateConfiguration(configuration, resources.displayMetrics)
+        return remember(locale) {
+            val config = Configuration(configuration)
+            Locale.setDefault(locale)
+            config.setLocale(locale)
+            context.createConfigurationContext(config)
+        }
+    }
 
-        return LocalConfiguration.provides(configuration)
+    @Composable
+    @Suppress("DEPRECATION")
+    override fun provides(value: SystemLanguage?): ProvidedValue<*> {
+        val context = rememberLocaleContext(value)
+
+        return LocalConfiguration.provides(context.resources.configuration)
     }
 
     @Composable
@@ -80,21 +88,11 @@ object AndroidPlatformLocale : PlatformLocale {
         value: SystemLanguage?,
         content: @Composable (() -> Unit),
     ) {
-        val context = LocalContext.current
-        val configuration = LocalConfiguration.current
-
-        val locale = validateLocale(value)
-
-        val localizedContext = remember(locale) {
-            val config = Configuration(configuration)
-            Locale.setDefault(locale)
-            config.setLocale(locale)
-            context.createConfigurationContext(config)
-        }
+        val context = rememberLocaleContext(value)
 
         CompositionLocalProvider(
-            LocalContext provides localizedContext,
-            LocalConfiguration provides localizedContext.resources.configuration,
+            LocalContext provides context,
+            LocalConfiguration provides context.resources.configuration,
             content = content
         )
     }
