@@ -17,12 +17,10 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.layout.Setting
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.RootSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.dialogs.ConfirmationDialog
+import com.yoimerdr.compose.ludens.ui.components.dialogs.widthInDialog
 import com.yoimerdr.compose.ludens.ui.components.interaction.reject
 import com.yoimerdr.compose.ludens.ui.components.interaction.resolve
-import com.yoimerdr.compose.ludens.ui.components.dialogs.widthInDialog
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalInteractionManager
-import com.yoimerdr.compose.ludens.ui.state.PluginState
-import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import kotlinx.coroutines.launch
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_text_restarting_confirmation
@@ -33,16 +31,12 @@ import org.koin.compose.viewmodel.koinViewModel
  * The main settings screen displaying configuration options and handling navigation.
  *
  * @param nav The navigation controller for screen navigation.
- * @param features The current web features state.
- * @param plugin The current plugin state.
  * @param viewModel The settings view model.
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingsScreen(
     nav: NavController,
-    features: WebFeaturesState,
-    plugin: PluginState,
     viewModel: RootSettingsViewModel = koinViewModel(),
 ) {
     val interactionManager = LocalInteractionManager.current
@@ -74,8 +68,6 @@ fun SettingsScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         SettingsContents(
-            features = features,
-            plugin = plugin,
             onClose = {
                 if (viewModel.requireRestart)
                     nav.navigateTo(Destination.Splash)

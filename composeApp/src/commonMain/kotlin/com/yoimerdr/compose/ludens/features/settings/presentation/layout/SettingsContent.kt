@@ -17,11 +17,9 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
 import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.language
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.AboutSection
@@ -32,30 +30,21 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.secction.Syste
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ToolsSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateShowFps
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.RootSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
-import com.yoimerdr.compose.ludens.ui.state.PluginState
-import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
-import com.yoimerdr.compose.ludens.ui.state.isAvailable
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * The main settings content layout displaying the side navigation and selected section.
  *
  * @param language The current system language.
- * @param features The current web features state.
- * @param plugin The current plugin state.
  * @param onClose Callback invoked when the settings screen is closed.
  */
 @Composable
 fun SettingsContents(
-    features: WebFeaturesState,
-    plugin: PluginState,
     onClose: () -> Unit,
     viewModel: RootSettingsViewModel = koinViewModel(),
 ) {
-    val counter = LocalFPSPlayer.current
     val spacing = LocalSpacing.current
     val color = MaterialTheme.colorScheme.surfaceContainerLowest
 
@@ -79,12 +68,6 @@ fun SettingsContents(
         )
         .asPaddingValues()
 
-    LaunchedEffect(plugin.isLoading) {
-        if (plugin.isAvailable) {
-            viewModel.handle(UpdateShowFps(counter.isVisible))
-        }
-    }
-
     OptionCard(
         shape = RectangleShape,
         padding = PaddingValues.Zero,
@@ -93,8 +76,6 @@ fun SettingsContents(
         )
     ) {
         SettingsContents(
-            features = features,
-            plugin = plugin,
             viewModel = viewModel,
             horizontalPadding = horizontalPadding,
             verticalPadding = verticalPadding,
@@ -108,8 +89,6 @@ fun SettingsContents(
 /**
  * Internal settings content layout with precalculated padding values.
  *
- * @param features The current web features state.
- * @param plugin The current plugin state.
  * @param viewModel The settings view model.
  * @param horizontalPadding The horizontal padding values.
  * @param verticalPadding The vertical padding values.
@@ -118,8 +97,6 @@ fun SettingsContents(
  */
 @Composable
 private fun SettingsContents(
-    features: WebFeaturesState,
-    plugin: PluginState,
     viewModel: RootSettingsViewModel,
     horizontalPadding: PaddingValues,
     verticalPadding: PaddingValues,
@@ -154,15 +131,11 @@ private fun SettingsContents(
         ) {
             when (section) {
                 SettingsSection.Controls -> {
-                    ControlsSettingsSection(
-//                        viewModel = viewModel
-                    )
+                    ControlsSettingsSection()
                 }
 
                 SettingsSection.Tools -> {
                     ToolsSettingsSection(
-                        features = features,
-                        plugin = plugin,
                         onNavigate = { destination ->
                             viewModel.handle(SettingsEvent.NavigateTo(destination))
                         }
@@ -170,21 +143,15 @@ private fun SettingsContents(
                 }
 
                 SettingsSection.System -> {
-                    SystemSettingsSection(
-//                        viewModel = viewModel
-                    )
+                    SystemSettingsSection()
                 }
 
                 SettingsSection.About -> {
-                    AboutSection(
-
-                    )
+                    AboutSection()
                 }
 
                 SettingsSection.Actions -> {
-                    ActionSettingsSection(
-//                        viewModel = viewModel
-                    )
+                    ActionSettingsSection()
                 }
 
                 else -> {}

@@ -3,11 +3,13 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.secction
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.yoimerdr.compose.ludens.app.navigation.Destination
+import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolActionOption
@@ -20,6 +22,8 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.CollectInteractionResult
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalInteractionManager
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalWebFeatures
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SingleTap
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
@@ -27,6 +31,7 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
 import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import com.yoimerdr.compose.ludens.ui.state.PluginState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
+import com.yoimerdr.compose.ludens.ui.state.isAvailable
 import kotlinx.coroutines.launch
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_tools_move_controls
@@ -58,6 +63,13 @@ fun ToolsSettingsSection(
     onRequest: (ToolSectionRequest) -> Unit,
     onEvent: (ToolSettingsEvent) -> Unit,
 ) {
+    val counter = LocalFPSPlayer.current
+    LaunchedEffect(plugin, plugin.isLoading) {
+        if (plugin.isAvailable) {
+            onEvent(UpdateShowFps(counter.isVisible))
+        }
+    }
+
     OptionsContainer(
         modifier = modifier,
         state = state
@@ -117,8 +129,6 @@ fun ToolsSettingsSection(
 /**
  * The tools settings section with view model integration.
  *
- * @param features The current web features state.
- * @param plugin The current plugin state.
  * @param viewModel The tools section view model.
  * @param onNavigate Callback invoked when a navigation event occurs.
  * @param modifier The modifier to be applied to the section container.
@@ -126,8 +136,6 @@ fun ToolsSettingsSection(
  */
 @Composable
 fun ToolsSettingsSection(
-    features: WebFeaturesState,
-    plugin: PluginState,
     modifier: Modifier = Modifier,
     viewModel: ToolsSettingsViewModel = koinViewModel(),
     state: LazyListState = rememberLazyListState(),
@@ -135,6 +143,8 @@ fun ToolsSettingsSection(
 ) {
     val interactionManager = LocalInteractionManager.current
     val tools by viewModel.state.collectAsStateWithLifecycle()
+    val plugin = LocalPlugin.current
+    val features = LocalWebFeatures.current
 
     CollectInteractionResult {
         if (it.request is ToolSectionRequest)
@@ -143,9 +153,9 @@ fun ToolsSettingsSection(
 
     ToolsSettingsSection(
         modifier = modifier,
-        features = features,
         settings = tools,
         plugin = plugin,
+        features = features,
         state = state,
         onEvent = viewModel::handle,
         onNavigate = onNavigate,
