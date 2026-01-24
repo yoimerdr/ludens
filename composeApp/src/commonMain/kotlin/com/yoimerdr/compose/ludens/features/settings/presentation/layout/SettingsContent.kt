@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.language
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.AboutSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ActionSettingsSection
@@ -30,20 +29,32 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.secction.Syste
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ToolsSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlsSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.RootSettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * The main settings content layout displaying the side navigation and selected section.
  *
- * @param language The current system language.
  * @param onClose Callback invoked when the settings screen is closed.
+ * @param viewModel The root settings view model managing navigation.
+ * @param controlsViewModel The controls settings view model.
+ * @param toolsViewModel The tools settings view model.
+ * @param systemViewModel The system settings view model.
+ * @param actionViewModel The action settings view model.
  */
 @Composable
 fun SettingsContents(
     onClose: () -> Unit,
     viewModel: RootSettingsViewModel = koinViewModel(),
+    controlsViewModel: ControlsSettingsViewModel = koinViewModel(),
+    toolsViewModel: ToolsSettingsViewModel = koinViewModel(),
+    systemViewModel: SystemSettingsViewModel = koinViewModel(),
+    actionViewModel: ActionSettingsViewModel = koinViewModel(),
 ) {
     val spacing = LocalSpacing.current
     val color = MaterialTheme.colorScheme.surfaceContainerLowest
@@ -77,6 +88,10 @@ fun SettingsContents(
     ) {
         SettingsContents(
             viewModel = viewModel,
+            controlsViewModel = controlsViewModel,
+            toolsViewModel = toolsViewModel,
+            systemViewModel = systemViewModel,
+            actionViewModel = actionViewModel,
             horizontalPadding = horizontalPadding,
             verticalPadding = verticalPadding,
             color = color,
@@ -98,6 +113,10 @@ fun SettingsContents(
 @Composable
 private fun SettingsContents(
     viewModel: RootSettingsViewModel,
+    controlsViewModel: ControlsSettingsViewModel,
+    toolsViewModel: ToolsSettingsViewModel,
+    systemViewModel: SystemSettingsViewModel,
+    actionViewModel: ActionSettingsViewModel,
     horizontalPadding: PaddingValues,
     verticalPadding: PaddingValues,
     color: Color,
@@ -131,11 +150,14 @@ private fun SettingsContents(
         ) {
             when (section) {
                 SettingsSection.Controls -> {
-                    ControlsSettingsSection()
+                    ControlsSettingsSection(
+                        viewModel = controlsViewModel
+                    )
                 }
 
                 SettingsSection.Tools -> {
                     ToolsSettingsSection(
+                        viewModel = toolsViewModel,
                         onNavigate = { destination ->
                             viewModel.handle(SettingsEvent.NavigateTo(destination))
                         }
@@ -143,7 +165,9 @@ private fun SettingsContents(
                 }
 
                 SettingsSection.System -> {
-                    SystemSettingsSection()
+                    SystemSettingsSection(
+                        viewModel = systemViewModel
+                    )
                 }
 
                 SettingsSection.About -> {
@@ -151,7 +175,9 @@ private fun SettingsContents(
                 }
 
                 SettingsSection.Actions -> {
-                    ActionSettingsSection()
+                    ActionSettingsSection(
+                        viewModel = actionViewModel
+                    )
                 }
 
                 else -> {}

@@ -15,7 +15,11 @@ import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.app.navigation.navigateTo
 import com.yoimerdr.compose.ludens.features.settings.presentation.layout.SettingsContents
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlsSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.RootSettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.dialogs.ConfirmationDialog
 import com.yoimerdr.compose.ludens.ui.components.dialogs.widthInDialog
 import com.yoimerdr.compose.ludens.ui.components.interaction.reject
@@ -32,12 +36,20 @@ import org.koin.compose.viewmodel.koinViewModel
  *
  * @param nav The navigation controller for screen navigation.
  * @param viewModel The settings view model.
+ * @param controlsViewModel The controls settings view model.
+ * @param toolsViewModel The tools settings view model.
+ * @param systemViewModel The system settings view model.
+ * @param actionViewModel The action settings view model.
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingsScreen(
     nav: NavController,
     viewModel: RootSettingsViewModel = koinViewModel(),
+    controlsViewModel: ControlsSettingsViewModel = koinViewModel(),
+    toolsViewModel: ToolsSettingsViewModel = koinViewModel(),
+    systemViewModel: SystemSettingsViewModel = koinViewModel(),
+    actionViewModel: ActionSettingsViewModel = koinViewModel(),
 ) {
     val interactionManager = LocalInteractionManager.current
     val request by interactionManager.request.collectAsStateWithLifecycle()
@@ -74,6 +86,10 @@ fun SettingsScreen(
                 else nav.popBackStack()
             },
             viewModel = viewModel,
+            controlsViewModel = controlsViewModel,
+            toolsViewModel = toolsViewModel,
+            systemViewModel = systemViewModel,
+            actionViewModel = actionViewModel,
         )
 
         ConfirmationDialog(

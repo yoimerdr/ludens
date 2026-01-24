@@ -8,7 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.yoimerdr.compose.ludens.app.ui.screens.SplashScreen
 import com.yoimerdr.compose.ludens.features.settings.presentation.screens.SettingsPositionsScreen
+import com.yoimerdr.compose.ludens.features.settings.presentation.screens.SettingsScreen
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
+import com.yoimerdr.compose.ludens.ui.components.provider.ProvideInteractionManager
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesStateSaver
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,7 +45,14 @@ fun NavGraph(
         composable(
             route = Destination.Settings.route,
             arguments = Destination.Settings.arguments,
-        ) {}
+        ) {
+            ProvideInteractionManager {
+                SettingsScreen(
+                    nav = navController,
+                    systemViewModel = systemViewModel
+                )
+            }
+        }
 
         composable(
             route = Destination.SettingsPositions.route,
