@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
 import com.yoimerdr.compose.ludens.ui.components.buttons.SideTab
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons

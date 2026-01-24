@@ -18,11 +18,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
 import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.language
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
@@ -31,10 +29,11 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.secction.Actio
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ControlsSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.SideTabOptions
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.SystemSettingsSection
-import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ToolsSettings
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ToolsSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateShowFps
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.RootSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.state.PluginState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
@@ -54,7 +53,7 @@ fun SettingsContents(
     features: WebFeaturesState,
     plugin: PluginState,
     onClose: () -> Unit,
-    viewModel: SettingsViewModel = koinViewModel(),
+    viewModel: RootSettingsViewModel = koinViewModel(),
 ) {
     val counter = LocalFPSPlayer.current
     val spacing = LocalSpacing.current
@@ -82,7 +81,7 @@ fun SettingsContents(
 
     LaunchedEffect(plugin.isLoading) {
         if (plugin.isAvailable) {
-            viewModel.onEvent(SettingsEvent.UpdateShowFps(counter.isVisible))
+            viewModel.handle(UpdateShowFps(counter.isVisible))
         }
     }
 
@@ -121,13 +120,13 @@ fun SettingsContents(
 private fun SettingsContents(
     features: WebFeaturesState,
     plugin: PluginState,
-    viewModel: SettingsViewModel,
+    viewModel: RootSettingsViewModel,
     horizontalPadding: PaddingValues,
     verticalPadding: PaddingValues,
     color: Color,
     onClose: () -> Unit,
 ) {
-    val section by viewModel.sectionState.collectAsStateWithLifecycle()
+    val section = viewModel.section
 
     Row(
         modifier = Modifier.fillMaxSize(),
@@ -141,7 +140,7 @@ private fun SettingsContents(
         ) {
             SideTabOptions(
                 section = section,
-                onEvent = viewModel::onEvent,
+                onEvent = viewModel::handle,
                 onBack = onClose
             )
         }
@@ -156,21 +155,23 @@ private fun SettingsContents(
             when (section) {
                 SettingsSection.Controls -> {
                     ControlsSettingsSection(
-                        viewModel = viewModel
+//                        viewModel = viewModel
                     )
                 }
 
                 SettingsSection.Tools -> {
-                    ToolsSettings(
+                    ToolsSettingsSection(
                         features = features,
                         plugin = plugin,
-                        viewModel = viewModel
+                        onNavigate = { destination ->
+                            viewModel.handle(SettingsEvent.NavigateTo(destination))
+                        }
                     )
                 }
 
                 SettingsSection.System -> {
                     SystemSettingsSection(
-                        viewModel = viewModel
+//                        viewModel = viewModel
                     )
                 }
 
@@ -182,7 +183,7 @@ private fun SettingsContents(
 
                 SettingsSection.Actions -> {
                     ActionSettingsSection(
-                        viewModel = viewModel
+//                        viewModel = viewModel
                     )
                 }
 

@@ -22,8 +22,13 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.components.Con
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ControlOptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionName
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.ControlSettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlAlpha
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlEnabled
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlKey
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlsAlpha
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlsEnabled
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
 import io.github.yoimerdr.compose.virtualjoystick.core.control.BackgroundType
@@ -49,7 +54,7 @@ private fun ControlAlphaPreview(
     index: Int,
     keys: Set<ItemType>,
     editableKeys: Set<InputKey>,
-    onEvent: (SettingsEvent.UpdateControlKey) -> Unit,
+    onEvent: (UpdateControlKey) -> Unit,
 ) {
     when (control.type) {
         in keys -> {
@@ -60,7 +65,7 @@ private fun ControlAlphaPreview(
                     items = editableKeys
                 ) {
                     onEvent(
-                        SettingsEvent.UpdateControlKey(
+                        UpdateControlKey(
                             index, it
                         )
                     )
@@ -104,7 +109,7 @@ fun ControlsSettingsSection(
     modifier: Modifier = Modifier,
     settings: ControlSettingsState,
     state: LazyListState = rememberLazyListState(),
-    onEvent: (SettingsEvent) -> Unit,
+    onEvent: (ControlSettingsEvent) -> Unit,
 ) {
     val keyControls = ItemType.keys
     val editableKeys = InputKey.controls
@@ -119,7 +124,7 @@ fun ControlsSettingsSection(
                     enabledAlpha = settings.enabled,
                     onCheckedChange = {
                         onEvent(
-                            SettingsEvent.UpdateControlsEnabled(
+                            UpdateControlsEnabled(
                                 it
                             )
                         )
@@ -127,7 +132,7 @@ fun ControlsSettingsSection(
                     alpha = settings.alpha,
                     onAlphaChange = {
                         onEvent(
-                            SettingsEvent.UpdateControlsAlpha(
+                            UpdateControlsAlpha(
                                 it
                             )
                         )
@@ -149,7 +154,7 @@ fun ControlsSettingsSection(
                 checked = control.enabled,
                 onCheckedChange = {
                     onEvent(
-                        SettingsEvent.UpdateControlEnabled(
+                        UpdateControlEnabled(
                             index, it
                         )
                     )
@@ -157,7 +162,7 @@ fun ControlsSettingsSection(
                 alpha = control.alpha,
                 onAlphaChange = {
                     onEvent(
-                        SettingsEvent.UpdateControlAlpha(
+                        UpdateControlAlpha(
                             index, it
                         )
                     )
@@ -190,15 +195,15 @@ fun ControlsSettingsSection(
 @Composable
 fun ControlsSettingsSection(
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = koinViewModel(),
+    viewModel: ControlsSettingsViewModel = koinViewModel(),
     state: LazyListState = rememberLazyListState(),
 ) {
-    val controls by viewModel.controlState.collectAsStateWithLifecycle()
+    val controls by viewModel.state.collectAsStateWithLifecycle()
 
     ControlsSettingsSection(
         modifier = modifier,
         settings = controls,
         state = state,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::handle
     )
 }

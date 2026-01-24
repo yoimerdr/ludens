@@ -3,7 +3,7 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.screens
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.yoimerdr.compose.ludens.features.settings.presentation.secction.MovableControlsSettingsSection
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlPositionsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.layout.SafeContent
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -18,11 +18,11 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SettingsPositionsScreen(
     nav: NavController,
-    viewModel: SettingsViewModel = koinViewModel(),
+    viewModel: ControlPositionsSettingsViewModel = koinViewModel(),
 ) {
     SafeContent {
         MovableControlsSettingsSection(
-            viewModel = viewModel,
+            positionsViewModel = viewModel,
             onCloseClick = {
                 nav.popBackStack()
             }

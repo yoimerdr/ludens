@@ -42,8 +42,13 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemS
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.KeyActionButton
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.ControlPositionsSettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.RestoreDefaultControlPositions
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SwapControlPositions
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlPosition
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlPositionsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.drag.clampedDraggable
 import com.yoimerdr.compose.ludens.ui.components.drag.clampedDraggableSource
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDock
@@ -270,12 +275,12 @@ private fun BoxScope.MovableControls(
     controls: ImmutableList<ControlItemState>,
     showControls: Boolean = true,
     showFloatingActions: Boolean = true,
-    onEvent: (SettingsEvent) -> Unit,
+    onEvent: (ControlPositionsSettingsEvent) -> Unit,
 ) {
     positions.forEachIndexed { index, item ->
         val updater = { offset: Offset ->
             onEvent(
-                SettingsEvent.UpdateControlPosition(
+                UpdateControlPosition(
                     index = index, x = offset.x, y = offset.y
                 )
             )
@@ -335,7 +340,7 @@ fun MovableControlsSettingsSection(
     positions: ImmutableList<PositionableItemState>,
     controls: ImmutableList<ControlItemState>,
     showControls: Boolean = true,
-    showFloatingActions: Boolean = true,
+    showFloatingActions: Boolean = false,
     onCloseClick: (() -> Unit)? = null,
     onEvent: (SettingsEvent) -> Unit,
 ) {
@@ -361,7 +366,7 @@ fun MovableControlsSettingsSection(
                 val targetIndex = positions.indexOfFirst { it.type == PositionableType.Keys }
 
                 onEvent(
-                    SettingsEvent.SwapControlPositions(
+                    SwapControlPositions(
                         indices = sourceIndex to targetIndex,
                         bounds = it
                     )
@@ -369,7 +374,7 @@ fun MovableControlsSettingsSection(
             },
             onReset = {
                 onEvent(
-                    SettingsEvent.RestoreDefaultControlPositions()
+                    RestoreDefaultControlPositions()
                 )
             }, containerSize = IntSize(
                 constraints.maxWidth, constraints.maxHeight
@@ -382,23 +387,24 @@ fun MovableControlsSettingsSection(
 /**
  * The movable controls section with view model integration.
  *
- * @param viewModel The settings view model.
+ * @param positionsViewModel The settings view model.
  * @param onCloseClick Callback invoked when the close button is clicked to exit movement mode.
  */
 @Composable
 fun MovableControlsSettingsSection(
-    viewModel: SettingsViewModel = koinViewModel(),
+    positionsViewModel: ControlPositionsSettingsViewModel = koinViewModel(),
+    actionsViewModel: ActionSettingsViewModel = koinViewModel(),
     onCloseClick: (() -> Unit)? = null,
 ) {
-    val controls by viewModel.controlState.collectAsStateWithLifecycle()
-    val actions by viewModel.actionState.collectAsStateWithLifecycle()
+    val positions by positionsViewModel.state.collectAsStateWithLifecycle()
+    val actions by actionsViewModel.state.collectAsStateWithLifecycle()
 
     MovableControlsSettingsSection(
-        showControls = controls.enabled,
-        controls = controls.items,
-        positions = controls.positions,
-        onEvent = viewModel::onEvent,
-        showFloatingActions = actions.items.size > 1,
+        showControls = positions.enabled,
+        controls = positions.items,
+        positions = positions.positions,
+        onEvent = positionsViewModel::handle,
+        showFloatingActions = actions.enabled,
         onCloseClick = onCloseClick
     )
 }

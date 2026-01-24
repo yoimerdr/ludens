@@ -16,6 +16,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,9 +32,19 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettin
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionName
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.OnChangeLanguage
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.OnChangeTheme
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.RestoreDefaultSettings
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateAudioMuted
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateUseWebGL
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestMute
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestWebGL
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.SettingsRequest
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.buttons.FilledTonalToggleButton
+import com.yoimerdr.compose.ludens.ui.components.provider.CollectInteractionResult
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalInteractionManager
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.PhoneDesktop
@@ -55,7 +66,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 private fun ResetAction(
-    onEvent: (SettingsEvent) -> Unit,
+    onEvent: (RestoreDefaultSettings) -> Unit,
 ) {
     OptionCard(
         colors = CardDefaults.outlinedCardColors(),
@@ -68,7 +79,7 @@ private fun ResetAction(
     ) {
         FilledTonalToggleButton(
             onClick = {
-                onEvent(SettingsEvent.RestoreDefaultSettings)
+                onEvent(RestoreDefaultSettings)
             },
         ) {
             Text(
@@ -133,7 +144,7 @@ private fun ThemeOption(
 @Composable
 private fun AppearanceAction(
     theme: SystemTheme,
-    onEvent: (SettingsEvent.OnChangeTheme) -> Unit,
+    onEvent: (OnChangeTheme) -> Unit,
 ) {
     val spacing = LocalSpacing.current
     OptionCard(
@@ -160,7 +171,7 @@ private fun AppearanceAction(
                     theme = it,
                     selected = it == theme,
                     onClick = {
-                        onEvent(SettingsEvent.OnChangeTheme(it))
+                        onEvent(OnChangeTheme(it))
                     }
                 )
             }
@@ -179,7 +190,7 @@ private fun AppearanceAction(
 private fun LanguageAction(
     language: SystemLanguage,
     items: Set<SystemLanguage>,
-    onEvent: (SettingsEvent.OnChangeLanguage) -> Unit,
+    onEvent: (OnChangeLanguage) -> Unit,
 ) {
     var language by remember(language) { mutableStateOf(language) }
     var expanded by remember { mutableStateOf(false) }
@@ -215,7 +226,7 @@ private fun LanguageAction(
                         onClick = {
                             expanded = false
                             language = it
-                            onEvent(SettingsEvent.OnChangeLanguage(it))
+                            onEvent(OnChangeLanguage(it))
                         },
                         enabled = language != it
                     )
@@ -268,7 +279,7 @@ fun SystemSettingsSection(
 /**
  * The system settings section with view model integration.
  *
- * @param viewModel The settings view model.
+ * @param viewModel The system settings view model.
  * @param modifier The modifier to be applied to the section container.
  * @param state The scroll state of the options list.
  */
@@ -276,14 +287,41 @@ fun SystemSettingsSection(
 fun SystemSettingsSection(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
-    viewModel: SettingsViewModel = koinViewModel(),
+    viewModel: SystemSettingsViewModel = koinViewModel(),
 ) {
-    val system by viewModel.systemState.collectAsStateWithLifecycle()
+    val system by viewModel.state.collectAsStateWithLifecycle()
+    val interactionManager = LocalInteractionManager.current
+
+    CollectInteractionResult(
+        onReject = {
+            if (it.request is SettingsRequest)
+                viewModel.reject(it.request)
+        }
+    ) {
+        if (it.request is SettingsRequest)
+            viewModel.resolve(it.request)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect {
+            when (it) {
+                is UpdateAudioMuted -> {
+                    interactionManager.request(RequestMute(it.enabled))
+                }
+
+                is UpdateUseWebGL -> {
+                    interactionManager.request(RequestWebGL(it.enabled))
+                }
+
+                else -> {}
+            }
+        }
+    }
 
     SystemSettingsSection(
         modifier = modifier,
         settings = system,
         state = state,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::handle
     )
 }

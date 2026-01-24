@@ -6,13 +6,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolActionOption
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolSwitchOption
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.ToolSettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateShowFps
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestMute
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestWebGL
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.ToolSectionRequest
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
+import com.yoimerdr.compose.ludens.ui.components.provider.CollectInteractionResult
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalInteractionManager
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SingleTap
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
@@ -20,6 +27,7 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
 import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import com.yoimerdr.compose.ludens.ui.state.PluginState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
+import kotlinx.coroutines.launch
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_tools_move_controls
 import ludens.composeapp.generated.resources.stc_tools_mute_audio
@@ -34,20 +42,22 @@ import org.koin.compose.viewmodel.koinViewModel
  * @param features The current web features state.
  * @param settings The current tool settings state.
  * @param plugin The current plugin state.
- * @param onEvent Callback invoked when a settings event occurs.
+ * @param onEvent Callback invoked when a tool settings event occurs.
+ * @param onNavigate Callback invoked when a navigation event occurs.
  * @param modifier The modifier to be applied to the section container.
  * @param state The scroll state of the options list.
  */
 @Composable
-fun ToolsSettings(
-    modifier: Modifier = Modifier,
+fun ToolsSettingsSection(
     features: WebFeaturesState,
     settings: ToolSettingsState,
     plugin: PluginState,
+    modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
-    onEvent: (SettingsEvent) -> Unit,
+    onNavigate: (Destination) -> Unit,
+    onRequest: (ToolSectionRequest) -> Unit,
+    onEvent: (ToolSettingsEvent) -> Unit,
 ) {
-
     OptionsContainer(
         modifier = modifier,
         state = state
@@ -55,7 +65,7 @@ fun ToolsSettings(
         item {
             ToolActionOption(
                 onClick = {
-                    onEvent(SettingsEvent.NavigateTo(Destination.SettingsPositions))
+                    onNavigate(Destination.SettingsPositions)
                 },
                 title = stringResource(Res.string.stc_tools_move_controls),
                 icon = LudensIcons.Default.SingleTap,
@@ -71,11 +81,7 @@ fun ToolsSettings(
                 enabled = features.supportsWebAudio,
                 checked = settings.isMuted,
                 onCheckedChange = {
-                    onEvent(
-                        SettingsEvent.UpdateAudioMuted(
-                            it
-                        )
-                    )
+                    onRequest(RequestMute(it))
                 }
             )
         }
@@ -88,7 +94,7 @@ fun ToolsSettings(
                 enabled = plugin.isEnabled,
                 checked = settings.showFPS,
                 onCheckedChange = {
-                    onEvent(SettingsEvent.UpdateShowFps(it))
+                    onEvent(UpdateShowFps(it))
                 }
             )
         }
@@ -101,7 +107,7 @@ fun ToolsSettings(
                 enabled = features.supportsWebGL,
                 checked = settings.useWebGL,
                 onCheckedChange = {
-                    onEvent(SettingsEvent.UpdateUseWebGL(it))
+                    onRequest(RequestWebGL(it))
                 }
             )
         }
@@ -113,26 +119,40 @@ fun ToolsSettings(
  *
  * @param features The current web features state.
  * @param plugin The current plugin state.
- * @param viewModel The settings view model.
+ * @param viewModel The tools section view model.
+ * @param onNavigate Callback invoked when a navigation event occurs.
  * @param modifier The modifier to be applied to the section container.
  * @param state The scroll state of the options list.
  */
 @Composable
-fun ToolsSettings(
+fun ToolsSettingsSection(
     features: WebFeaturesState,
     plugin: PluginState,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = koinViewModel(),
+    viewModel: ToolsSettingsViewModel = koinViewModel(),
     state: LazyListState = rememberLazyListState(),
+    onNavigate: (Destination) -> Unit,
 ) {
-    val tools by viewModel.toolState.collectAsStateWithLifecycle()
+    val interactionManager = LocalInteractionManager.current
+    val tools by viewModel.state.collectAsStateWithLifecycle()
 
-    ToolsSettings(
+    CollectInteractionResult {
+        if (it.request is ToolSectionRequest)
+            viewModel.resolve(it.request)
+    }
+
+    ToolsSettingsSection(
         modifier = modifier,
         features = features,
         settings = tools,
         plugin = plugin,
         state = state,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::handle,
+        onNavigate = onNavigate,
+        onRequest = {
+            viewModel.viewModelScope.launch {
+                interactionManager.request(it)
+            }
+        }
     )
 }

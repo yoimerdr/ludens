@@ -22,8 +22,11 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.components.Con
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionName
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolOption
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SwapActionOrder
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateActionEnabled
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateActionsEnabled
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.fields.SwitchField
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Drag
@@ -130,7 +133,7 @@ fun ActionSettingsSection(
     onEvent: (SettingsEvent) -> Unit,
 ) {
     val reorderable = rememberReorderableLazyListState(state) { from, to ->
-        onEvent(SettingsEvent.SwapActionOrder(from.index - 1 to to.index - 1))
+        onEvent(SwapActionOrder(from.index - 1 to to.index - 1))
     }
 
     OptionsContainer(
@@ -142,7 +145,7 @@ fun ActionSettingsSection(
                     Modifier.fillMaxWidth(),
                     checked = settings.enabled,
                     onCheckedChange = {
-                        onEvent(SettingsEvent.UpdateActionsEnabled(it))
+                        onEvent(UpdateActionsEnabled(it))
                     },
                 ) {
                     OptionName(
@@ -160,7 +163,7 @@ fun ActionSettingsSection(
                     item = item,
                     enabled = settings.enabled,
                 ) {
-                    onEvent(SettingsEvent.UpdateActionEnabled(index, it))
+                    onEvent(UpdateActionEnabled(index, it))
                 }
             }
         }
@@ -181,11 +184,11 @@ fun ActionSettingsSection(
 fun ActionSettingsSection(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
-    viewModel: SettingsViewModel = koinViewModel(),
+    viewModel: ActionSettingsViewModel = koinViewModel(),
 ) {
-    val actions by viewModel.actionState.collectAsStateWithLifecycle()
+    val actions by viewModel.state.collectAsStateWithLifecycle()
 
     ActionSettingsSection(
-        modifier = modifier, state = state, settings = actions, onEvent = viewModel::onEvent
+        modifier = modifier, state = state, settings = actions, onEvent = viewModel::handle
     )
 }
