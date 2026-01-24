@@ -33,7 +33,7 @@ fun DesignSplash(
     modifier: Modifier = Modifier,
     imagePainter: Painter,
     contentDescription: String?,
-    maxSize: DpSize = DpSize(width = 200.dp, height = 200.dp),
+    maxSize: DpSize = 200.dp.let { DpSize(it, it) },
     duration: Int = 2000,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "DesignSplashTransition")
