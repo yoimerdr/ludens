@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.home.presentation.components
+package com.yoimerdr.compose.ludens.features.home.presentation.sections
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
@@ -19,7 +20,7 @@ import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.WebViewState
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalWebViewNavigator
-import com.yoimerdr.compose.ludens.features.home.presentation.components.LudensLoaderHandler.onLoad
+import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
 import com.yoimerdr.compose.ludens.ui.components.webview.rememberWebViewJsBridge
 import com.yoimerdr.compose.ludens.ui.components.webview.setup
 import com.yoimerdr.compose.ludens.ui.state.PluginState
@@ -109,6 +110,34 @@ fun WebGame(
 }
 
 /**
+ * Displays a web view for running HTML5 games with plugin detection support.
+ *
+ * This composable creates a web view that loads an HTML file from resources and
+ * sets up a JavaScript bridge to communicate with the loaded game. It automatically
+ * injects a plugin checker script to detect and report the `YDP_Ludens` plugin information.
+ *
+ * The web view state is persisted across configuration changes using [WebStateSaver].
+ *
+ * @param viewModel The view model for managing the entry state
+ * @param modifier The modifier to be applied to the web view
+ * @param onLoad Optional callback invoked when the game plugin is loaded, receiving the plugin state
+ */
+@Composable
+fun WebGame(
+    viewModel: HomeViewModel,
+    modifier: Modifier = Modifier,
+    onLoad: ((PluginState) -> Unit)? = null,
+) {
+    val entry by viewModel.entryState.collectAsStateWithLifecycle()
+
+    WebGame(
+        modifier = modifier,
+        fileUrl = entry.url,
+        onLoad = onLoad
+    )
+}
+
+/**
  * Initializes and manages the JavaScript bridge for plugin detection.
  *
  * This internal composable handles the setup of the JavaScript bridge by:
@@ -159,4 +188,3 @@ private fun StartBridge(
     }
 
 }
-

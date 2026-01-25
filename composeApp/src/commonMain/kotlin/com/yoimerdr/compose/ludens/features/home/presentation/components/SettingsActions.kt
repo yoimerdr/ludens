@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.IntOffset
 import com.yoimerdr.compose.ludens.app.theme.outlineDark
-import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.settings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
@@ -20,7 +20,9 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionItemSt
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlActionItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.ui.components.buttons.OutlinedIconButton
 import com.yoimerdr.compose.ludens.ui.components.layout.Card
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDock
@@ -34,19 +36,24 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import com.yoimerdr.compose.ludens.ui.state.layout.DockMode
 import com.yoimerdr.compose.ludens.ui.state.layout.rememberDockState
 import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlin.math.roundToInt
 
 /**
- * Displays the configuration/settings button.
+ * Displays the configuration or quick actions settings button according to the [actions].
  *
- * The button exact position and appearance can be customized through the [settings] parameter.
- * If no settings are provided, default values are used with medium alpha transparency.
+ * If [actions] is empty, it displays a single configuration button. Otherwise, it displays a
+ * floating dock with the actions.  
  *
+ * @param modifier The modifier to be applied to the button container
+ * @param onActionClick Callback invoked when a specific action item is clicked
  * @param onConfiguration Callback invoked when the configuration button is clicked
- * @param settings Optional positionable control item configuration that defines the button's
- * position (x, y coordinates) and appearance (enabled state, alpha transparency).
- * If null, defaults to offset position (0, 0) with medium alpha.
+ * @param toolSettings The current tool settings state (mute, FPS, etc.)
+ * @param controlSettings The current control settings state
+ * @param actions List of available action items to display in the dock
+ * @param control Optional control configuration that defines appearance (alpha transparency).
+ * @param position Optional position configuration that defines the button's coordinates (x, y).
  *
  * @see Alpha.Medium
  */
@@ -55,6 +62,8 @@ fun SettingsActions(
     modifier: Modifier = Modifier,
     onActionClick: (ActionItemState) -> Unit,
     onConfiguration: () -> Unit,
+    toolSettings: ToolSettingsState,
+    controlSettings: ControlSettingsState,
     actions: List<ActionItemState> = emptyList(),
     control: ControlItemState?,
     position: PositionableItemState?,
@@ -115,6 +124,13 @@ fun SettingsActions(
                                 onActionClick(it)
                             }
                         ) {
+                            val isActive = when (it.type) {
+                                ActionType.ToggleMute -> toolSettings.isMuted
+                                ActionType.ToggleWebGL -> toolSettings.useWebGL
+                                ActionType.ToggleFPS -> toolSettings.showFPS
+                                ActionType.ToggleControls -> controlSettings.enabled
+                                else -> false
+                            }
                             Icon(
                                 imageVector = when (it.type) {
                                     ActionType.Settings -> LudensIcons.Default.Settings
@@ -124,6 +140,9 @@ fun SettingsActions(
                                     ActionType.ToggleControls -> LudensIcons.Default.Games
                                 },
                                 contentDescription = null,
+                                tint = if (isActive)
+                                    MaterialTheme.colorScheme.primary
+                                else LocalContentColor.current
                             )
                         }
                     }
@@ -134,10 +153,28 @@ fun SettingsActions(
 }
 
 
+/**
+ * Displays the configuration/settings button using the provided action settings state.
+ *
+ * This overload simplifies the usage by taking [ActionSettingsState] and extracting
+ * the enabled items to pass to the main [SettingsActions] composable. It handles
+ * grouping and ordering of action items automatically.
+ *
+ * @param modifier The modifier to be applied to the button container
+ * @param onConfiguration Callback invoked when the configuration button is clicked
+ * @param toolSettings The current tool settings state (mute, FPS, etc.)
+ * @param controlSettings The current control settings state (joystick, buttons enabled)
+ * @param actions The action settings state containing the list of available actions
+ * @param control Optional control overrides for the settings button itself
+ * @param position Optional position overrides for the settings button
+ * @param onActionClick Callback invoked when a specific action item is clicked
+ */
 @Composable
 fun SettingsActions(
     modifier: Modifier = Modifier,
     onConfiguration: () -> Unit,
+    toolSettings: ToolSettingsState,
+    controlSettings: ControlSettingsState,
     actions: ActionSettingsState,
     control: ControlItemState?,
     position: PositionableItemState?,
@@ -146,11 +183,15 @@ fun SettingsActions(
     SettingsActions(
         modifier = modifier,
         onConfiguration = onConfiguration,
-        actions = actions.items
-            .toPersistentList()
-            .mutate {
-                it.groupBy { item -> item.order }
-            },
+        actions = if (actions.enabled)
+            actions.items
+                .toPersistentList()
+                .mutate {
+                    it.groupBy { item -> item.order }
+                }
+        else persistentListOf(),
+        toolSettings = toolSettings,
+        controlSettings = controlSettings,
         control = control,
         position = position,
         onActionClick = onActionClick

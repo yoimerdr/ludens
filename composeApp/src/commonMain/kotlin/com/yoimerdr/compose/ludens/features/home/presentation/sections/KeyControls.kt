@@ -10,6 +10,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalInputPlayer
+import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toEvent
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
@@ -30,14 +31,15 @@ import kotlin.math.roundToInt
  * Only enabled key control items are rendered. If no enabled key items are provided,
  * nothing is displayed.
  *
- * The buttons are positioned based on the first item's coordinates, and each button's
- * appearance (alpha transparency) is controlled by its individual settings. The actual
- * key binding can be customized per button, falling back to default input keys if not
+ * The container's position is determined by the [position] parameter. Each button's
+ * appearance (alpha transparency) is controlled by its individual settings in [items].
+ * The actual key binding can be customized per button, falling back to default input keys if not
  * specified.
  *
  * @param modifier The modifier to be applied to the container box
- * @param items List of positionable control items containing position, key mappings, and visual settings.
- * @param onEvent Callback invoked when a control key is pressed or released, passing a [HomeEvent.OnClickControlKey]
+ * @param position The position state defining the coordinates (x, y) of the controls container
+ * @param items List of control items containing key mappings and visual settings (alpha)
+ * @param onEvent Callback invoked when a key control event occurs
  */
 @Composable
 fun KeyControls(
@@ -46,7 +48,6 @@ fun KeyControls(
     items: List<ControlItemState>,
     onEvent: (HomeEvent) -> Unit,
 ) {
-
     if (items.isEmpty()) {
         return
     }
@@ -80,9 +81,15 @@ fun KeyControls(
                     .align(it.second.second)
             ) { type ->
                 val key = (item as? ControlKeyItemState)?.key ?: it.second.first
+
+                player.onKeyEvent(
+                    key.toEvent(
+                        type = type
+                    )
+                )
+
                 onEvent(
                     HomeEvent.OnClickControlKey(
-                        player = player,
                         item = item,
                         type = type,
                         key = key,

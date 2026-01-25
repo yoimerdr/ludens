@@ -23,4 +23,6 @@
     <string name="actions_toggle_fps">Mostrar u ocultar el contador de FPS</string>
     <string name="actions_toggle_mute">Silenciar o activar el audio</string>
     <string name="actions_toggle_webgl">Habilitar o deshabilitar el renderizado WebGL</string>
+    <!--Home-->
+    <string name="hmc_text_restarting_confirmation">Esta acción reiniciará el juego. ¿Desea continuar?</string>
 </resources>

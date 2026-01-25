@@ -23,4 +23,6 @@
     <string name="actions_toggle_fps">Show or hide FPS counter</string>
     <string name="actions_toggle_mute">Mute or unmute audio</string>
     <string name="actions_toggle_webgl">Enable or disable WebGL rendering</string>
+    <!--Home-->
+    <string name="hmc_text_restarting_confirmation">This action will restart the game. Do you want to proceed?</string>
 </resources>
