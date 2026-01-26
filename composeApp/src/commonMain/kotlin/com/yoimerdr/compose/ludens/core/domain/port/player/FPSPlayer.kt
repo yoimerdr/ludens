@@ -16,6 +16,11 @@ interface FPSPlayer {
     /** Toggles the FPS counter visibility. */
     fun toggle()
 
-    /** Returns whether the FPS counter is currently visible. */
-    val isVisible: Boolean
+    /** A suspend function that checks whether the FPS counter is currently visible. */
+    suspend fun isVisible(): Boolean
+
+    /** Checks whether the fps counter is currently visible
+     * @param isVisible Callback to invoke with the result
+     * */
+    fun isVisible(isVisible: (Boolean) -> Unit)
 }

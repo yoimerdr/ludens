@@ -1,5 +1,8 @@
 package com.yoimerdr.compose.ludens.core.domain.port
 
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
 /**
  * Port interface for evaluating scripts.
  *
@@ -17,4 +20,13 @@ interface ScriptEvaluator  {
         script: String,
         callback: ((String) -> Unit)? = null,
     )
+}
+
+
+suspend fun ScriptEvaluator.evaluatingScript(script: String): String {
+    return suspendCoroutine { continuation ->
+        evaluateScript(script) {
+            continuation.resume(it)
+        }
+    }
 }

@@ -3,13 +3,12 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.section
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.yoimerdr.compose.ludens.app.navigation.Destination
-import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
+import com.yoimerdr.compose.ludens.core.presentation.components.effects.FpsCounterVisible
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolActionOption
@@ -29,9 +28,6 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.SingleTap
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
 import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
 import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
-import com.yoimerdr.compose.ludens.ui.state.PluginState
-import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
-import com.yoimerdr.compose.ludens.ui.state.isAvailable
 import kotlinx.coroutines.launch
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_tools_move_controls
@@ -43,9 +39,7 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * The tools settings section displaying tool configuration options.
  *
- * @param features The current web features state.
  * @param settings The current tool settings state.
- * @param plugin The current plugin state.
  * @param onEvent Callback invoked when a tool settings event occurs.
  * @param onNavigate Callback invoked when a navigation event occurs.
  * @param modifier The modifier to be applied to the section container.
@@ -53,20 +47,18 @@ import org.jetbrains.compose.resources.stringResource
  */
 @Composable
 fun ToolsSettingsSection(
-    features: WebFeaturesState,
     settings: ToolSettingsState,
-    plugin: PluginState,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
     onNavigate: (Destination) -> Unit,
     onRequest: (ToolSectionRequest) -> Unit,
     onEvent: (ToolSettingsEvent) -> Unit,
 ) {
-    val counter = LocalFPSPlayer.current
-    LaunchedEffect(plugin, plugin.isLoading) {
-        if (plugin.isAvailable) {
-            onEvent(UpdateShowFps(counter.isVisible))
-        }
+    val features = LocalWebFeatures.current
+    val plugin = LocalPlugin.current
+
+    FpsCounterVisible {
+        onEvent(UpdateShowFps(it))
     }
 
     OptionsContainer(
@@ -142,8 +134,6 @@ fun ToolsSettingsSection(
 ) {
     val interactionManager = LocalInteractionManager.current
     val tools by viewModel.state.collectAsStateWithLifecycle()
-    val plugin = LocalPlugin.current
-    val features = LocalWebFeatures.current
 
     CollectInteractionResult {
         if (it.request is ToolSectionRequest)
@@ -153,8 +143,6 @@ fun ToolsSettingsSection(
     ToolsSettingsSection(
         modifier = modifier,
         settings = tools,
-        plugin = plugin,
-        features = features,
         state = state,
         onEvent = viewModel::handle,
         onNavigate = onNavigate,

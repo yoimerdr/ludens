@@ -25,6 +25,7 @@ fun WebFeaturesState.toParameters(): List<String> {
     val params = mutableListOf<String>()
 
     if (supportsWebGL) params.add("webgl") // canvas
+    else params.add("canvas") // force to canvas if webgl is not supported
 
     if (!supportsWebAudio)
         params.add("noaudio")
