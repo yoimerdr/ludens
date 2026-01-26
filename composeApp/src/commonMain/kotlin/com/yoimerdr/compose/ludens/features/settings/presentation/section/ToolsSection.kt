@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -39,7 +39,6 @@ import ludens.composeapp.generated.resources.stc_tools_mute_audio
 import ludens.composeapp.generated.resources.stc_tools_show_fps
 import ludens.composeapp.generated.resources.stc_tools_use_webgl
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * The tools settings section displaying tool configuration options.
@@ -137,7 +136,7 @@ fun ToolsSettingsSection(
 @Composable
 fun ToolsSettingsSection(
     modifier: Modifier = Modifier,
-    viewModel: ToolsSettingsViewModel = koinViewModel(),
+    viewModel: ToolsSettingsViewModel,
     state: LazyListState = rememberLazyListState(),
     onNavigate: (Destination) -> Unit,
 ) {

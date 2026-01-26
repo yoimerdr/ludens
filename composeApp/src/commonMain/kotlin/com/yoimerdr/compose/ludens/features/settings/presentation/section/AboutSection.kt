@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

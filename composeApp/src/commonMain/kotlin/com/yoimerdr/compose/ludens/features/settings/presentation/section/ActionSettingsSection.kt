@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +35,6 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
 import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
 import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
-import org.koin.compose.viewmodel.koinViewModel
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -184,7 +183,7 @@ fun ActionSettingsSection(
 fun ActionSettingsSection(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
-    viewModel: ActionSettingsViewModel = koinViewModel(),
+    viewModel: ActionSettingsViewModel,
 ) {
     val actions by viewModel.state.collectAsStateWithLifecycle()
 

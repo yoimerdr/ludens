@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
@@ -36,7 +36,6 @@ import io.github.yoimerdr.compose.virtualjoystick.ui.view.JoystickBackground
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_text_all_controls
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Displays a preview of a control with its alpha transparency applied.
@@ -195,7 +194,7 @@ fun ControlsSettingsSection(
 @Composable
 fun ControlsSettingsSection(
     modifier: Modifier = Modifier,
-    viewModel: ControlsSettingsViewModel = koinViewModel(),
+    viewModel: ControlsSettingsViewModel,
     state: LazyListState = rememberLazyListState(),
 ) {
     val controls by viewModel.state.collectAsStateWithLifecycle()

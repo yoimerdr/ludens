@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,7 +57,6 @@ import ludens.composeapp.generated.resources.stc_system_appearance
 import ludens.composeapp.generated.resources.stc_system_language
 import ludens.composeapp.generated.resources.stc_system_reset_default
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A button to reset all settings to default values.
@@ -287,7 +286,7 @@ fun SystemSettingsSection(
 fun SystemSettingsSection(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
-    viewModel: SystemSettingsViewModel = koinViewModel(),
+    viewModel: SystemSettingsViewModel,
 ) {
     val system by viewModel.state.collectAsStateWithLifecycle()
     val interactionManager = LocalInteractionManager.current

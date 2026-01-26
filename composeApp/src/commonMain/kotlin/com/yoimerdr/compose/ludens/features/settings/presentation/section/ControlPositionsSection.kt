@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -65,7 +65,6 @@ import com.yoimerdr.compose.ludens.ui.state.layout.rememberAutoDockState
 import io.github.yoimerdr.compose.virtualjoystick.core.control.BackgroundType
 import io.github.yoimerdr.compose.virtualjoystick.ui.view.JoystickBackground
 import kotlinx.collections.immutable.ImmutableList
-import org.koin.compose.viewmodel.koinViewModel
 
 
 /**
@@ -402,8 +401,8 @@ fun MovableControlsSettingsSection(
  */
 @Composable
 fun MovableControlsSettingsSection(
-    positionsViewModel: ControlPositionsSettingsViewModel = koinViewModel(),
-    actionsViewModel: ActionSettingsViewModel = koinViewModel(),
+    positionsViewModel: ControlPositionsSettingsViewModel,
+    actionsViewModel: ActionSettingsViewModel,
     onCloseClick: (() -> Unit)? = null,
 ) {
     val positions by positionsViewModel.state.collectAsStateWithLifecycle()

@@ -21,12 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
-import com.yoimerdr.compose.ludens.features.settings.presentation.secction.AboutSection
-import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ActionSettingsSection
-import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ControlsSettingsSection
-import com.yoimerdr.compose.ludens.features.settings.presentation.secction.SideTabOptions
-import com.yoimerdr.compose.ludens.features.settings.presentation.secction.SystemSettingsSection
-import com.yoimerdr.compose.ludens.features.settings.presentation.secction.ToolsSettingsSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.section.AboutSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.section.ActionSettingsSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.section.ControlsSettingsSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.section.SideTabOptions
+import com.yoimerdr.compose.ludens.features.settings.presentation.section.SystemSettingsSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.section.ToolsSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
@@ -35,7 +35,6 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.Root
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
-import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * The main settings content layout displaying the side navigation and selected section.
@@ -50,11 +49,11 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SettingsContents(
     onClose: () -> Unit,
-    viewModel: RootSettingsViewModel = koinViewModel(),
-    controlsViewModel: ControlsSettingsViewModel = koinViewModel(),
-    toolsViewModel: ToolsSettingsViewModel = koinViewModel(),
-    systemViewModel: SystemSettingsViewModel = koinViewModel(),
-    actionViewModel: ActionSettingsViewModel = koinViewModel(),
+    viewModel: RootSettingsViewModel,
+    controlsViewModel: ControlsSettingsViewModel,
+    toolsViewModel: ToolsSettingsViewModel,
+    systemViewModel: SystemSettingsViewModel,
+    actionViewModel: ActionSettingsViewModel,
 ) {
     val spacing = LocalSpacing.current
     val color = MaterialTheme.colorScheme.surfaceContainerLowest
