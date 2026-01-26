@@ -1,6 +1,7 @@
 package com.yoimerdr.compose.ludens.core.infrastructure.adapter.player
 
 import com.yoimerdr.compose.ludens.core.domain.port.ScriptEvaluator
+import com.yoimerdr.compose.ludens.core.domain.port.evaluatingScript
 import com.yoimerdr.compose.ludens.core.domain.port.player.FPSPlayer
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
@@ -32,12 +33,14 @@ class FPSPlayerAdapter(
         evaluator.evaluateScript("YDP_Ludens.fps.toggle();")
     }
 
-    override val isVisible: Boolean
-        get() {
-            var result = false
-            evaluator.evaluateScript("YDP_Ludens.fps.isVisible") {
-                result = it.toBoolean()
-            }
-            return result
+    override suspend fun isVisible(): Boolean {
+        return evaluator.evaluatingScript("YDP_Ludens.fps.isVisible")
+            .toBoolean()
+    }
+
+    override fun isVisible(isVisible: (Boolean) -> Unit) {
+        evaluator.evaluateScript("YDP_Ludens.fps.isVisible") {
+            isVisible(it.toBoolean())
         }
+    }
 }

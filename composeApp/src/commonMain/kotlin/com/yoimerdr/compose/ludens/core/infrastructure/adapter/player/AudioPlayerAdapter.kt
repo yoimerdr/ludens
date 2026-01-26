@@ -1,6 +1,7 @@
 package com.yoimerdr.compose.ludens.core.infrastructure.adapter.player
 
 import com.yoimerdr.compose.ludens.core.domain.port.ScriptEvaluator
+import com.yoimerdr.compose.ludens.core.domain.port.evaluatingScript
 import com.yoimerdr.compose.ludens.core.domain.port.player.AudioPlayer
 import com.yoimerdr.compose.ludens.core.domain.value.Volume
 import org.koin.core.annotation.Factory
@@ -33,13 +34,14 @@ class AudioPlayerAdapter(
         evaluator.evaluateScript("YDP_Ludens.audio.setVolume(${level.value});")
     }
 
-    override val isMuted: Boolean
-        get() {
-            var result = false
-            evaluator.evaluateScript("YDP_Ludens.audio.isMuted") {
-                result = it.toBoolean()
-            }
+    override suspend fun isMuted(): Boolean {
+        return evaluator.evaluatingScript("YDP_Ludens.audio.isMuted")
+            .toBoolean()
+    }
 
-            return result
+    override fun isMuted(isMuted: (Boolean) -> Unit) {
+        evaluator.evaluateScript("YDP_Ludens.audio.isMuted") {
+            isMuted(it.toBoolean())
         }
+    }
 }

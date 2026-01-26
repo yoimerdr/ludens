@@ -23,6 +23,11 @@ interface AudioPlayer {
      */
     fun volume(level: Volume)
 
-    /** Returns whether the audio is currently muted. */
-    val isMuted: Boolean
+    /** A suspend function that checks whether the audio is currently muted. */
+    suspend fun isMuted(): Boolean
+
+    /** Checks whether the audio is currently muted
+     * @param isMuted Callback to invoke with the result
+     * */
+    fun isMuted(isMuted: (Boolean) -> Unit)
 }
