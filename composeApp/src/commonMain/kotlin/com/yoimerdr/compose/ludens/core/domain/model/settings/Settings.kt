@@ -13,5 +13,6 @@ package com.yoimerdr.compose.ludens.core.domain.model.settings
 data class Settings(
     val control: ControlSettings,
     val tool: ToolSettings,
-    val system: SystemSettings
+    val system: SystemSettings,
+    val action: ActionSettings
 )

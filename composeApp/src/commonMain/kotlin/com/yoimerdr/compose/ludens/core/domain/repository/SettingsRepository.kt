@@ -1,7 +1,9 @@
 package com.yoimerdr.compose.ludens.core.domain.repository
 
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import kotlinx.coroutines.flow.Flow
 
@@ -13,6 +15,12 @@ typealias ControlSettingsFlow = Flow<ControlSettings>
 
 /** Type alias for a Flow of ToolSettings */
 typealias ToolsSettingsFlow = Flow<ToolSettings>
+
+/** Type alias for a Flow of SystemSettings */
+typealias SystemSettingsFlow = Flow<SystemSettings>
+
+/** Type alias for a Flow of ActionSettings */
+typealias ActionSettingsFlow = Flow<ActionSettings>
 
 /**
  * Repository interface for managing application settings.
@@ -44,6 +52,30 @@ interface SettingsRepository {
      * @param settings The new control settings to persist.
      */
     suspend fun updateControlSettings(settings: ControlSettings)
+
+    /**
+     * Retrieves system settings as a Flow.
+     * @return A Flow that emits SystemSettings whenever they change.
+     */
+    fun getSystemSettings(): SystemSettingsFlow
+
+    /**
+     * Updates the system settings.
+     * @param settings The new system settings to persist.
+     */
+    suspend fun updateSystemSettings(settings: SystemSettings)
+
+    /**
+     * Retrieves action settings as a Flow.
+     * @return A Flow that emits ActionSettings whenever they change.
+     */
+    fun getActionSettings(): ActionSettingsFlow
+
+    /**
+     * Updates the action settings.
+     * @param settings The new action settings to persist.
+     */
+    suspend fun updateActionSettings(settings: ActionSettings)
 
     /**
      * Retrieves all settings as a Flow.

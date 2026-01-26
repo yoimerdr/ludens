@@ -44,4 +44,12 @@
     <string name="stc_system_language">Idioma</string>
     <string name="stc_system_appearance">Apariencia</string>
     <string name="stc_system_reset_default">Restablecer la configuración predeterminada</string>
+    <!--quick actions-->
+    <string name="actions_settings">Ir a configuración</string>
+    <string name="actions_toggle_controls">Mostrar u ocultar controles</string>
+    <string name="actions_toggle_fps">Mostrar u ocultar el contador de FPS</string>
+    <string name="actions_toggle_mute">Silenciar o activar el audio</string>
+    <string name="actions_toggle_webgl">Habilitar o deshabilitar el renderizado WebGL</string>
+    <!--Home-->
+    <string name="hmc_text_restarting_confirmation">Esta acción reiniciará el juego. ¿Desea continuar?</string>
 </resources>

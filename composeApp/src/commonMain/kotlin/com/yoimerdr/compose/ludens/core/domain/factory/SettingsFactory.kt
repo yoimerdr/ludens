@@ -1,5 +1,9 @@
 package com.yoimerdr.compose.ludens.core.domain.factory
 
+import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory.theme
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionItem
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionSettings
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
@@ -31,10 +35,12 @@ object SettingsFactory {
         tool: ToolSettings = toolSettings(),
         control: ControlSettings = controlSettings(),
         system: SystemSettings = systemSettings(),
+        action: ActionSettings = actionSettings(),
     ) = Settings(
         tool = tool,
         control = control,
         system = system,
+        action = action
     )
 
     /**
@@ -75,14 +81,17 @@ object SettingsFactory {
      *
      * @param isMuted Whether audio is muted (default: false).
      * @param showFPS Whether to show FPS counter (default: false).
+     * @param useWebGL Whether to use WebGL for rendering (default: false).
      * @return A ToolSettings instance with the specified values.
      */
     fun toolSettings(
         isMuted: Boolean = false,
         showFPS: Boolean = false,
+        useWebGL: Boolean = false,
     ) = ToolSettings(
         isMuted = isMuted,
         showFPS = showFPS,
+        useWebGL = useWebGL,
     )
 
     /**
@@ -107,12 +116,42 @@ object SettingsFactory {
     )
 
     /**
+     * Creates default action settings.
+     *
+     * @param items The list of action items. Defaults to all available action types.
+     * @param enabled Whether the quick action are enabled (default: false).
+     * @return An ActionSettings instance with the specified values.
+     */
+    fun actionSettings(
+        enabled: Boolean = false,
+        items: List<ActionItem> = actionItems(),
+    ) = ActionSettings(
+        items = items,
+        enabled = enabled,
+    )
+
+    /**
+     * Creates a default list of action items.
+     *
+     * @return A list containing all action types.
+     */
+    fun actionItems() = ActionType.entries
+        .mapIndexed { index, it ->
+            ActionItem(
+                type = it,
+                enabled = it == ActionType.Settings,
+                order = index,
+            )
+        }
+
+    /**
      * Creates a default list of control items.
      *
-     *
+     * @param alpha The default alpha/transparency for controls (default: Medium).
      * @return A list containing all item types, enabled with medium alpha.
      */
     fun controlItems(
+        alpha: Alpha = Alpha.Medium,
     ): List<ControlItem> = ItemType.entries
-        .map { ControlItem(it, true, Alpha.Medium) }
+        .map { ControlItem(it, true, alpha) }
 }

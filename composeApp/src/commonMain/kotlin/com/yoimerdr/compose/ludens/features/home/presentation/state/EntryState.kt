@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformApplication
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import com.yoimerdr.compose.ludens.ui.state.toQueryParameters
 import ludens.composeapp.generated.resources.Res
@@ -58,20 +59,22 @@ val EntryStateSaver = listSaver(
  * and configures web features according to the provided settings.
  *
  * @param features The web features state to apply to the entry URL
- * @param state The home state containing settings and loading status
+ * @param isLoading Whether the content is currently loading
+ * @param settings The state containing settings
  * @param application The platform application instance for checking debug mode
  * @return An [EntryState] containing the URL and availability status
  */
 @Composable
 fun rememberEntryState(
     features: WebFeaturesState,
-    state: HomeState,
+    isLoading: Boolean,
+    settings: ToolSettingsState,
     application: PlatformApplication = koinInject(),
 ): EntryState {
-    return rememberSaveable(state.isLoading, features, saver = EntryStateSaver) {
+    return rememberSaveable(isLoading, features, saver = EntryStateSaver) {
         val feat = features.copy(
             supportsWebAudio = if (features.supportsWebAudio)
-                !state.settings.tool.isMuted
+                !settings.isMuted
             else false
         )
         val parameters = feat.toQueryParameters()
