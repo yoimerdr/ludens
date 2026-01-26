@@ -31,6 +31,7 @@
     <string name="stc_about_website">Sitio web</string>
     <string name="stc_about_description">Diseñado para ejecutar juegos RPG Maker</string>
     <string name="stc_about_version">Versión %1$s</string>
+    <string name="stc_about_copyright">© 2026 Proyecto Ludens.</string>
     <!--Settings - Tab options-->
     <string name="stc_tabs_controls">Controles</string>
     <string name="stc_tabs_actions">Acciones</string>
@@ -46,6 +47,8 @@
     <string name="stc_system_language">Idioma</string>
     <string name="stc_system_appearance">Apariencia</string>
     <string name="stc_system_reset_default">Restablecer la configuración predeterminada</string>
+    <!--Settings - Actions-->
+    <string name="stc_actions_show_quick">Mostrar como acciones rápidas</string>
     <!--quick actions-->
     <string name="actions_settings">Ir a configuración</string>
     <string name="actions_toggle_controls">Mostrar u ocultar controles</string>

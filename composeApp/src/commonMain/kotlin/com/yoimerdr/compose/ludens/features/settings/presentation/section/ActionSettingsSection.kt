@@ -38,6 +38,9 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import ludens.composeapp.generated.resources.Res
+import ludens.composeapp.generated.resources.stc_actions_show_quick
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * A reorderable action setting option card.
@@ -148,7 +151,7 @@ fun ActionSettingsSection(
                     },
                 ) {
                     OptionName(
-                        text = "Show as quick actions"
+                        text = stringResource(Res.string.stc_actions_show_quick)
                     )
                 }
             }
