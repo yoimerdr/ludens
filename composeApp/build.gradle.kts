@@ -76,6 +76,8 @@ kotlin {
             api(libs.io.koin.annotations)
             // DataStore
             implementation(libs.androidx.datastore.core.okio)
+            // Layout
+            implementation(libs.sh.calvin.reorderable)
             // Collections
             implementation(libs.kotlinx.collections.immutable)
         }

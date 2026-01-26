@@ -16,7 +16,7 @@ import com.yoimerdr.compose.ludens.app.ui.components.BackPopup
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalProviders
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.isDarkTheme
-import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SettingsViewModel
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.dsl.KoinAppDeclaration
@@ -25,7 +25,7 @@ import org.koin.dsl.KoinAppDeclaration
 fun LudensClient(
     language: SystemLanguage? = null,
     nav: NavHostController = rememberNavController(),
-    settingsViewModel: SettingsViewModel = koinInject(),
+    systemViewModel: SystemSettingsViewModel = koinInject(),
 ) {
     BackPopup(nav)
 
@@ -34,7 +34,7 @@ fun LudensClient(
     ) {
         NavGraph(
             navController = nav,
-            settingsViewModel = settingsViewModel
+            systemViewModel = systemViewModel
         )
     }
 }
@@ -45,9 +45,9 @@ fun LudensClient(
 @Preview
 fun App(configuration: KoinAppDeclaration? = null) {
     KoinInjection(configuration) {
-        val settingsViewModel: SettingsViewModel = koinInject()
+        val settingsViewModel: SystemSettingsViewModel = koinInject()
 
-        val state by settingsViewModel.systemState.collectAsStateWithLifecycle()
+        val state by settingsViewModel.state.collectAsStateWithLifecycle()
 
         LudensTheme(
             darkTheme = state.theme.isDarkTheme
@@ -57,7 +57,7 @@ fun App(configuration: KoinAppDeclaration? = null) {
             ) {
                 LudensClient(
                     language = state.language,
-                    settingsViewModel = settingsViewModel
+                    systemViewModel = settingsViewModel
                 )
             }
         }

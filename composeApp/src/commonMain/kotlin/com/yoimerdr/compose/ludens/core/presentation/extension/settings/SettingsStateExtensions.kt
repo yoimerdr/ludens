@@ -22,6 +22,11 @@ import ludens.composeapp.generated.resources.actions_toggle_fps
 import ludens.composeapp.generated.resources.actions_toggle_mute
 import ludens.composeapp.generated.resources.actions_toggle_webgl
 import ludens.composeapp.generated.resources.dark
+import ludens.composeapp.generated.resources.actions_settings
+import ludens.composeapp.generated.resources.actions_toggle_controls
+import ludens.composeapp.generated.resources.actions_toggle_fps
+import ludens.composeapp.generated.resources.actions_toggle_mute
+import ludens.composeapp.generated.resources.actions_toggle_webgl
 import ludens.composeapp.generated.resources.en
 import ludens.composeapp.generated.resources.es
 import ludens.composeapp.generated.resources.key_button
@@ -50,8 +55,7 @@ typealias PositionableControlItem = Pair<PositionableItemState, ControlItemState
  * @return The default [SettingsState] instance.
  */
 val SettingsState.Companion.default: SettingsState
-    get() = SettingsFactory.settings()
-        .toUIModel()
+    get() = SettingsFactory.settings().toUIModel()
 
 /**
  * Filters a list of positionable control items to get only enabled items of specific types.
@@ -175,9 +179,7 @@ fun List<ActionItemState>.getEnabled(
  * @return `true` if dark theme should be used, `false` for light theme.
  */
 val SystemTheme.isDarkTheme: Boolean
-    @Composable
-    @ReadOnlyComposable
-    get() {
+    @Composable @ReadOnlyComposable get() {
         return when (this) {
             SystemTheme.System -> isSystemInDarkTheme()
             SystemTheme.Light -> false
@@ -204,9 +206,12 @@ val SystemTheme.label: String
     }
 
 /**
- * Gets the localized label string for the current [SystemLanguage].
+ * Gets the localized label for the system language setting.
  *
- * This extension property provides a user-friendly, localized display name.
+ * This property returns a user-friendly, localized string representation of the
+ * [SystemLanguage] value.
+ *
+ * @return A localized string representing the language setting.
  */
 val SystemLanguage.label: String
     @Composable get() = when (this) {

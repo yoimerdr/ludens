@@ -31,8 +31,10 @@
     <string name="stc_about_website">Website</string>
     <string name="stc_about_description">Designed to run RPG Maker games.</string>
     <string name="stc_about_version">Version %1$s</string>
+    <string name="stc_about_copyright">© 2026 Ludens Project.</string>
     <!--Settings - Tab options-->
     <string name="stc_tabs_controls">Controls</string>
+    <string name="stc_tabs_actions">Actions</string>
     <string name="stc_tabs_tools">Tools</string>
     <string name="stc_tabs_system">System</string>
     <string name="stc_tabs_about">About</string>
@@ -40,10 +42,13 @@
     <string name="stc_tools_move_controls">Move the controls</string>
     <string name="stc_tools_mute_audio">Mute audio</string>
     <string name="stc_tools_show_fps">Show FPS</string>
+    <string name="stc_tools_use_webgl">Use WebGL</string>
     <!--Settings - System-->
     <string name="stc_system_language">Language</string>
     <string name="stc_system_appearance">Appearance</string>
     <string name="stc_system_reset_default">Reset to default settings</string>
+    <!--Settings - Actions-->
+    <string name="stc_actions_show_quick">Show as quick actions</string>
     <!--quick actions-->
     <string name="actions_settings">Go to settings</string>
     <string name="actions_toggle_controls">Show or hide controls</string>

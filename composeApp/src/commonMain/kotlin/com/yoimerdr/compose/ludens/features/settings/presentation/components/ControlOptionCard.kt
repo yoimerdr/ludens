@@ -3,6 +3,7 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -16,6 +17,63 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import com.yoimerdr.compose.ludens.ui.components.fields.SwitchField
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
+
+/**
+ * A customizable control option card component for settings screens.
+ *
+ * This composable serves as a flexible base for building control setting cards in the settings screen.
+ * It wraps an [OptionCard] and provides two customizable content areas arranged vertically.
+ *
+ * @param modifier The modifier to be applied to the card.
+ * @param onClick Optional callback to be invoked when the card is clicked. If null, the card is not clickable.
+ * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
+ * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
+ * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
+ * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
+ * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param border Optional border to be drawn around the card.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
+ * @param header Optional composable content to be displayed at the top of the card, provided as a [ColumnScope] lambda.
+ * Typically used for titles, labels, or toggle switches.
+ * @param content The composable content to be displayed in the content area, provided as a [RowScope] lambda.
+ * This content is wrapped in a Row with center vertical alignment and medium spacing.
+ * Typically used for sliders, buttons, or preview samples.
+ *
+ * @see ControlOptionCard Overload with integrated switch and alpha controls
+ */
+@Composable
+fun ControlOptionCard(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    shape: Shape = CardDefaults.elevatedShape,
+    colors: CardColors = CardDefaults.outlinedCardColors(),
+    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    border: BorderStroke? = null,
+    interactionSource: MutableInteractionSource? = null,
+    header: (@Composable ColumnScope.() -> Unit)? = null,
+    content: @Composable RowScope.() -> Unit,
+) {
+    OptionCard(
+        modifier = modifier,
+        onClick = onClick,
+        padding = padding,
+        horizontalAlignment = horizontalAlignment,
+        shape = shape,
+        colors = colors,
+        elevation = elevation,
+        border = border,
+        interactionSource = interactionSource,
+    ) {
+        header?.invoke(this)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.medium),
+            content = content
+        )
+    }
+}
 
 /**
  * A specialized option card component for displaying control settings with alpha/opacity adjustments.
@@ -73,7 +131,7 @@ fun ControlOptionCard(
     useSwitchField: Boolean = true,
     text: @Composable (RowScope.() -> Unit),
 ) {
-    OptionCard(
+    ControlOptionCard(
         modifier = modifier,
         onClick = onClick,
         padding = padding,
@@ -83,32 +141,27 @@ fun ControlOptionCard(
         elevation = elevation,
         border = border,
         interactionSource = interactionSource,
-    ) {
-        if (useSwitchField)
-            SwitchField(
+        header = {
+            if (useSwitchField) SwitchField(
                 modifier = Modifier.fillMaxWidth(),
                 checked = checked,
                 enabled = enabled,
                 onCheckedChange = onCheckedChange,
                 text = text
             )
-        else {
-            Row(content = text)
-        }
+            else {
+                Row(content = text)
+            }
+        },
+    ) {
+        alphaSample?.invoke(this)
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.medium),
-        ) {
-            alphaSample?.invoke(this)
-
-            ControlAlpha(
-                modifier = Modifier.weight(1f),
-                value = alpha,
-                enabled = enabledAlpha,
-                valueRange = valueRange,
-                onValueChange = onAlphaChange,
-            )
-        }
+        ControlAlpha(
+            modifier = Modifier.weight(1f),
+            value = alpha,
+            enabled = enabledAlpha,
+            valueRange = valueRange,
+            onValueChange = onAlphaChange,
+        )
     }
 }

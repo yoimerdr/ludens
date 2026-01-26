@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +30,7 @@ import ludens.composeapp.generated.resources.stc_about_description
 import ludens.composeapp.generated.resources.stc_about_issues
 import ludens.composeapp.generated.resources.stc_about_version
 import ludens.composeapp.generated.resources.stc_about_website
+import ludens.composeapp.generated.resources.stc_about_copyright
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -137,7 +138,7 @@ private fun AboutFooter(
             verticalArrangement = Arrangement.spacedBy(spacing.extraSmall)
         ) {
             FooterText(text = stringResource(Res.string.stc_about_description))
-            FooterText(text = "© 2026 Ludens Project.")
+            FooterText(text = stringResource(Res.string.stc_about_copyright))
         }
     }
 }

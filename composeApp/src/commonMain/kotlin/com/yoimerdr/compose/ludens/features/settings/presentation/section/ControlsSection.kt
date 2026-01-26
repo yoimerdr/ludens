@@ -1,15 +1,17 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.label
@@ -20,7 +22,13 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.components.Con
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ControlOptionCard
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionName
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.ControlSettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlAlpha
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlEnabled
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlKey
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlsAlpha
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlsEnabled
+import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
 import io.github.yoimerdr.compose.virtualjoystick.core.control.BackgroundType
@@ -32,6 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Displays a preview of a control with its alpha transparency applied.
  *
+ * @param settings The current control settings state.
  * @param control The control item to preview.
  * @param keys The set of key control types.
  * @param editableKeys The set of available input keys for binding.
@@ -39,21 +48,27 @@ import org.jetbrains.compose.resources.stringResource
  */
 @Composable
 private fun ControlAlphaPreview(
+    settings: ControlSettingsState,
     control: ControlItemState,
+    index: Int,
     keys: Set<ItemType>,
     editableKeys: Set<InputKey>,
-    onEvent: (SettingsEvent.UpdateControlKey) -> Unit,
+    onEvent: (UpdateControlKey) -> Unit,
 ) {
     when (control.type) {
         in keys -> {
-            if (control is ControlKeyItemState) ControlButton(
-                control = control, enabled = control.enabled, items = editableKeys
-            ) {
-                onEvent(
-                    SettingsEvent.UpdateControlKey(
-                        control.type, it
+            if (control is ControlKeyItemState) {
+                ControlButton(
+                    control = control,
+                    enabled = settings.enabled && control.enabled,
+                    items = editableKeys
+                ) {
+                    onEvent(
+                        UpdateControlKey(
+                            index, it
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -93,7 +108,7 @@ fun ControlsSettingsSection(
     modifier: Modifier = Modifier,
     settings: ControlSettingsState,
     state: LazyListState = rememberLazyListState(),
-    onEvent: (SettingsEvent) -> Unit,
+    onEvent: (ControlSettingsEvent) -> Unit,
 ) {
     val keyControls = ItemType.keys
     val editableKeys = InputKey.controls
@@ -108,7 +123,7 @@ fun ControlsSettingsSection(
                     enabledAlpha = settings.enabled,
                     onCheckedChange = {
                         onEvent(
-                            SettingsEvent.UpdateControlsEnabled(
+                            UpdateControlsEnabled(
                                 it
                             )
                         )
@@ -116,7 +131,7 @@ fun ControlsSettingsSection(
                     alpha = settings.alpha,
                     onAlphaChange = {
                         onEvent(
-                            SettingsEvent.UpdateControlsAlpha(
+                            UpdateControlsAlpha(
                                 it
                             )
                         )
@@ -128,7 +143,7 @@ fun ControlsSettingsSection(
                 }
             }
         }
-        items(settings.items) { control ->
+        itemsIndexed(settings.items) { index, control ->
             ControlOptionCard(
                 useSwitchField = control.type != ItemType.Settings,
                 enabled = if (control.type != ItemType.Settings) settings.enabled
@@ -138,22 +153,24 @@ fun ControlsSettingsSection(
                 checked = control.enabled,
                 onCheckedChange = {
                     onEvent(
-                        SettingsEvent.UpdateControlEnabled(
-                            control.type, it
+                        UpdateControlEnabled(
+                            index, it
                         )
                     )
                 },
                 alpha = control.alpha,
                 onAlphaChange = {
                     onEvent(
-                        SettingsEvent.UpdateControlAlpha(
-                            control.type, it
+                        UpdateControlAlpha(
+                            index, it
                         )
                     )
                 },
                 alphaSample = {
                     ControlAlphaPreview(
+                        settings = settings,
                         control = control,
+                        index = index,
                         keys = keyControls,
                         editableKeys = editableKeys,
                         onEvent = onEvent
@@ -167,3 +184,25 @@ fun ControlsSettingsSection(
     }
 }
 
+/**
+ * The controls settings section with view model integration.
+ *
+ * @param viewModel The settings view model.
+ * @param modifier The modifier to be applied to the section container.
+ * @param state The scroll state of the options list.
+ */
+@Composable
+fun ControlsSettingsSection(
+    modifier: Modifier = Modifier,
+    viewModel: ControlsSettingsViewModel,
+    state: LazyListState = rememberLazyListState(),
+) {
+    val controls by viewModel.state.collectAsStateWithLifecycle()
+
+    ControlsSettingsSection(
+        modifier = modifier,
+        settings = controls,
+        state = state,
+        onEvent = viewModel::handle
+    )
+}

@@ -1,11 +1,10 @@
-package com.yoimerdr.compose.ludens.features.settings.presentation.secction
+package com.yoimerdr.compose.ludens.features.settings.presentation.section
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -15,31 +14,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
 import com.yoimerdr.compose.ludens.ui.components.buttons.SideTab
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.filled.ArrowLeft
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Apps
-import com.yoimerdr.compose.ludens.ui.icons.outlined.SlideSettings
+import com.yoimerdr.compose.ludens.ui.icons.outlined.AppsList
+import com.yoimerdr.compose.ludens.ui.icons.outlined.BroadActivityFeed
+import com.yoimerdr.compose.ludens.ui.icons.outlined.Games
 import com.yoimerdr.compose.ludens.ui.icons.outlined.System
-import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_tabs_about
+import ludens.composeapp.generated.resources.stc_tabs_actions
 import ludens.composeapp.generated.resources.stc_tabs_controls
 import ludens.composeapp.generated.resources.stc_tabs_system
 import ludens.composeapp.generated.resources.stc_tabs_tools
@@ -61,10 +54,11 @@ private fun SettingsTabOption(
     onClick: () -> Unit,
 ) {
     val icon = when (option) {
-        SettingsSection.Controls -> LudensIcons.Default.SlideSettings
-        SettingsSection.Tools -> LudensIcons.Default.WindowDevTools
+        SettingsSection.Controls -> LudensIcons.Default.Games
+        SettingsSection.Tools -> LudensIcons.Default.Apps
         SettingsSection.System -> LudensIcons.Default.System
-        SettingsSection.About -> LudensIcons.Default.Apps
+        SettingsSection.About -> LudensIcons.Default.BroadActivityFeed
+        SettingsSection.Actions -> LudensIcons.Default.AppsList
     }
 
     val text = stringResource(
@@ -73,6 +67,7 @@ private fun SettingsTabOption(
             SettingsSection.Tools -> Res.string.stc_tabs_tools
             SettingsSection.System -> Res.string.stc_tabs_system
             SettingsSection.About -> Res.string.stc_tabs_about
+            SettingsSection.Actions -> Res.string.stc_tabs_actions
         }
     )
 
@@ -92,7 +87,6 @@ private fun SettingsTabOption(
  * A vertical navigation panel displaying settings section tabs.
  *
  * @param section The currently selected section.
- * @param language The current system language.
  * @param onBack Callback invoked when the back button is clicked.
  * @param onEvent Callback invoked when a section tab is selected.
  * @param modifier The modifier to be applied to the panel.
@@ -102,7 +96,6 @@ private fun SettingsTabOption(
 @Composable
 fun SideTabOptions(
     section: SettingsSection,
-    language: SystemLanguage,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
     color: Color = MaterialTheme.colorScheme.surface,
@@ -110,13 +103,10 @@ fun SideTabOptions(
     onEvent: (SettingsEvent.OnSelectSection) -> Unit,
 ) {
     val spacing = LocalSpacing.current
-    var maxWidth by remember(language) { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
 
     Surface(
         modifier = modifier
             .sizeIn(
-                minWidth = maxWidth,
                 maxWidth = 192.dp
             ),
         color = color
@@ -143,23 +133,13 @@ fun SideTabOptions(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 items(SettingsSection.entries) {
-                    Box(
-                        modifier = Modifier.onSizeChanged { size ->
-                            with(density) {
-                                val dp = size.width.toDp()
-                                maxWidth = max(maxWidth, dp)
-                            }
-                        },
-                    ) {
-                        SettingsTabOption(
-                            modifier = Modifier.widthIn(min = maxWidth),
-                            selected = section == it,
-                            option = it,
-                            onClick = {
-                                onEvent(SettingsEvent.OnSelectSection(it))
-                            }
-                        )
-                    }
+                    SettingsTabOption(
+                        selected = section == it,
+                        option = it,
+                        onClick = {
+                            onEvent(SettingsEvent.OnSelectSection(it))
+                        }
+                    )
                 }
             }
         }
