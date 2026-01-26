@@ -21,4 +21,10 @@
     <string name="key_joystick">Joystick</string>
     <string name="key_button">%1$s button (%2$s)</string> <!--(keySimpleName, inputKeyName) 'X button (Enter)'-->
     <string name="key_settings">Settings</string>
+    <!--quick actions-->
+    <string name="actions_settings">Go to settings</string>
+    <string name="actions_toggle_controls">Show or hide controls</string>
+    <string name="actions_toggle_fps">Show or hide FPS counter</string>
+    <string name="actions_toggle_mute">Mute or unmute audio</string>
+    <string name="actions_toggle_webgl">Enable or disable WebGL rendering</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.yoimerdr.compose.ludens.core.presentation.mapper.settings
 
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionItem
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlItem
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ControlSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
@@ -9,6 +11,8 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionSettingsState
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlActionItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
@@ -18,15 +22,17 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.Positionable
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SystemSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
+import kotlinx.collections.immutable.toPersistentList
 
 fun Settings.toUIModel(): SettingsState = SettingsState(
     tool = tool.toUIModel(),
     control = control.toUIModel(),
-    system = system.toUIModel()
+    system = system.toUIModel(),
+    action = action.toUIModel()
 )
 
 fun ToolSettings.toUIModel(): ToolSettingsState = ToolSettingsState(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun SystemSettings.toUIModel(): SystemSettingsState = SystemSettingsState(
@@ -37,8 +43,25 @@ fun SystemSettings.toUIModel(): SystemSettingsState = SystemSettingsState(
 fun ControlSettings.toUIModel(): ControlSettingsState = ControlSettingsState(
     enabled = enabled,
     alpha = alpha.value,
-    items = items.map { it.toUIModel() },
-    positions = positions.map { it.toUIModel() }
+    items = items
+        .map { it.toUIModel() }
+        .toPersistentList(),
+    positions = positions
+        .map { it.toUIModel() }
+        .toPersistentList()
+)
+
+fun ActionSettings.toUIModel(): ActionSettingsState = ActionSettingsState(
+    items = items
+        .map { it.toUIModel() }
+        .toPersistentList(),
+    enabled = enabled
+)
+
+fun ActionItem.toUIModel(): ActionItemState = ActionItemState(
+    type = type,
+    enabled = enabled,
+    order = order
 )
 
 /**
@@ -74,11 +97,12 @@ fun PositionableItem.toUIModel(): PositionableItemState = PositionableItemState(
 fun SettingsState.toDomain(): Settings = Settings(
     tool = tool.toDomain(),
     control = control.toDomain(),
-    system = system.toDomain()
+    system = system.toDomain(),
+    action = action.toDomain()
 )
 
 fun ToolSettingsState.toDomain(): ToolSettings = ToolSettings(
-    isMuted = isMuted, showFPS = showFPS
+    isMuted = isMuted, showFPS = showFPS, useWebGL = useWebGL
 )
 
 fun SystemSettingsState.toDomain(): SystemSettings = SystemSettings(
@@ -91,6 +115,17 @@ fun ControlSettingsState.toDomain(): ControlSettings = ControlSettings(
     alpha = Alpha.coerce(alpha),
     items = items.map { it.toDomain() },
     positions = positions.map { it.toDomain() }
+)
+
+fun ActionSettingsState.toDomain(): ActionSettings = ActionSettings(
+    items = items.map { it.toDomain() },
+    enabled = enabled
+)
+
+fun ActionItemState.toDomain(): ActionItem = ActionItem(
+    type = type,
+    enabled = enabled,
+    order = order
 )
 
 /**
