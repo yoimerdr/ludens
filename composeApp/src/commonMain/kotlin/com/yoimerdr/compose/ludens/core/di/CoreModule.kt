@@ -25,9 +25,13 @@ expect fun Scope.createPlatformLocale(): PlatformLocale
 @ComponentScan("com.yoimerdr.compose.ludens.core")
 @Configuration()
 object CoreModule {
+    private var store: DataStore<ProtoSettings>? = null
+
     @Single
     fun providesDataStore(scope: Scope): DataStore<ProtoSettings> {
-        return scope.createDataStore()
+        return store ?: scope.createDataStore().also {
+            store = it
+        }
     }
 
     @Single
