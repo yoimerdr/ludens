@@ -13,7 +13,6 @@ import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionSettin
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.features.home.presentation.components.Joystick
-import com.yoimerdr.compose.ludens.features.home.presentation.components.SettingsActions
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin

@@ -1,4 +1,4 @@
-package com.yoimerdr.compose.ludens.features.home.presentation.components
+package com.yoimerdr.compose.ludens.features.home.presentation.sections
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -35,16 +35,13 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
 import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
 import com.yoimerdr.compose.ludens.ui.state.layout.DockMode
 import com.yoimerdr.compose.ludens.ui.state.layout.rememberDockState
-import kotlinx.collections.immutable.mutate
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
 import kotlin.math.roundToInt
 
 /**
  * Displays the configuration or quick actions settings button according to the [actions].
  *
  * If [actions] is empty, it displays a single configuration button. Otherwise, it displays a
- * floating dock with the actions.  
+ * floating dock with the actions.
  *
  * @param modifier The modifier to be applied to the button container
  * @param onActionClick Callback invoked when a specific action item is clicked
@@ -62,9 +59,7 @@ fun SettingsActions(
     modifier: Modifier = Modifier,
     onActionClick: (ActionItemState) -> Unit,
     onConfiguration: () -> Unit,
-    toolSettings: ToolSettingsState,
-    controlSettings: ControlSettingsState,
-    actions: List<ActionItemState> = emptyList(),
+    actions: List<Pair<Boolean, ActionItemState>> = emptyList(),
     control: ControlItemState?,
     position: PositionableItemState?,
 ) {
@@ -117,22 +112,18 @@ fun SettingsActions(
                 padding = PaddingValues.Zero,
             ) {
                 Column {
-                    actions.forEach {
+                    actions.forEach { (isActive, item) ->
+                        if (!item.enabled)
+                            return@forEach
+
                         IconButton(
                             shape = MaterialTheme.shapes.small,
                             onClick = {
-                                onActionClick(it)
+                                onActionClick(item)
                             }
                         ) {
-                            val isActive = when (it.type) {
-                                ActionType.ToggleMute -> toolSettings.isMuted
-                                ActionType.ToggleWebGL -> toolSettings.useWebGL
-                                ActionType.ToggleFPS -> toolSettings.showFPS
-                                ActionType.ToggleControls -> controlSettings.enabled
-                                else -> false
-                            }
                             Icon(
-                                imageVector = when (it.type) {
+                                imageVector = when (item.type) {
                                     ActionType.Settings -> LudensIcons.Default.Settings
                                     ActionType.ToggleFPS -> LudensIcons.Default.TopSpeed
                                     ActionType.ToggleMute -> LudensIcons.Default.SpeakerMute
@@ -183,15 +174,20 @@ fun SettingsActions(
     SettingsActions(
         modifier = modifier,
         onConfiguration = onConfiguration,
-        actions = if (actions.enabled)
+        actions = if (actions.enabled) {
             actions.items
-                .toPersistentList()
-                .mutate {
-                    it.groupBy { item -> item.order }
+                .sortedBy { it.order }
+                .map { item ->
+                    val isActive = when (item.type) {
+                        ActionType.ToggleMute -> toolSettings.isMuted
+                        ActionType.ToggleWebGL -> toolSettings.useWebGL
+                        ActionType.ToggleFPS -> toolSettings.showFPS
+                        ActionType.ToggleControls -> controlSettings.enabled
+                        else -> false
+                    }
+                    isActive to item
                 }
-        else persistentListOf(),
-        toolSettings = toolSettings,
-        controlSettings = controlSettings,
+        } else emptyList(),
         control = control,
         position = position,
         onActionClick = onActionClick
