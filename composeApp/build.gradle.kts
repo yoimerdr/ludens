@@ -1,5 +1,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -19,7 +21,7 @@ buildkonfig {
     packageName = "com.yoimerdr.compose.ludens.konfig.generated"
 
     defaultConfigs {
-        buildConfigField(Type.STRING, "LUDENS_VERSION", "0.1.0-beta")
+        buildConfigField(Type.STRING, "LUDENS_VERSION", "0.1.0")
         buildConfigField(Type.STRING, "LUDENS_WEBSITE_URL", "https://github.com/yoimerdr/ludens")
         buildConfigField(
             Type.STRING,
@@ -37,6 +39,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -97,20 +100,46 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.yoimerdr.compose.ludens"
+        applicationId = project.findProperty("ludens.applicationId") as? String ?: "com.yoimerdr.compose.ludens"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = project.findProperty("ludens.applicationVersion") as? String ?: "1.0"
+        
+        val appName = project.findProperty("ludens.applicationName") as? String ?: "Ludens"
+        val appLauncherName = project.findProperty("ludens.applicationLauncherName") as? String ?: "Ludens"
+        
+        resValue("string", "app_name", appName)
+        resValue("string", "app_launcher_name", appLauncherName)
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        create("release") {
+            val keystorePropertiesFile = rootProject.file("keystore.properties")
+            if (keystorePropertiesFile.exists()) {
+                val properties = Properties()
+                properties.load(FileInputStream(keystorePropertiesFile))
+
+                storeFile = rootProject.file(properties.getProperty("storeFile"))
+                storePassword = properties.getProperty("storePassword")
+                keyAlias = properties.getProperty("keyAlias")
+                keyPassword = properties.getProperty("keyPassword")
+            }
+        }
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
+        }
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
