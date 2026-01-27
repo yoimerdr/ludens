@@ -1,6 +1,6 @@
 # Ludens
 
-[Leer en Español](README.es.md)
+[Leer en Español](README.es.md) | [Build Guide](BUILD.md)
 
 [![Kotlin](https://img.shields.io/badge/kotlin-v2.3.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-v1.9.3-blue?logo=JetpackCompose)](https://github.com/JetBrains/compose-multiplatform)
@@ -11,6 +11,8 @@
 ![badge-ios](http://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat)
 
 **Ludens** is a **Compose Multiplatform** wrapper developed in **Kotlin**, designed to port RPG Maker MV/MZ games to mobile devices (Android and iOS). This project facilitates the integration of your HTML5 game into a modern native application, offering full control over configuration and deployment.
+
+[Download Sample APK](https://drive.google.com/file/d/1-IyLUKFAGt-fpSf4jBSzhtAzN3VLv5Sm/view?usp=sharing)
 
 ## Features
 
@@ -87,6 +89,8 @@ ludens.applicationLauncherName=Game
 ```
 
 #### Build
+
+> **Full Guide**: For a detailed walkthrough with images and specific configuration steps, please see the **[Build Guide](BUILD.md)**.
 
 ##### Debug Build
 For quick testing on emulator or device:

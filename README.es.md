@@ -1,5 +1,7 @@
 # Ludens
 
+[Read in English](README.md) | [Guía de Construcción](BUILD.es.md)
+
 [![Kotlin](https://img.shields.io/badge/kotlin-v2.3.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-v1.9.3-blue?logo=JetpackCompose)](https://github.com/JetBrains/compose-multiplatform)
 [![Compose WebView](https://img.shields.io/badge/Compose%20WebView-v2.0.3-blue)](https://github.com/KevinnZou/compose-webview-multiplatform)
@@ -9,6 +11,8 @@
 ![badge-ios](http://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat)
 
 **Ludens** es un wrapper de **Compose Multiplatform** desarrollado en **Kotlin**, diseñado para portar juegos de RPG Maker MV/MZ a dispositivos móviles (Android e iOS). Este proyecto facilita la integración de tu juego HTML5 en una aplicación nativa moderna, ofreciendo control total sobre la configuración y el despliegue.
+
+[Descargar APK de Ejemplo](https://drive.google.com/file/d/1-IyLUKFAGt-fpSf4jBSzhtAzN3VLv5Sm/view?usp=sharing)
 
 ## Características
 
@@ -86,7 +90,9 @@ ludens.applicationLauncherName=Juego
 
 #### Compilar
 
-##### Debug Build
+> **Guía Completa**: Para un tutorial detallado con imágenes y pasos de configuración específicos, revisa la **[Guía de Construcción](BUILD.es.md)**.
+
+##### Debug Build (Pruebas)
 Para pruebas rápidas en emulador o dispositivo:
 Ejecuta `./gradlew assembleDebug`.
 El APK se generará en: `composeApp/build/outputs/apk/debug/`
