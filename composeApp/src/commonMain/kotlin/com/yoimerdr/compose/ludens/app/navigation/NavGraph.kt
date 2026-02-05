@@ -41,6 +41,12 @@ fun NavGraph(
         mutableStateOf(WebFeaturesState())
     }
 
+    val onRestart = {
+        plugin = PluginState()
+        features = WebFeaturesState()
+        navController.navigateTo(Destination.Splash)
+    }
+
     ProvideWebPlugin(
         plugin = plugin,
         features = features,
@@ -51,11 +57,7 @@ fun NavGraph(
             onLoad = {
                 plugin = it
             },
-            onRestart = {
-                plugin = PluginState()
-                features = WebFeaturesState()
-                navController.navigateTo(Destination.Splash)
-            }
+            onRestart = onRestart
         )
 
         NavHost(
@@ -83,7 +85,8 @@ fun NavGraph(
                 ProvideInteractionManager {
                     SettingsScreen(
                         nav = navController,
-                        systemViewModel = systemViewModel
+                        systemViewModel = systemViewModel,
+                        onRestart = onRestart
                     )
                 }
             }
