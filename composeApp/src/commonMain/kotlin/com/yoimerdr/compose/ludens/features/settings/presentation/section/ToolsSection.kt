@@ -3,20 +3,21 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.section
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.core.presentation.components.effects.FpsCounterVisible
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolActionOption
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ToolSwitchOption
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.ToolSettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateAudioMuted
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateShowFps
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestMute
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestWebGL
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateUseWebGL
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.SettingsRequest
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.ToolSectionRequest
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.CollectInteractionResult
@@ -28,7 +29,6 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.SingleTap
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
 import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
 import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
-import kotlinx.coroutines.launch
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_tools_move_controls
 import ludens.composeapp.generated.resources.stc_tools_mute_audio
@@ -51,8 +51,7 @@ fun ToolsSettingsSection(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
     onNavigate: (Destination) -> Unit,
-    onRequest: (ToolSectionRequest) -> Unit,
-    onEvent: (ToolSettingsEvent) -> Unit,
+    onEvent: (SettingsEvent) -> Unit,
 ) {
     val features = LocalWebFeatures.current
     val plugin = LocalPlugin.current
@@ -84,7 +83,11 @@ fun ToolsSettingsSection(
                 enabled = features.supportsWebAudio,
                 checked = settings.isMuted,
                 onCheckedChange = {
-                    onRequest(RequestMute(it))
+                    onEvent(
+                        SettingsEvent.TryUpdate(
+                            UpdateAudioMuted(it)
+                        )
+                    )
                 }
             )
         }
@@ -110,7 +113,11 @@ fun ToolsSettingsSection(
                 enabled = features.supportsWebGL,
                 checked = settings.useWebGL,
                 onCheckedChange = {
-                    onRequest(RequestWebGL(it))
+                    onEvent(
+                        SettingsEvent.TryUpdate(
+                            UpdateUseWebGL(it)
+                        )
+                    )
                 }
             )
         }
@@ -140,16 +147,18 @@ fun ToolsSettingsSection(
             viewModel.resolve(it.request)
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.requests.collect {
+            if (it is SettingsRequest.Interaction)
+                interactionManager.request(it)
+        }
+    }
+
     ToolsSettingsSection(
         modifier = modifier,
         settings = tools,
         state = state,
         onEvent = viewModel::handle,
         onNavigate = onNavigate,
-        onRequest = {
-            viewModel.viewModelScope.launch {
-                interactionManager.request(it)
-            }
-        }
     )
 }

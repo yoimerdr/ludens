@@ -15,11 +15,8 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.O
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.OnChangeTheme
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.RestoreDefaultSettings
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateAudioMuted
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateUseWebGL
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestRestartingRestore
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.SettingsRequest
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.ToolSectionRequest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -47,6 +44,8 @@ class SystemSettingsViewModel(
     initialValue = SystemSettingsState(),
 ) {
 
+    private lateinit var currentSettings: SettingsState
+
     /**
      * Flag indicating whether a settings request originated from restoring default settings.
      * Used to apply all default settings after a pending confirmation is resolved.
@@ -55,6 +54,12 @@ class SystemSettingsViewModel(
     private var _requestFromDefaults: Set<SettingsCategory>? = null
 
     init {
+        viewModelScope.launch {
+            getAllSettingsUseCase()
+                .collect {
+                    currentSettings = it.toUIModel()
+                }
+        }
         viewModelScope.launch {
             getSystemSettingsUseCase().stateCollect { settings ->
                 settings.toUIModel()
@@ -104,8 +109,6 @@ class SystemSettingsViewModel(
         val default = SettingsState.default
         val categoriesToReset = categories.ifEmpty { SettingsCategory.All }
 
-        val currentSettings = getAllSettingsUseCase().first().toUIModel()
-
         var updated = currentSettings
 
         if (SettingsCategory.Controls in categoriesToReset) {
@@ -149,19 +152,15 @@ class SystemSettingsViewModel(
                 _requestFromDefaults = categories
 
                 // Get current tool settings to check if confirmation is needed
-                val currentSettings = getAllSettingsUseCase().first().toUIModel()
                 val defaultTool = default.tool
                 val tool = currentSettings.tool
 
                 // Check if mute state needs confirmation
-                if (defaultTool.isMuted != tool.isMuted) {
-                    emitEvent(UpdateAudioMuted(defaultTool.isMuted))
-                    return@launch
-                }
-
-                // Check if WebGL state needs confirmation
-                if (defaultTool.useWebGL != tool.useWebGL) {
-                    emitEvent(UpdateUseWebGL(defaultTool.useWebGL))
+                if (
+                    defaultTool.isMuted != tool.isMuted ||
+                    defaultTool.useWebGL != tool.useWebGL
+                ) {
+                    emitRequest(RequestRestartingRestore)
                     return@launch
                 }
             }
@@ -190,22 +189,27 @@ class SystemSettingsViewModel(
         }
     }
 
-    fun reject(request: SettingsRequest) {
+    override fun reject(request: SettingsRequest) {
         when (request) {
-            is ToolSectionRequest -> {
+            is RequestRestartingRestore -> {
                 _requestFromDefaults = null
             }
+
+            else -> {}
         }
     }
 
-    fun resolve(request: SettingsRequest) {
-        when (request) {
-            is ToolSectionRequest -> {
+    override fun resolve(request: SettingsRequest): Boolean {
+        return when (request) {
+            is RequestRestartingRestore -> {
                 if (_requestFromDefaults != null) {
                     restoreDefaults(_requestFromDefaults!!)
                 }
                 _requestFromDefaults = null
+                true
             }
+
+            else -> false
         }
     }
 }

@@ -12,7 +12,7 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.U
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateUseWebGL
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestMute
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestWebGL
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.ToolSectionRequest
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.SettingsRequest
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -65,7 +65,7 @@ class ToolsSettingsViewModel(
      *
      * @param event The event containing the WebGL state.
      */
-    private fun updateUseWebGL(event: UpdateUseWebGL) {
+    fun updateUseWebGL(event: UpdateUseWebGL) {
         updateState { copy(useWebGL = event.enabled) }
     }
 
@@ -81,25 +81,45 @@ class ToolsSettingsViewModel(
     override fun onEvent(event: SettingsEvent) {
         when (event) {
             is UpdateShowFps -> updateShowFps(event)
-            is UpdateAudioMuted -> updateAudioMuted(event)
-            is UpdateUseWebGL -> updateUseWebGL(event)
+            is SettingsEvent.TryUpdate -> {
+                when (event.event) {
+                    is UpdateAudioMuted -> emitRequest(
+                        RequestMute(event.event.enabled)
+                    )
+
+                    is UpdateUseWebGL -> emitRequest(
+                        RequestWebGL(event.event.enabled)
+                    )
+
+                    else -> {}
+                }
+            }
+
+            is UpdateAudioMuted -> {
+                updateAudioMuted(event)
+            }
+
+            is UpdateUseWebGL -> {
+                updateUseWebGL(event)
+            }
+
             else -> {}
         }
     }
 
-    fun resolve(request: ToolSectionRequest): Boolean {
+    override fun resolve(request: SettingsRequest): Boolean {
         return when (request) {
             is RequestMute -> {
-                updateAudioMuted(
+                handle(
                     UpdateAudioMuted(
-                        request.value,
+                        request.value
                     )
                 )
                 true
             }
 
             is RequestWebGL -> {
-                updateUseWebGL(
+                handle(
                     UpdateUseWebGL(
                         request.value,
                     )
