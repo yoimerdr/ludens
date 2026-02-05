@@ -50,6 +50,9 @@ fun SettingsScreen(
     toolsViewModel: ToolsSettingsViewModel = koinViewModel(),
     systemViewModel: SystemSettingsViewModel = koinViewModel(),
     actionViewModel: ActionSettingsViewModel = koinViewModel(),
+    onRestart: () -> Unit = {
+        nav.navigateTo(Destination.Splash)
+    },
 ) {
     val interactionManager = LocalInteractionManager.current
     val request by interactionManager.request.collectAsStateWithLifecycle()
@@ -72,7 +75,7 @@ fun SettingsScreen(
                 interactionManager.reject()
             }
         } else if (viewModel.requireRestart)
-            nav.navigateTo(Destination.Splash)
+            onRestart()
         else nav.popBackStack()
     }
 
@@ -82,7 +85,7 @@ fun SettingsScreen(
         SettingsContents(
             onClose = {
                 if (viewModel.requireRestart)
-                    nav.navigateTo(Destination.Splash)
+                    onRestart()
                 else nav.popBackStack()
             },
             viewModel = viewModel,
