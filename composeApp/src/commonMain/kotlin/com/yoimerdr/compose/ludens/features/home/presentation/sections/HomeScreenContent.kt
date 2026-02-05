@@ -16,7 +16,6 @@ import com.yoimerdr.compose.ludens.features.home.presentation.components.Joystic
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin
-import com.yoimerdr.compose.ludens.ui.state.isAvailable
 import kotlinx.collections.immutable.persistentListOf
 
 /**
@@ -128,7 +127,7 @@ fun BoxScope.HomeScreenContent(
 
     val plugin = LocalPlugin.current
 
-    if (plugin.isAvailable && entry.isAvailable) {
+    if (!plugin.isLoading && entry.isAvailable) {
         HomeScreenContent(
             controls = controls,
             actions = actions,
