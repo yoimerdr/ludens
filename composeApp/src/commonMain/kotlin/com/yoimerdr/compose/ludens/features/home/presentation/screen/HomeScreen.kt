@@ -161,7 +161,8 @@ private fun HomeScreenEffects(
 
     val features = LocalWebFeatures.current
 
-    LaunchedEffect(isLoading, tools.isMuted, tools.useWebGL, features) {
+    LaunchedEffect(isLoading, features) {
+        println("HomeScreenEffects: isLoading=$isLoading, features=$features")
         viewModel.handle(HomeEvent.UpdateEntry(features))
     }
 
@@ -176,7 +177,6 @@ private fun HomeScreenEffects(
     }
 
     val interactionManager = LocalInteractionManager.current
-    val settings by viewModel.toolState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.events.collect {
@@ -184,11 +184,11 @@ private fun HomeScreenEffects(
                 is HomeEvent.OnClickAction -> {
                     when (it.action.type) {
                         ActionType.ToggleMute -> {
-                            interactionManager.request(RequestMute(!settings.isMuted))
+                            interactionManager.request(RequestMute(!tools.isMuted))
                         }
 
                         ActionType.ToggleWebGL -> {
-                            interactionManager.request(RequestWebGL(!settings.useWebGL))
+                            interactionManager.request(RequestWebGL(!tools.useWebGL))
                         }
 
                         ActionType.Settings -> {
