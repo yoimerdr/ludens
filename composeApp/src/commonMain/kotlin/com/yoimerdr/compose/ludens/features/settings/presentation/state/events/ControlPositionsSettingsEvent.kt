@@ -3,7 +3,13 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.state.events
 import androidx.compose.ui.geometry.Rect
 import com.yoimerdr.compose.ludens.core.domain.model.settings.PositionableType
 
-sealed interface ControlPositionsSettingsEvent : SettingsEvent
+sealed interface ControlPositionsSettingsEvent : SettingsEvent {
+    /**
+     * Event indicating an update to control positions settings.
+     * */
+    sealed interface UpdateSettings : ControlPositionsSettingsEvent,
+        SettingsEvent.UpdateSettings
+}
 
 /**
  * Updates the position of a control.
@@ -16,7 +22,7 @@ data class UpdateControlPosition(
     val index: Int,
     val x: Float,
     val y: Float,
-) : ControlPositionsSettingsEvent
+) : ControlPositionsSettingsEvent.UpdateSettings
 
 /**
  * Swaps the positions of two controls within specified bounds.
@@ -27,7 +33,7 @@ data class UpdateControlPosition(
 data class SwapControlPositions(
     val indices: Pair<Int, Int>,
     val bounds: Rect,
-) : ControlPositionsSettingsEvent
+) : ControlPositionsSettingsEvent.UpdateSettings
 
 /**
  * Resets the positions of specific controls to their default values.
@@ -37,7 +43,7 @@ data class SwapControlPositions(
  */
 data class RestoreDefaultControlPositions(
     val items: Set<PositionableType>,
-) : ControlPositionsSettingsEvent {
+) : ControlPositionsSettingsEvent.UpdateSettings {
     /**
      * Constructs a [RestoreDefaultControlPositions] event that resets all positionable controls.
      */

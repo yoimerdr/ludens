@@ -2,7 +2,13 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.state.events
 
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
 
-sealed interface ControlSettingsEvent : SettingsEvent
+sealed interface ControlSettingsEvent : SettingsEvent {
+    /**
+     * Event indicating an update to control settings.
+     * */
+    sealed interface UpdateSettings : ControlSettingsEvent,
+        SettingsEvent.UpdateSettings
+}
 
 /**
  * Updates the enabled state of all controls (that can be disabled).
@@ -10,7 +16,7 @@ sealed interface ControlSettingsEvent : SettingsEvent
  * @param enabled Whether controls are enabled.
  */
 data class UpdateControlsEnabled(val enabled: Boolean) :
-    ControlSettingsEvent
+    ControlSettingsEvent.UpdateSettings
 
 /**
  * Updates the alpha transparency of all controls.
@@ -18,7 +24,7 @@ data class UpdateControlsEnabled(val enabled: Boolean) :
  * @param alpha The alpha value.
  */
 data class UpdateControlsAlpha(val alpha: Float) :
-    ControlSettingsEvent
+    ControlSettingsEvent.UpdateSettings
 
 /**
  * Updates the enabled state of a specific control.
@@ -26,8 +32,10 @@ data class UpdateControlsAlpha(val alpha: Float) :
  * @param index The control index.
  * @param enabled Whether the control is enabled.
  */
-data class UpdateControlEnabled(val index: Int, val enabled: Boolean) :
-    ControlSettingsEvent
+data class UpdateControlEnabled(
+    val index: Int,
+    val enabled: Boolean,
+) : ControlSettingsEvent.UpdateSettings
 
 /**
  * Updates the alpha transparency of a specific control.
@@ -35,8 +43,10 @@ data class UpdateControlEnabled(val index: Int, val enabled: Boolean) :
  * @param index The control index.
  * @param alpha The alpha value.
  */
-data class UpdateControlAlpha(val index: Int, val alpha: Float) :
-    ControlSettingsEvent
+data class UpdateControlAlpha(
+    val index: Int,
+    val alpha: Float,
+) : ControlSettingsEvent.UpdateSettings
 
 /**
  * Updates the key binding for a specific control.
@@ -44,5 +54,7 @@ data class UpdateControlAlpha(val index: Int, val alpha: Float) :
  * @param index The control index.
  * @param key The input key to bind.
  */
-class UpdateControlKey(val index: Int, val key: InputKey) :
-    ControlSettingsEvent
+class UpdateControlKey(
+    val index: Int,
+    val key: InputKey,
+) : ControlSettingsEvent.UpdateSettings
