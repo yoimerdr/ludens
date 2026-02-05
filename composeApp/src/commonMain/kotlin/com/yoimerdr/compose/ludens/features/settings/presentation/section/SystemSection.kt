@@ -36,10 +36,6 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.O
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.OnChangeTheme
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.RestoreDefaultSettings
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateAudioMuted
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateUseWebGL
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestMute
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.RequestWebGL
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.SettingsRequest
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.buttons.FilledTonalToggleButton
@@ -302,18 +298,9 @@ fun SystemSettingsSection(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect {
-            when (it) {
-                is UpdateAudioMuted -> {
-                    interactionManager.request(RequestMute(it.enabled))
-                }
-
-                is UpdateUseWebGL -> {
-                    interactionManager.request(RequestWebGL(it.enabled))
-                }
-
-                else -> {}
-            }
+        viewModel.requests.collect {
+            if (it is SettingsRequest.Interaction)
+                interactionManager.request(it)
         }
     }
 

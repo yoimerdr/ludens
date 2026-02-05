@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.requests.SettingsRequest
 import com.yoimerdr.compose.ludens.ui.extensions.state.debounceCollect
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,15 +37,21 @@ abstract class BaseSettingsViewModel<State>(
     protected val mState = MutableStateFlow(initialValue)
 
     /**
+     * Mutable state flow holding the source settings state.
+     *
+     * This value must mutate only when loading from source.
+     * */
+    protected val mSource = MutableStateFlow<State?>(null)
+
+    /**
      * Shared flow for emitting settings events.
      */
     protected val mEvents = MutableSharedFlow<SettingsEvent>()
 
     /**
-     * Stores the source settings to track changes and determine when to persist updates.
-     * When null, persistence is disabled.
-     */
-    protected var sourceSettings: State? = null
+     * Shared flow for emitting settings requests.
+     * */
+    protected val mRequests = MutableSharedFlow<SettingsRequest>()
 
     /**
      * Indicates whether the settings are currently loading from source.
@@ -55,18 +62,54 @@ abstract class BaseSettingsViewModel<State>(
     /**
      * State flow exposing the current settings state.
      */
-    val state = mState.stateIn(
-        scope = viewModelScope, started = stateStarted, initialValue = initialValue
+    open val state = mState.stateIn(
+        initialValue = initialValue,
+        stateStarted = stateStarted
     )
 
+    /**
+     * State flow exposing the source settings state.
+     * */
+    open val source = mSource.stateIn(
+        initialValue = null,
+        stateStarted = stateStarted
+    )
+
+    /**
+     * Shared flow exposing settings events.
+     * */
     val events = mEvents.asSharedFlow()
+
+    /**
+     * Shared flow exposing settings requests.
+     * */
+    val requests = mRequests.asSharedFlow()
+
+    /**
+     * Provides access to the source settings state value.
+     * */
+    protected open val sourceSettings: State?
+        get() = mSource.value
 
     /**
      * Provides access to the current settings state value.
      */
-    protected val settings: State
+    protected open val settings: State
         get() = mState.value
 
+    /**
+     * Converts a flow into a state flow within the view model scope.
+     *
+     * @see kotlinx.coroutines.flow.stateIn
+     * */
+    protected fun <T> Flow<T>.stateIn(
+        initialValue: T,
+        stateStarted: SharingStarted = SharingStarted.WhileSubscribed(5000L),
+    ) = this.stateIn(
+        scope = viewModelScope,
+        started = stateStarted,
+        initialValue = initialValue
+    )
 
     /**
      * Collects a flow and transforms each emission into a settings state.
@@ -77,14 +120,16 @@ abstract class BaseSettingsViewModel<State>(
      */
     protected suspend inline fun <T> Flow<T>.stateCollect(crossinline transform: (T) -> State) {
         distinctUntilChanged().collect { source ->
+            val result = transform(source)
             updateState {
-                val result = transform(source)
-                if (sourceSettings == null) {
-                    sourceSettings = result
-                }
-                isLoading = false
                 result
             }
+
+            if (mSource.value == null) {
+                mSource.update { result }
+            }
+
+            isLoading = false
         }
     }
 
@@ -97,7 +142,8 @@ abstract class BaseSettingsViewModel<State>(
     protected suspend inline fun persistCollect(crossinline executor: suspend (State) -> Unit) {
         mState.map { it }
             .debounceCollect {
-                if (sourceSettings != null) {
+                val source = sourceSettings
+                if (source != null && it != source) {
                     executor(it)
                 }
             }
@@ -126,6 +172,17 @@ abstract class BaseSettingsViewModel<State>(
     }
 
     /**
+     * Emits a settings request through the shared flow.
+     *
+     * @param request The request to emit.
+     * */
+    protected fun emitRequest(request: SettingsRequest) {
+        viewModelScope.launch {
+            mRequests.emit(request)
+        }
+    }
+
+    /**
      * Handles a settings event.
      * Subclasses must implement this method to define event handling logic.
      *
@@ -142,5 +199,17 @@ abstract class BaseSettingsViewModel<State>(
         onEvent(event)
 
         emitEvent(event)
+    }
+
+    open fun resolve(request: SettingsRequest): Boolean = false
+
+    open fun reject(request: SettingsRequest) {}
+
+    protected open fun reset(
+        initialValue: State,
+    ) {
+        mSource.update { null }
+        isLoading = true
+        mState.update { initialValue }
     }
 }

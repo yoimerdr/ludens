@@ -7,6 +7,12 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.Settings
  * Events for the settings screen.
  */
 sealed interface SettingsEvent {
+
+    /**
+     * Event indicating an update to settings.
+     * */
+    sealed interface UpdateSettings : SettingsEvent
+
     /**
      * Selects a settings section.
      *
@@ -18,5 +24,12 @@ sealed interface SettingsEvent {
      * Specific event related to navigation within the settings screen.
      * */
     data class NavigateTo(val destination: Destination) : SettingsEvent
+
+    /**
+     * Event indicating an attempt to update a setting.
+     * */
+    data class TryUpdate(
+        val event: UpdateSettings,
+    ) : SettingsEvent
 }
 
