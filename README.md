@@ -12,6 +12,10 @@
 
 **Ludens** is a **Compose Multiplatform** wrapper developed in **Kotlin**, designed to port RPG Maker MV/MZ games to mobile devices (Android and iOS). This project facilitates the integration of your HTML5 game into a modern native application, offering full control over configuration and deployment.
 
+<p align="center">
+  <img src="resources/images/samples/ludens-0.2.0-sample.gif" alt="Ludens Demo" width="450">
+</p>
+
 [Download Sample APK](https://github.com/yoimerdr/ludens/releases/latest)
 
 ## Features
