@@ -42,7 +42,7 @@
     -   [Guía de configuración](https://developer.android.com/courses/pathways/android-basics-compose-unit-1-pathway-2)
 *   **JDK**: Versión 17 o superior.
 *   **RPG Maker MV/MZ**: Tu proyecto exportado para web.
-    -   *Opcional*: Incluir y activar el plugin [`YDP_Ludens.js`](resources/plugins/js/YDP_Ludens.js) (disponible en la carpeta `resources/` de este repositorio) para activar algunas funcionalidades adicionales en el cliente ludens.
+    -   *Opcional*: Incluir y activar el plugin [`YDP_Ludens.js`](resources/plugins/js/YDP_Ludens.js) para activar algunas funcionalidades adicionales en el cliente ludens. Puedes encontrar la última versión y otros plugins recomendados en el [repositorio rpgm-plugins](https://github.com/yoimerdr/rpgm-plugins).
         *   **Recomendación**: Debe ser el **primer plugin** en tu gestor de plugins.
         *   **Compatibilidad**: Necesario para soportar versiones antiguas de WebView (soluciona errores en la verificación de carga de `fonts`).
     -   *Importante*: Verificar que los plugins utilizados en tu juego sean compatibles con entornos móviles (WebView).

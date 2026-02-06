@@ -34,7 +34,7 @@ Before exporting your game, consider the following:
 
 ### Plugins and Compatibility
 *   **Warning**: Many RPG Maker plugins are designed for PC (desktop) only. Verify that your plugins are compatible with mobile environments (WebView).
-*   **Recommended Plugin**: [`YDP_Ludens.js`](resources/plugins/js/YDP_Ludens.js).
+*   **Recommended Plugin**: [`YDP_Ludens.js`](resources/plugins/js/YDP_Ludens.js). You can find the latest version and other recommended plugins at the [rpgm-plugins repository](https://github.com/yoimerdr/rpgm-plugins).
     *   This plugin helps fix font loading issues on older WebView versions and enables extra functionalities.
     *   **Important**: Place it as the **first plugin** in your list.
 
