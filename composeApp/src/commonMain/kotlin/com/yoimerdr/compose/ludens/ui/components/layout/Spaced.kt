@@ -1,11 +1,12 @@
 package com.yoimerdr.compose.ludens.ui.components.layout
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 
 /**
  * A composable that arranges two components with space between them.
@@ -20,10 +21,12 @@ fun Spaced(
     prefix: @Composable RowScope.() -> Unit,
     suffix: @Composable RowScope.() -> Unit,
 ) {
-    Row(
+    val spacing = LocalSpacing.current
+    FlowRow(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        itemVerticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(spacing.small)
     ) {
         prefix()
         suffix()

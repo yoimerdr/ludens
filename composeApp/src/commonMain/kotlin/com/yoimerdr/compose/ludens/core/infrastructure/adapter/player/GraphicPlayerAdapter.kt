@@ -24,8 +24,12 @@ class GraphicPlayerAdapter(
 ) : GraphicPlayer {
 
     override fun onKeyEvent(key: GraphicsKeyEvent, pressed: Boolean) {
-        evaluator.evaluateKeyEvent(KeyEventType.Down, false) { type, it ->
+        evaluator.evaluateKeyEvent(KeyEventType.Down) { type, it ->
             key.copy(type = type, timeout = it)
         }
+    }
+
+    override fun onKeyEvent(key: GraphicsKeyEvent) {
+        evaluator.evaluateKeyEvent(key)
     }
 }

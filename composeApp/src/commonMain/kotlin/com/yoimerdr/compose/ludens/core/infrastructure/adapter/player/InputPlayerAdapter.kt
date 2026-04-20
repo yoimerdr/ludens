@@ -28,9 +28,13 @@ class InputPlayerAdapter(
         pressed: Boolean,
     ) {
         evaluator.evaluateKeyEvent(
-            KeyEventType.Down, pressed
+            KeyEventType.Down, !pressed
         ) { type, i ->
             key.copy(type = type, timeout = i)
         }
+    }
+
+    override fun onKeyEvent(key: InputKeyEvent) {
+        evaluator.evaluateKeyEvent(key)
     }
 }

@@ -19,8 +19,11 @@ import ludens.composeapp.generated.resources.actions_toggle_controls
 import ludens.composeapp.generated.resources.actions_toggle_fps
 import ludens.composeapp.generated.resources.actions_toggle_mute
 import ludens.composeapp.generated.resources.actions_toggle_webgl
+import ludens.composeapp.generated.resources.dark
 import ludens.composeapp.generated.resources.en
 import ludens.composeapp.generated.resources.es
+import ludens.composeapp.generated.resources.light
+import ludens.composeapp.generated.resources.system_default
 import ludens.composeapp.generated.resources.system_language
 import ludens.composeapp.generated.resources.unknown
 import org.jetbrains.compose.resources.stringResource
@@ -182,6 +185,16 @@ val SystemTheme.isDarkTheme: Boolean
  *
  * @return A localized string representing the language setting.
  */
+val SystemTheme.label: String
+    @Composable
+    get() {
+        return when (this) {
+            SystemTheme.Light -> stringResource(Res.string.light)
+            SystemTheme.Dark -> stringResource(Res.string.dark)
+            SystemTheme.System -> stringResource(Res.string.system_default)
+        }
+    }
+
 val SystemLanguage.label: String
     @Composable get() = when (this) {
         SystemLanguage.English -> stringResource(Res.string.en)

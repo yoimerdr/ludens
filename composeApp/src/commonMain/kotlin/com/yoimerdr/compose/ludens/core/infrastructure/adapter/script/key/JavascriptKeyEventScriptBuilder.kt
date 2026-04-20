@@ -16,7 +16,7 @@ import org.koin.core.annotation.Factory
  *
  * @return A list of [KeyEventProperty] objects representing the event properties.
  */
-private fun KeyEvent.toEventProperties(): List<KeyEventProperty> {
+fun KeyEvent.toEventProperties(): List<KeyEventProperty> {
     return listOf(
         KeyEventProperty(
             "keyCode", code
@@ -34,7 +34,7 @@ private fun KeyEvent.toEventProperties(): List<KeyEventProperty> {
  *
  * @return A string representing the JavaScript object literal.
  */
-private fun KeyEvent.toEventPropertiesString(): String {
+fun KeyEvent.toEventPropertiesString(): String {
     return toEventProperties()
         .joinToString(separator = ",", prefix = "{", postfix = "}") {
             val (name, value, isStrict) = it
@@ -51,7 +51,7 @@ private fun KeyEvent.toEventPropertiesString(): String {
  *
  * @return A JavaScript statement that updates the movement state.
  */
-private fun MovementKeyEvent.toEventScript(): String {
+fun MovementKeyEvent.toEventScript(): String {
     val movement = InputKey.movements.first { it.code == code }
     // edit directly for movement state
     val isActive = type == KeyEventType.Down
@@ -67,7 +67,7 @@ private fun MovementKeyEvent.toEventScript(): String {
  *
  * @return A JavaScript function call for the input event.
  */
-private fun InputKeyEvent.toEventScript(): String {
+fun InputKeyEvent.toEventScript(): String {
     // for other codes, whe use the Input callbacks
     val properties = toEventPropertiesString()
     return when (type) {
@@ -84,7 +84,7 @@ private fun InputKeyEvent.toEventScript(): String {
  *
  * @return A JavaScript function call for the graphics key event.
  */
-private fun GraphicsKeyEvent.toEventScript(): String {
+fun GraphicsKeyEvent.toEventScript(): String {
     // for graphics key, whe only use the onKeyDown event
     val properties = toEventPropertiesString()
     return "Graphics._onKeyDown($properties)"
@@ -98,7 +98,7 @@ private fun GraphicsKeyEvent.toEventScript(): String {
  *
  * @return A JavaScript script string for the specific key event type.
  */
-private fun KeyEvent.toKeyEventScript(): String {
+fun KeyEvent.toKeyEventScript(): String {
     return when (this) {
         is InputKeyEvent -> toEventScript()
         is GraphicsKeyEvent -> toEventScript()
@@ -114,7 +114,7 @@ private fun KeyEvent.toKeyEventScript(): String {
  *
  * @return A complete JavaScript statement for the key event.
  */
-private fun KeyEvent.toScript(): String {
+fun KeyEvent.toScript(): String {
     val state = this.toKeyEventScript()
     return if (timeout != null) {
         "setTimeout(function(){$state;}, $timeout);"
@@ -136,30 +136,45 @@ class JavascriptKeyEventScriptBuilder : KeyEventScriptBuilder {
     /**
      * Mutable list storing the key events to be converted to scripts.
      */
-    private val scripts = mutableListOf<KeyEvent>()
+    private val keys = mutableListOf<KeyEvent>();
 
     override fun add(script: KeyEvent): KeyEventScriptBuilder {
-        scripts.add(script)
+        keys.add(script)
         return this
     }
 
     override fun add(transform: KeyEventScriptBuilder.() -> KeyEvent): KeyEventScriptBuilder {
         val script = transform(this)
-        scripts.add(script)
+        keys.add(script)
         return this
     }
 
+
     override fun restart(): KeyEventScriptBuilder {
-        scripts.clear()
+        keys.clear()
         return this
     }
 
     override fun build(): String {
-        return scripts.joinToString(separator = " ") {
-            "${it.toScript()};"
-        }.let {
-            scripts.clear()
-            it
+        val (first, second) = keys.partition { it.timeout == null }
+        val script = StringBuilder()
+
+        script.append(first.joinToString(separator = " ") { "${it.toKeyEventScript()};" })
+            .appendLine()
+
+        val delayed = second.groupBy { it.timeout!! }
+
+        delayed.forEach {
+            val (timeout, events) = it
+
+            script.append("setTimeout(function(){")
+                .append(events.joinToString(separator = " ") { key -> "${key.toKeyEventScript()};" })
+                .append("},$timeout);")
+                .appendLine()
         }
+
+
+        keys.clear()
+        return script.toString()
     }
 }

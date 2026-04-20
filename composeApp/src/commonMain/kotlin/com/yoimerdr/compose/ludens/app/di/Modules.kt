@@ -5,5 +5,5 @@ import com.yoimerdr.compose.ludens.koin.generated.module
 import org.koin.core.module.Module
 
 val ApplicationModules: List<Module> = listOf(
-    CoreModule.module
+    CoreModule.module,
 )

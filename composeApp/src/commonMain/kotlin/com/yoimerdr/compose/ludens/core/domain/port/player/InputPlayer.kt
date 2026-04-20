@@ -15,6 +15,13 @@ interface InputPlayer {
      * @param key The input key event to process.
      * @param pressed Whether the key is pressed (true) or released (false).
      */
-    fun onKeyEvent(key: InputKeyEvent, pressed: Boolean = false)
+    fun onKeyEvent(key: InputKeyEvent, pressed: Boolean)
+
+    /**
+     * Handles an input action event.
+     *
+     * @param key The input key event to process.
+     */
+    fun onKeyEvent(key: InputKeyEvent)
 }
 

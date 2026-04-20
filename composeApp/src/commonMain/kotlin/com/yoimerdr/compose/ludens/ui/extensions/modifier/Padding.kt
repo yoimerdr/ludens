@@ -1,9 +1,11 @@
 package com.yoimerdr.compose.ludens.ui.extensions.modifier
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.takeOrElse
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 
 /**
  * Applies a standard content padding to the modifier.
@@ -14,11 +16,18 @@ import androidx.compose.ui.unit.dp
  * @param bottom The padding to apply to the bottom.
  * @return A new modifier with the padding applied.
  */
+@Composable
 fun Modifier.contentPadding(
-    start: Dp = 24.dp, top: Dp = 24.dp, end: Dp = 24.dp, bottom: Dp = 24.dp,
-) = this.padding(
-    start = start,
-    top = top,
-    end = end,
-    bottom = bottom,
-)
+    start: Dp = Dp.Unspecified,
+    top: Dp = Dp.Unspecified,
+    end: Dp = Dp.Unspecified,
+    bottom: Dp = Dp.Unspecified,
+): Modifier {
+    val spacing = LocalSpacing.current
+    return this.padding(
+        start = start.takeOrElse { spacing.medium },
+        top = top.takeOrElse { spacing.medium },
+        end = end.takeOrElse { spacing.medium },
+        bottom = bottom.takeOrElse { spacing.medium },
+    )
+}
