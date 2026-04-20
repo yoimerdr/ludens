@@ -13,6 +13,8 @@ dependencies {
     compileOnly(libs.kotlin.gradle.plugin)
     compileOnly(libs.compose.gradle.plugin)
     compileOnly(libs.ksp.gradle.plugin)
+    implementation(libs.jackson.dataformat.properties)
+    implementation(libs.jackson.module.kotlin)
 }
 
 gradlePlugin {
