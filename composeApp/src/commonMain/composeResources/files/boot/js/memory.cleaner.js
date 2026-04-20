@@ -1,0 +1,1 @@
+window.PIXI && PIXI.utils.clearTextureCache();

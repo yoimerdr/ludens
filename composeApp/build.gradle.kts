@@ -1,3 +1,4 @@
+import ludens.build.compose.configuration.ludensConfiguration
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -10,6 +11,7 @@ plugins {
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.squareup.wire)
     alias(libs.plugins.google.ksp)
+    id("ludens.build.compose.resources.files")
 }
 
 kotlin {
@@ -78,11 +80,14 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.yoimerdr.compose.ludens"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        applicationId = ludensConfiguration.android.id
+        minSdk = ludensConfiguration.android.minSDK
+        targetSdk = ludensConfiguration.android.targetSDK
         versionCode = 1
-        versionName = "1.0"
+        versionName = ludensConfiguration.android.version
+
+        resValue("string", "app_name", ludensConfiguration.android.name)
+        resValue("string", "app_launcher_name", ludensConfiguration.android.launcherName)
     }
     packaging {
         resources {

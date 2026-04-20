@@ -14,11 +14,12 @@ import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
+import com.yoimerdr.compose.ludens.generated.res.FileRes
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import kotlinx.serialization.json.Json
 import ludens.composeapp.generated.resources.Res
 
-private const val StartBootFile = "files/boot/index.html"
+private const val StartBootFile = FileRes.boot.index
 
 /**
  * A JsMessageHandler for handling the start boot event.
