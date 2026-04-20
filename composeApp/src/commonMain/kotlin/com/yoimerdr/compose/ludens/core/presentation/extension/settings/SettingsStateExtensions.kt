@@ -3,7 +3,7 @@ package com.yoimerdr.compose.ludens.core.presentation.extension.settings
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory
+import com.yoimerdr.compose.ludens.core.domain.factory.SettingsPresetFactory
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
@@ -45,7 +45,9 @@ typealias PositionableControlItem = Pair<PositionableItemState, ControlItemState
  * @return The default [SettingsState] instance.
  */
 val SettingsState.Companion.default: SettingsState
-    get() = SettingsFactory.settings().toUIModel()
+    get() = SettingsPresetFactory
+        .resolve()
+        .toUIModel()
 
 /**
  * Filters a list of positionable control items to get only enabled items of specific types.
