@@ -3,9 +3,10 @@ package com.yoimerdr.compose.ludens.ui.components.webview
 import androidx.compose.runtime.Composable
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.WebViewState
+import com.yoimerdr.compose.ludens.generated.res.FileRes
 import ludens.composeapp.generated.resources.Res
 
-const val WebViewMemoryCleanerFile = "files/boot/js/memory.cleaner.js"
+const val WebViewMemoryCleanerFile = FileRes.boot.js.memory_cleaner
 
 /**
  * Clears JavaScript-side caches by executing the bundled memory cleaner script.
