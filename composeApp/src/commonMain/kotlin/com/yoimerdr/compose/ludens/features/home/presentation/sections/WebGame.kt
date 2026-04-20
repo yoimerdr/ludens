@@ -21,6 +21,7 @@ import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.WebViewState
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalWebViewNavigator
 import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
+import com.yoimerdr.compose.ludens.generated.res.FileRes
 import com.yoimerdr.compose.ludens.ui.components.webview.rememberWebViewJsBridge
 import com.yoimerdr.compose.ludens.ui.components.webview.setup
 import com.yoimerdr.compose.ludens.ui.state.PluginState
@@ -30,7 +31,7 @@ import ludens.composeapp.generated.resources.Res
 /**
  * The path to the JavaScript plugin checker file that validates and reports plugin information.
  */
-const val PluginCheckerFile = "files/boot/js/plugin.checker.js"
+const val PluginCheckerFile = FileRes.boot.js.plugin_checker
 
 /**
  * JavaScript message handler that processes plugin loading events from the web view.
