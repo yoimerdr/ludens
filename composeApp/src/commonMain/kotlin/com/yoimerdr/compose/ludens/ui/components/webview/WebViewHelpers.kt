@@ -3,6 +3,7 @@ package com.yoimerdr.compose.ludens.ui.components.webview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.web.PlatformWebViewParams
 import com.multiplatform.webview.web.WebViewState
 
 /**
@@ -20,9 +21,10 @@ fun rememberWebViewJsBridge(): WebViewJsBridge {
 }
 
 /**
- * Sets up the [WebViewState] with the necessary settings for the application.
+ * Applies shared web settings required by the game runtime.
  *
- * This enables JavaScript, file access, and DOM storage.
+ * Enables JavaScript execution, local file access, DOM storage, and autoplay behavior
+ * used by resource-backed HTML game content.
  */
 fun WebViewState.setup() {
     this.webSettings.apply {
@@ -33,7 +35,21 @@ fun WebViewState.setup() {
         androidWebSettings.apply {
             domStorageEnabled = true
             allowFileAccess = true
+            mediaPlaybackRequiresUserGesture = false
+            isAlgorithmicDarkeningAllowed = false
         }
 
+        iOSWebSettings.apply {
+            mediaPlaybackRequiresUserGesture = false
+        }
     }
 }
+
+/**
+ * Remembers platform-specific web view parameters.
+ *
+ * Platform implementations can provide native clients/delegates and behavior customizations
+ * while keeping call sites in common code unchanged.
+ */
+@Composable
+internal expect fun rememberPlatformsParameters(): PlatformWebViewParams
