@@ -23,5 +23,9 @@ gradlePlugin {
             id = "ludens.build.compose.resources.files"
             implementationClass = "ludens.build.compose.resources.ComposeResourceFilesPlugin"
         }
+        register("composeGenerateSettingsPreset") {
+            id = "ludens.build.compose.settings.preset"
+            implementationClass = "ludens.build.compose.settings.SettingsPresetPlugin"
+        }
     }
 }
