@@ -10,13 +10,16 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.Settings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemSettings
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ToolSettings
 import com.yoimerdr.compose.ludens.core.domain.value.Alpha
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.GraphicsKey
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.KeyboardKey
+import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionSettingsState
-import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlActionItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlGraphicKeyState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlInputKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
@@ -67,9 +70,9 @@ fun ActionItem.toUIModel(): ActionItemState = ActionItemState(
 /**
  * Converts domain [ControlItem] to presentation layer [ControlItemState].
  *
- * This function determines whether to create a [ControlKeyItemState] or
- * [ControlActionItemState] based on whether the item has a key code and
- * its type is in the keys category.
+ * This function determines whether to create a [ControlInputKeyItemState],
+ * [ControlGraphicKeyState] or [ControlActionItemState] based on whether the item has a
+ * key code and its type is in the keys category.
  *
  * @return A [ControlItemState] representation of this domain control item.
  */
@@ -79,12 +82,17 @@ fun ControlItem.toUIModel(): ControlItemState {
     if (code == null || code <= 0)
         code = type.toInputKey()?.code
 
-    val key = code?.let { InputKey.from(it) } ?: return action
+    val key: KeyboardKey =
+        code?.let { InputKey.from(it) ?: GraphicsKey.from(it) } ?: return action
 
     return when (type) {
-        in ItemType.keys -> ControlKeyItemState(
-            type, enabled, alpha.value, key
-        )
+        in ItemType.keys -> {
+            when (key) {
+                is InputKey -> ControlInputKeyItemState(type, enabled, alpha.value, key)
+                is GraphicsKey -> ControlGraphicKeyState(type, enabled, alpha.value, key)
+                else -> action
+            }
+        }
 
         else -> action
     }
@@ -131,7 +139,7 @@ fun ActionItemState.toDomain(): ActionItem = ActionItem(
 /**
  * Converts presentation layer [ControlItemState] to domain [ControlItem].
  *
- * This function extracts the key code from [ControlKeyItemState] instances
+ * This function extracts the key code from [ControlInputKeyItemState] and [ControlGraphicKeyState] instances
  * and creates the appropriate domain model.
  *
  * @return A [ControlItem] domain representation of this UI state.
@@ -144,7 +152,10 @@ fun ControlItemState.toDomain(): ControlItem {
     )
 
     return when (this) {
-        is ControlKeyItemState -> item.copy(code = key.code)
+        is ControlInputKeyItemState,
+        is ControlGraphicKeyState,
+            -> item.copy(code = key.code)
+
         else -> item
     }
 }

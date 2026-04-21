@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.squareup.wire)
     alias(libs.plugins.google.ksp)
     id("ludens.build.compose.resources.files")
+    id("ludens.build.compose.settings.preset")
 }
 
 kotlin {
