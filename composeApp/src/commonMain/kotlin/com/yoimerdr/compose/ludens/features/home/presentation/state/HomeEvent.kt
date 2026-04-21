@@ -1,7 +1,7 @@
 package com.yoimerdr.compose.ludens.features.home.presentation.state
 
 import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
-import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.KeyboardKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
@@ -24,7 +24,7 @@ sealed interface HomeEvent {
     data class OnClickControlKey(
         val item: ControlItemState,
         val type: KeyEventType,
-        val key: InputKey,
+        val key: KeyboardKey,
     ) : HomeEvent
 
     /**

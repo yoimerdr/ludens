@@ -9,11 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.yoimerdr.compose.ludens.app.ui.providers.LocalGraphicPlayer
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalInputPlayer
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.GraphicsKey
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toEvent
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyboardItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.features.home.presentation.components.KeyControlButton
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
@@ -53,6 +56,7 @@ fun KeyControls(
     }
 
     val player = LocalInputPlayer.current
+    val graphic = LocalGraphicPlayer.current
 
     val defaults = items.mapNotNull { it.type.toInputKey() }
         .zip(
@@ -80,13 +84,20 @@ fun KeyControls(
                 modifier = Modifier.alpha(item.alpha)
                     .align(it.second.second)
             ) { type ->
-                val key = (item as? ControlKeyItemState)?.key ?: it.second.first
+                val key = (item as? ControlKeyboardItemState<*>)?.key ?: it.second.first
 
-                player.onKeyEvent(
-                    key.toEvent(
-                        type = type
+                if (key is InputKey)
+                    player.onKeyEvent(
+                        key.toEvent(
+                            type = type
+                        )
                     )
-                )
+                else if(key is GraphicsKey)
+                    graphic.onKeyEvent(
+                        key.toEvent(
+                            type = type
+                        )
+                    )
 
                 onEvent(
                     HomeEvent.OnClickControlKey(
