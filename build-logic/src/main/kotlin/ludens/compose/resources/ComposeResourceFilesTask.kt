@@ -8,26 +8,35 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.util.PatternSet
 
+/**
+ * Scans `composeResources/files` and generates a typed Kotlin object for file access.
+ */
 abstract class ComposeResourceFilesTask : DefaultTask() {
 
+    /** Directory containing the compose resource files to scan. */
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val inputDir: DirectoryProperty
 
+    /** Output Kotlin file containing the generated accessors. */
     @get:OutputFile
     abstract val outputFile: RegularFileProperty
 
+    /** Kotlin package used by the generated resource accessor object. */
     @get:Input
     abstract val packageName: Property<String>
 
+    /** Include glob patterns applied to the input tree. */
     @get:Input
     @get:Optional
     abstract val includePatterns: ListProperty<String>
 
+    /** Exclude glob patterns applied to the input tree. */
     @get:Input
     @get:Optional
     abstract val excludePatterns: ListProperty<String>
 
+    /** Directory names excluded recursively from the generated tree. */
     @get:Input
     @get:Optional
     abstract val excludeDirs: ListProperty<String>

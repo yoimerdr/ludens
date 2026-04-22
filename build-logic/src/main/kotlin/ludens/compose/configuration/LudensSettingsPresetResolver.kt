@@ -1,5 +1,11 @@
 package ludens.build.compose.configuration
 
+/**
+ * Resolves the raw settings preset strings into the final generated preset model.
+ *
+ * This function applies default values, parses booleans/floats, validates bounds and keeps the
+ * preset name that will be written to the generated Kotlin source.
+ */
 fun LudensConfiguration.resolvedSettingsPreset(): LudensResolvedSettingsPresetConfiguration {
     val localPreset = settings.preset
 
