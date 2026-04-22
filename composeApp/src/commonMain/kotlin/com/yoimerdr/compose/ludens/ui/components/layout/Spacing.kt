@@ -1,5 +1,6 @@
 package com.yoimerdr.compose.ludens.ui.components.layout
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -10,6 +11,13 @@ import androidx.compose.ui.unit.dp
  * throughout the application to maintain visual consistency.
  */
 interface Spacing {
+    /**
+     * Hairline spacing value.
+     *
+     * Used for the most compact separations and focus treatments.
+     */
+    val hairline: Dp
+
     /**
      * Extra small spacing value.
      *
@@ -23,6 +31,13 @@ interface Spacing {
      * Used for spacing between related elements within a component.
      */
     val small: Dp
+
+    /**
+     * Comfortable spacing value.
+     *
+     * Used for compact padding in inputs and medium-density controls.
+     */
+    val comfortable: Dp
 
     /**
      * Medium spacing value.
@@ -47,15 +62,15 @@ interface Spacing {
 }
 
 /**
- * Default implementation of [Spacing] following Material Design 3 spacing scale.
- *
- * Provides the standard spacing values that should be used across the application
- * to ensure consistent visual rhythm and alignment.
+ * Default [Spacing] implementation used throughout Ludens.
  */
+@Immutable
 object DefaultSpacing : Spacing {
-    override val extraSmall: Dp = 4.dp
-    override val small: Dp = 8.dp
-    override val medium: Dp = 16.dp
-    override val large: Dp = 24.dp
-    override val extraLarge: Dp = 32.dp
+    override val hairline: Dp = 2.0f.dp
+    override val extraSmall: Dp = 4.0f.dp
+    override val small: Dp = 8.0f.dp
+    override val comfortable: Dp = 11.0f.dp
+    override val medium: Dp = 14.0f.dp
+    override val large: Dp = 17.0f.dp
+    override val extraLarge: Dp = 24.0f.dp
 }

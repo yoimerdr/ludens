@@ -10,7 +10,7 @@ import com.yoimerdr.compose.ludens.ui.components.layout.Spacing
 /**
  * CompositionLocal for providing [Spacing] values throughout the composition tree.
  *
- * Defaults to [DefaultSpacing] which follows Material Design 3 spacing scale.
+ * Defaults to [DefaultSpacing].
  * Can be overridden using [ProvideSpacing] to provide custom spacing values
  * for specific sections of the UI.
  *
