@@ -10,6 +10,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalStrokes
 
 /**
@@ -33,6 +34,7 @@ import com.yoimerdr.compose.ludens.ui.components.provider.LocalStrokes
  * [ButtonDefaults.outlinedButtonBorder] based on the enabled state.
  * @param elevation Optional [ButtonElevation] to apply elevation to the button.
  * Defaults to `null` for no elevation.
+ * @param shape The shape of the button. Defaults to the theme medium shape.
  * @param interactionSource The [MutableInteractionSource] representing the stream of
  * interactions for this button. If `null`, a new one will be created internally.
  * @param content The content to be displayed inside the button, provided as a [RowScope] receiver.
@@ -50,6 +52,7 @@ fun FilledTonalToggleButton(
     border: BorderStroke? = null,
     elevation: ButtonElevation? = null,
     interactionSource: MutableInteractionSource? = null,
+    shape: Shape? = null,
     content: @Composable (RowScope.() -> Unit),
 ) {
     val strokes = LocalStrokes.current
@@ -76,7 +79,7 @@ fun FilledTonalToggleButton(
         elevation = elevation,
         interactionSource = interactionSource,
         content = content,
-        shape = MaterialTheme.shapes.medium,
+        shape = shape ?: MaterialTheme.shapes.medium,
         colors = resolvedColors,
         border = resolvedBorder,
     )

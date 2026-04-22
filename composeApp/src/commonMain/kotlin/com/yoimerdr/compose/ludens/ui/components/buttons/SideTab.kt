@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -48,6 +49,8 @@ import com.yoimerdr.compose.ludens.ui.components.provider.ProvideContentColorTex
  * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
  * `containerColor`; when not selected, uses the `disabledContainerColor`.
  * Defaults to [ButtonDefaults.filledTonalButtonColors] with transparent disabled container.
+ * @param shape The shape of the tab container. Defaults to the theme medium shape.
+ * @param border Optional border for the tab container. Defaults to an outline border when selected.
  * @param interactionSource The [MutableInteractionSource] representing the stream of
  * interactions for this tab. If `null`, a new one will be created internally.
  * @param onClick Callback invoked when the tab is clicked.
@@ -66,6 +69,8 @@ fun SideTab(
     enabled: Boolean = true,
     selected: Boolean = false,
     colors: ButtonColors? = null,
+    shape: Shape? = null,
+    border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit,
@@ -82,11 +87,11 @@ fun SideTab(
         contentColor = if (selected) palette.contentColor else palette.disabledContentColor,
     )
     val border = if (selected) {
-        BorderStroke(
+        border ?: BorderStroke(
             width = strokes.thin,
             color = MaterialTheme.colorScheme.outlineVariant,
         )
-    } else null
+    } else border
 
     FilledTonalButton(
         onClick = onClick,
@@ -98,7 +103,7 @@ fun SideTab(
         interactionSource = interactionSource,
         enabled = enabled,
         colors = resolvedColors,
-        shape = MaterialTheme.shapes.medium,
+        shape = shape ?: MaterialTheme.shapes.medium,
         border = border,
         contentPadding = padding,
     ) {
@@ -130,6 +135,8 @@ fun SideTab(
  * @param colors The [ButtonColors] to use for the tab's appearance. When selected, uses the
  * `containerColor`; when not selected, uses the `disabledContainerColor`.
  * Defaults to [ButtonDefaults.filledTonalButtonColors] with transparent disabled container.
+ * @param shape The shape of the tab container. Defaults to the theme medium shape.
+ * @param border Optional border for the tab container. Defaults to an outline border when selected.
  * @param onClick Callback invoked when the tab is clicked.
  * @param interactionSource The [MutableInteractionSource] representing the stream of
  * interactions for this tab. If `null`, a new one will be created internally.
@@ -147,6 +154,8 @@ fun SideTab(
     expanded: Boolean = true,
     selected: Boolean = false,
     colors: ButtonColors? = null,
+    shape: Shape? = null,
+    border: BorderStroke? = null,
     onClick: () -> Unit,
     interactionSource: MutableInteractionSource? = null,
     start: @Composable () -> Unit,
@@ -169,6 +178,8 @@ fun SideTab(
             enabled = enabled,
             selected = selected,
             colors = palette,
+            shape = shape,
+            border = border,
             onClick = onClick,
             interactionSource = interactionSource,
         ) {
@@ -210,7 +221,7 @@ fun SideTab(
                         disabledContainerColor = palette.disabledContainerColor,
                         disabledContentColor = palette.disabledContentColor,
                     ),
-                    shape = MaterialTheme.shapes.medium,
+                    shape = shape ?: MaterialTheme.shapes.medium,
                     content = start,
                 )
 

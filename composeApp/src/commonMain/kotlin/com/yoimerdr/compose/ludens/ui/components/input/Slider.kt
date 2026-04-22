@@ -48,8 +48,8 @@ fun Slider(
 ) {
     val schema = MaterialTheme.colorScheme
     var thumbColor = schema.primary
-    var activeTrackerColor = thumbColor
-    var inactiveTrackerColor = schema.surfaceVariant
+    var activeTrackerColor = schema.primary
+    var inactiveTrackerColor = schema.outlineVariant
     if (!enabled) {
         thumbColor = schema.onSurface.copy(alpha = 0.38f)
             .compositeOver(schema.surface)
@@ -88,7 +88,6 @@ fun Slider(
                 val centerY = size.height / 2
                 val activeWidth = width * fraction
 
-                // Dibujar parte inactiva (la línea gris de fondo)
                 drawLine(
                     color = inactiveTrackerColor,
                     start = Offset(activeWidth, centerY),
@@ -97,7 +96,6 @@ fun Slider(
                     cap = StrokeCap.Round
                 )
 
-                // Dibujar parte activa (la línea de color)
                 drawLine(
                     color = activeTrackerColor,
                     start = Offset(0f, centerY),

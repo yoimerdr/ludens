@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,10 +35,10 @@ import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
  * Defaults to [Alignment.Start].
  * @param enabled Whether the card is enabled for interaction. Only applies when onClick is provided.
  * Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
+ * @param shape The shape of the card's container. Defaults to the theme large shape.
  * @param colors The colors to be used for the card's container and content.
- * Defaults to [CardDefaults.elevatedCardColors].
- * @param elevation The elevation to apply to the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * Defaults to a surface container lowest scheme.
+ * @param elevation The elevation to apply to the card. Defaults to 0.dp.
  * @param border Optional border to draw around the card. Defaults to null (no border).
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions
  * for this card. Only applies when onClick is provided.
@@ -52,13 +54,20 @@ fun Card(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val targetShape = shape ?: MaterialTheme.shapes.large
+    val targetColors = colors ?: CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    )
+    val targetElevation = elevation ?: CardDefaults.cardElevation(defaultElevation = 0.dp)
+
     val wrapper: @Composable ColumnScope.() -> Unit = {
         val spacing = LocalSpacing.current
         Column(
@@ -74,9 +83,9 @@ fun Card(
         Card(
             modifier = modifier,
             content = wrapper,
-            colors = colors,
-            shape = shape,
-            elevation = elevation,
+            colors = targetColors,
+            shape = targetShape,
+            elevation = targetElevation,
             border = border,
         )
     } else {
@@ -84,10 +93,10 @@ fun Card(
             onClick = onClick,
             modifier = modifier,
             content = wrapper,
-            colors = colors,
+            colors = targetColors,
             enabled = enabled,
-            shape = shape,
-            elevation = elevation,
+            shape = targetShape,
+            elevation = targetElevation,
             border = border,
             interactionSource = interactionSource,
         )
