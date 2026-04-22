@@ -5,14 +5,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.web.LoadingState
+import com.multiplatform.webview.web.NativeWebView
 import com.multiplatform.webview.web.WebContent
 import com.multiplatform.webview.web.WebStateSaver
 import com.multiplatform.webview.web.WebView
@@ -20,7 +24,11 @@ import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.WebViewState
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalWebViewNavigator
+import com.yoimerdr.compose.ludens.features.home.presentation.sections.LudensLoaderHandler.onLoad
 import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
+import com.yoimerdr.compose.ludens.generated.res.FileRes
+import com.yoimerdr.compose.ludens.ui.components.webview.WebViewMemoryManager
+import com.yoimerdr.compose.ludens.ui.components.webview.rememberPlatformsParameters
 import com.yoimerdr.compose.ludens.ui.components.webview.rememberWebViewJsBridge
 import com.yoimerdr.compose.ludens.ui.components.webview.setup
 import com.yoimerdr.compose.ludens.ui.state.PluginState
@@ -30,14 +38,14 @@ import ludens.composeapp.generated.resources.Res
 /**
  * The path to the JavaScript plugin checker file that validates and reports plugin information.
  */
-const val PluginCheckerFile = "files/boot/js/plugin.checker.js"
+const val PluginCheckerFile = FileRes.boot.js.plugin_checker
 
 /**
  * JavaScript message handler that processes plugin loading events from the web view.
  *
  * This handler listens for messages from the "LudensLoader" JavaScript bridge and
  * deserializes plugin state information. When a plugin is loaded, it invokes the
- * registered [onLoad] callback with the plugin state.
+ * registered [onLoad] callback with the parsed plugin state.
  */
 private object LudensLoaderHandler : IJsMessageHandler {
     /**
@@ -63,11 +71,11 @@ private object LudensLoaderHandler : IJsMessageHandler {
 }
 
 /**
- * Displays a web view for running HTML5 games with plugin detection support.
+ * Displays a web view for running HTML5 games with plugin detection.
  *
  * This composable creates a web view that loads an HTML file from resources and
  * sets up a JavaScript bridge to communicate with the loaded game. It automatically
- * injects a plugin checker script to detect and report the `YDP_Ludens` plugin information.
+ * injects a plugin checker script to detect and report `YDP_Ludens` plugin information.
  *
  * The web view state is persisted across configuration changes using [WebStateSaver].
  *
@@ -87,6 +95,8 @@ fun WebGame(
     }
     val bridge = rememberWebViewJsBridge()
 
+    val focusRequester = remember { FocusRequester() }
+
     state.setup()
 
     LaunchedEffect(navigator, fileUrl) {
@@ -96,25 +106,41 @@ fun WebGame(
         )
     }
 
+    LaunchedEffect(state, state.loadingState) {
+        when (state.loadingState) {
+            is LoadingState.Finished,
+            is LoadingState.Initializing,
+                -> focusRequester.requestFocus()
+
+            else -> {}
+        }
+    }
+
     StartBridge(
         navigator = navigator,
-        state = state, bridge = bridge, onLoad = onLoad
+        state = state,
+        bridge = bridge,
+        onLoad = onLoad,
     )
+
+    WebViewMemoryManager(state, navigator)
 
     WebView(
         state = state,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().focusRequester(focusRequester),
         navigator = navigator,
-        webViewJsBridge = bridge
+        webViewJsBridge = bridge,
+        platformWebViewParams = rememberPlatformsParameters(),
+        onCreated = ::setup
     )
 }
 
 /**
- * Displays a web view for running HTML5 games with plugin detection support.
+ * Displays a web view for running HTML5 games using URL data from [HomeViewModel].
  *
  * This composable creates a web view that loads an HTML file from resources and
  * sets up a JavaScript bridge to communicate with the loaded game. It automatically
- * injects a plugin checker script to detect and report the `YDP_Ludens` plugin information.
+ * injects a plugin checker script to detect and report `YDP_Ludens` plugin information.
  *
  * The web view state is persisted across configuration changes using [WebStateSaver].
  *
@@ -133,7 +159,7 @@ fun WebGame(
     WebGame(
         modifier = modifier,
         fileUrl = entry.url,
-        onLoad = onLoad
+        onLoad = onLoad,
     )
 }
 
@@ -141,13 +167,13 @@ fun WebGame(
  * Initializes and manages the JavaScript bridge for plugin detection.
  *
  * This internal composable handles the setup of the JavaScript bridge by:
- * 1. Loading the `YDP_Ludens` plugin checker script from resources
- * 2. Registering the [LudensLoaderHandler] to receive plugin load events
- * 3. Monitoring the web view loading state
- * 4. Injecting the plugin checker script once the page has fully loaded
+ * 1. Loading the `YDP_Ludens` plugin checker script from resources.
+ * 2. Registering [LudensLoaderHandler] to receive plugin load events.
+ * 3. Monitoring web view loading state.
+ * 4. Injecting the plugin checker script after page load completes.
  *
  * The plugin checker script is executed after the web view finishes loading,
- * which then communicates back through the JavaScript bridge to report the `YDP_Ludens` plugin information.
+ * The script reports plugin information back through the JavaScript bridge.
  *
  * @param navigator The web view navigator for executing JavaScript
  * @param state The web view state to monitor loading progress
@@ -166,8 +192,7 @@ private fun StartBridge(
     var loaded by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        pluginChecker = Res.readBytes(PluginCheckerFile)
-            .decodeToString()
+        pluginChecker = Res.readBytes(PluginCheckerFile).decodeToString()
     }
 
     LaunchedEffect(bridge) {
@@ -188,3 +213,8 @@ private fun StartBridge(
     }
 
 }
+
+/**
+ * Configures the native web view with platform-specific game optimizations.
+ */
+internal expect fun setup(webView: NativeWebView)

@@ -6,6 +6,7 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.yoimerdr.compose.ludens.core.infrastructure.platform.PlatformApplication
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ToolSettingsState
+import com.yoimerdr.compose.ludens.generated.res.FileRes
 import com.yoimerdr.compose.ludens.ui.state.WebFeaturesState
 import com.yoimerdr.compose.ludens.ui.state.toQueryParameters
 import ludens.composeapp.generated.resources.Res
@@ -15,17 +16,17 @@ import org.koin.compose.koinInject
 /**
  * The path to the main index HTML file for the web view.
  */
-const val IndexFilename = "files/www/index.html"
+const val IndexFilename = FileRes.www.index
 
 /**
  * The path to the fallback HTML file shown when the main index is not available.
  */
-const val FallbackIndexFilename = "files/fallback/not_available.html"
+const val FallbackIndexFilename = FileRes.fallback.not_available
 
 /**
  * The path to the debug fallback HTML file shown when in debug mode and the main index is not available.
  */
-const val DebugFallbackIndexFilename = "files/fallback/debug_not_available.html"
+const val DebugFallbackIndexFilename = FileRes.fallback.debug_not_available
 
 /**
  * Represents the state of the entry point for the home screen web view.

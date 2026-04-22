@@ -1,4 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+import ludens.build.compose.configuration.ludensConfiguration
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
@@ -13,6 +14,8 @@ plugins {
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.squareup.wire)
     alias(libs.plugins.google.ksp)
+    id("ludens.build.compose.resources.files")
+    id("ludens.build.compose.settings.preset")
     alias(libs.plugins.buildKonfig)
 }
 
@@ -100,17 +103,14 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = project.findProperty("ludens.applicationId") as? String ?: "com.yoimerdr.compose.ludens"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        applicationId = ludensConfiguration.android.id
+        minSdk = ludensConfiguration.android.minSDK
+        targetSdk = ludensConfiguration.android.targetSDK
         versionCode = 1
-        versionName = project.findProperty("ludens.applicationVersion") as? String ?: "1.0"
-        
-        val appName = project.findProperty("ludens.applicationName") as? String ?: "Ludens"
-        val appLauncherName = project.findProperty("ludens.applicationLauncherName") as? String ?: "Ludens"
-        
-        resValue("string", "app_name", appName)
-        resValue("string", "app_launcher_name", appLauncherName)
+        versionName = ludensConfiguration.android.version
+
+        resValue("string", "app_name", ludensConfiguration.android.name)
+        resValue("string", "app_launcher_name", ludensConfiguration.android.launcherName)
     }
     packaging {
         resources {
@@ -172,7 +172,6 @@ dependencies {
 }
 
 // Trigger Common Metadata Generation from Native tasks
-tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }
-    .configureEach {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
+tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
+}

@@ -9,11 +9,13 @@ import kotlinx.serialization.Serializable
  *
  * @property isEnabled Whether the plugin is enabled.
  * @property isLoading Whether the plugin is currently loading.
+ * @property canToggleDrawEngine Whether the game engine allow toggle between WebGL and Canvas
  */
 @Serializable
 data class PluginState(
     val isEnabled: Boolean = false,
     val isLoading: Boolean = true,
+    val canToggleDrawEngine: Boolean = false,
 )
 
 /**
@@ -21,12 +23,13 @@ data class PluginState(
  */
 val PluginStateSaver = listSaver(
     save = {
-        listOf(it.isLoading, it.isEnabled)
+        listOf(it.isLoading, it.isEnabled, it.canToggleDrawEngine)
     },
     restore = {
         PluginState(
             isEnabled = it[0],
             isLoading = it[1],
+            canToggleDrawEngine = it[2],
         )
     }
 )

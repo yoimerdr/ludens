@@ -27,6 +27,7 @@ import com.yoimerdr.compose.ludens.ui.components.buttons.OutlinedIconButton
 import com.yoimerdr.compose.ludens.ui.components.layout.Card
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDock
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDockHandleButton
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Games
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
@@ -46,8 +47,6 @@ import kotlin.math.roundToInt
  * @param modifier The modifier to be applied to the button container
  * @param onActionClick Callback invoked when a specific action item is clicked
  * @param onConfiguration Callback invoked when the configuration button is clicked
- * @param toolSettings The current tool settings state (mute, FPS, etc.)
- * @param controlSettings The current control settings state
  * @param actions List of available action items to display in the dock
  * @param control Optional control configuration that defines appearance (alpha transparency).
  * @param position Optional position configuration that defines the button's coordinates (x, y).
@@ -171,12 +170,14 @@ fun SettingsActions(
     position: PositionableItemState?,
     onActionClick: (ActionItemState) -> Unit,
 ) {
+    val plugin = LocalPlugin.current
     SettingsActions(
         modifier = modifier,
         onConfiguration = onConfiguration,
         actions = if (actions.enabled) {
             actions.items
                 .sortedBy { it.order }
+                .filterNot { it.type == ActionType.ToggleWebGL && !plugin.canToggleDrawEngine }
                 .map { item ->
                     val isActive = when (item.type) {
                         ActionType.ToggleMute -> toolSettings.isMuted

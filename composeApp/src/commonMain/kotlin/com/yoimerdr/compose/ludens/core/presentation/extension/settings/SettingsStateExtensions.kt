@@ -3,7 +3,7 @@ package com.yoimerdr.compose.ludens.core.presentation.extension.settings
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import com.yoimerdr.compose.ludens.core.domain.factory.SettingsFactory
+import com.yoimerdr.compose.ludens.core.domain.factory.SettingsPresetFactory
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
@@ -22,11 +22,6 @@ import ludens.composeapp.generated.resources.actions_toggle_fps
 import ludens.composeapp.generated.resources.actions_toggle_mute
 import ludens.composeapp.generated.resources.actions_toggle_webgl
 import ludens.composeapp.generated.resources.dark
-import ludens.composeapp.generated.resources.actions_settings
-import ludens.composeapp.generated.resources.actions_toggle_controls
-import ludens.composeapp.generated.resources.actions_toggle_fps
-import ludens.composeapp.generated.resources.actions_toggle_mute
-import ludens.composeapp.generated.resources.actions_toggle_webgl
 import ludens.composeapp.generated.resources.en
 import ludens.composeapp.generated.resources.es
 import ludens.composeapp.generated.resources.key_button
@@ -55,7 +50,9 @@ typealias PositionableControlItem = Pair<PositionableItemState, ControlItemState
  * @return The default [SettingsState] instance.
  */
 val SettingsState.Companion.default: SettingsState
-    get() = SettingsFactory.settings().toUIModel()
+    get() = SettingsPresetFactory
+        .resolve()
+        .toUIModel()
 
 /**
  * Filters a list of positionable control items to get only enabled items of specific types.
