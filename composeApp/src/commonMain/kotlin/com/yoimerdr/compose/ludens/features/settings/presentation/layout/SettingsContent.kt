@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeGestures
 import androidx.compose.foundation.layout.union
@@ -41,7 +39,6 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.Syst
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.layout.ResponsiveBox
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalBreakpoints
-import com.yoimerdr.compose.ludens.ui.components.provider.LocalRadius
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 
 /**
@@ -68,20 +65,11 @@ fun SettingsContents(
     val contentColor = MaterialTheme.colorScheme.surfaceContainerLowest
 
     val insets = WindowInsets.safeGestures
-    val verticalPadding = insets
-        .only(WindowInsetsSides.Top)
+    val padding = insets
         .union(
             WindowInsets(
                 top = spacing.medium,
-                bottom = spacing.medium
-            )
-        )
-        .asPaddingValues()
-
-    val horizontalPadding = insets
-        .only(WindowInsetsSides.Horizontal)
-        .union(
-            WindowInsets(
+                bottom = spacing.medium,
                 left = spacing.medium,
                 right = spacing.medium
             )
@@ -101,8 +89,7 @@ fun SettingsContents(
                 centered = false,
                 compact = true,
                 contentColor = contentColor,
-                horizontalPadding = horizontalPadding,
-                verticalPadding = verticalPadding,
+                padding = padding,
                 viewModel = viewModel,
                 controlsViewModel = controlsViewModel,
                 toolsViewModel = toolsViewModel,
@@ -118,8 +105,7 @@ fun SettingsContents(
                 centered = maxWidth >= breakpoints.extraLarge,
                 compact = false,
                 contentColor = contentColor,
-                horizontalPadding = horizontalPadding,
-                verticalPadding = verticalPadding,
+                padding = padding,
                 viewModel = viewModel,
                 controlsViewModel = controlsViewModel,
                 toolsViewModel = toolsViewModel,
@@ -242,8 +228,7 @@ private fun SettingsSectionContent(
     centered: Boolean,
     compact: Boolean,
     contentColor: Color,
-    horizontalPadding: PaddingValues,
-    verticalPadding: PaddingValues,
+    padding: PaddingValues,
     viewModel: RootSettingsViewModel,
     controlsViewModel: ControlsSettingsViewModel,
     toolsViewModel: ToolsSettingsViewModel,
@@ -257,8 +242,7 @@ private fun SettingsSectionContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontalPadding)
-            .padding(verticalPadding),
+            .padding(padding),
         contentAlignment = if (centered) Alignment.TopCenter else Alignment.TopStart,
     ) {
         if (compact) {
