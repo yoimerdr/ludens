@@ -61,7 +61,9 @@ Before exporting your game, consider the following:
 ### Directory Structure
 Familiarize yourself with the location of key files:
 *   `composeApp/src/commonMain/composeResources/files`: Your game goes here.
-*   `gradle.properties`: Here you will configure the name and version.
+*   [`ludens.properties`](ludens.properties): Main Ludens configuration (app identity, manifest flags, permissions, settings preset).
+*   [`gradle.properties`](gradle.properties): Gradle/Kotlin performance and build-system options.
+*   [`keystore.properties`](keystore.properties): Local release signing credentials (do not commit).
 
 ## Exporting the Game
 1.  Open your project in RPG Maker MV or MZ.
@@ -94,27 +96,63 @@ The application expects to find `index.html` inside `www`.
 ## Android
 ### Customization
 
-Edit the `gradle.properties` file in the project root.
+Edit the [`ludens.properties`](ludens.properties) file in the project root.
 
 ```properties
-# Unique ID (format com.domain.name)
-ludens.applicationId=com.mystudio.rpg
+# Android application id
+ludens.android.id=com.mystudio.rpg
 
-# Visible Version (e.g. 1.0)
-ludens.applicationVersion=1.0
+# Visible version (e.g. 1.0.0)
+ludens.android.version=1.0.0
+
+# Integer version code
+ludens.android.versionCode=1
 
 # Name in Settings
-ludens.applicationName=My Epic RPG
+ludens.android.name=My Epic RPG
 
 # Name in Launcher (Icon)
-ludens.applicationLauncherName=My RPG
+ludens.android.launcherName=My RPG
 ```
 
+> [!IMPORTANT]
+> Ludens now reads [`ludens.properties`](ludens.properties) first. If missing, it can read the same `ludens.*` keys from [`gradle.properties`](gradle.properties); legacy keys like `ludens.applicationId` are not supported.
+
 <p align="center">
-  <img src="resources/images/guide/ludens-project-properties.png" alt="Configuration in gradle.properties" height="320">
+  <img src="resources/images/guide/ludens-project-properties.png" alt="Configuration in ludens.properties" height="320">
   <br>
   <em>Figure 6: Modifying project properties to customize ID, version, and name.</em>
 </p>
+
+#### Optional Android Runtime/Manifest Configuration
+
+You can also customize Android behavior using [`ludens.properties`](ludens.properties):
+
+```properties
+# Manifest placeholders
+ludens.android.manifest.allowBackup=true
+ludens.android.manifest.largeHeap=true
+ludens.android.manifest.hardwareAccelerated=true
+ludens.android.manifest.screenOrientation=sensorLandscape
+ludens.android.manifest.usesCleartextTraffic=false
+ludens.android.manifest.resizeableActivity=false
+
+# Generated permissions manifest.
+# All listed permissions are optional; 
+# The wrapper does not require or use features that depend on them.
+# If your game needs permissions beyond basic network access, 
+# you may need to edit the wrapper source code.
+ludens.android.permissions.internet=false
+ludens.android.permissions.networkState=false
+ludens.android.permissions.wakeLock=false
+ludens.android.permissions.accessWifiState=false
+ludens.android.permissions.changeWifiState=false
+```
+
+These values are consumed by the custom `build-logic` plugins and injected during build.
+
+> [!TIP]
+> Ludens supports additional configuration properties. Review [`ludens.properties`](ludens.properties) directly to see the full list and descriptions.
 
 #### App Icon
 Replace the images in `composeApp/src/androidMain/res/mipmap-*` or use the **Image Asset Studio** tool:
@@ -165,7 +203,8 @@ If you prefer using the Android Studio interface:
 #### Result
 Regardless of the method, the APK will appear in: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`.
 
-> **Recommendation**: Install this APK on an emulator or real device to verify that the game loads and plugins work correctly.
+> [!TIP]
+> Install this APK on an emulator or real device to verify that the game loads and plugins work correctly.
 
 <p align="center">
   <img src="resources/images/guide/ludens-build-debug.png" alt="Build Result" height="320">
@@ -223,7 +262,7 @@ This option guides you step-by-step to sign your application.
 Similar to the Debug process, this option is ideal for automating the build but requires prior manual configuration.
 
 1.  Ensure you have your `.jks` file (Keystore) generated (you can use step 3 of Option A to create it).
-2.  Create/Edit the `keystore.properties` file in the project root with the path and credentials:
+2.  Create/Edit the [`keystore.properties`](keystore.properties) file in the project root with the path and credentials:
 
     ```properties
     storePassword=your_store_password
@@ -231,6 +270,8 @@ Similar to the Debug process, this option is ideal for automating the build but 
     keyAlias=your_alias
     storeFile=C:/Path/To/Your/key.jks
     ```
+
+    You can use [`keystore.properties.template`](keystore.properties.template) as reference.
 
 3.  Run the `assembleRelease` task from the configurations window (as seen in the Debug section) or from the terminal:
     ```bash

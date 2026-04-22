@@ -1,67 +1,92 @@
 # Ludens
 
-[Read in English](README.md) | [Guía de Construcción](BUILD.es.md)
+<p align="center">
+  <a href="README.md">Read in English</a> | <a href="BUILD.es.md">Guia de Construccion</a>
+</p>
 
-[![Kotlin](https://img.shields.io/badge/kotlin-v2.3.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-v1.9.3-blue?logo=JetpackCompose)](https://github.com/JetBrains/compose-multiplatform)
-[![Compose WebView](https://img.shields.io/badge/Compose%20WebView-v2.0.3-blue)](https://github.com/KevinnZou/compose-webview-multiplatform)
-[![Virtual Joystick](https://img.shields.io/badge/Virtual%20Joystick-v1.0.0-blue?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIj48cGF0aCBkPSJNMTI5IDExMWMtNTUgNC05MyA2Ni05MyA3OEwwIDM5OGMtMiA3MCAzNiA5MiA2OSA5MWgxYzc5IDAgODctNTcgMTMwLTEyOGgyMDFjNDMgNzEgNTAgMTI4IDEyOSAxMjhoMWMzMyAxIDcxLTIxIDY5LTkxbC0zNi0yMDljMC0xMi00MC03OC05OC03OGgtMTBjLTYzIDAtOTIgMzUtOTIgNDJIMjM2YzAtNy0yOS00Mi05Mi00MmgtMTV6IiBmaWxsPSIjZmZmIi8+PC9zdmc+)](https://github.com/yoimerdr/compose-virtualjoystick-multiplatform)
+<p align="center">
+  <a href="https://github.com/yoimerdr/ludens/releases/latest">
+    <img alt="Version" src="https://img.shields.io/github/v/release/yoimerdr/ludens?display_name=tag&sort=semver&style=for-the-badge&label=Version">
+  </a>
+  <img alt="Android 21+" src="https://img.shields.io/badge/Android-21%2B-6EDB8D?style=for-the-badge&logo=android&logoColor=0B1F17">
+  <img alt="iOS 13+" src="https://img.shields.io/badge/iOS-13%2B-CDCDCD?style=for-the-badge&logo=apple&logoColor=111827">
+</p>
 
-![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
-![badge-ios](http://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat)
+<p align="center">
+  <a href="http://kotlinlang.org">
+    <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-v2.3.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
+  </a>
+  <a href="https://github.com/JetBrains/compose-multiplatform">
+    <img alt="Compose Multiplatform" src="https://img.shields.io/badge/Compose_Multiplatform-v1.9.3-0EA5E9?style=for-the-badge&logo=jetpackcompose&logoColor=white">
+  </a>
+  <a href="https://github.com/KevinnZou/compose-webview-multiplatform">
+    <img alt="Compose WebView" src="https://img.shields.io/badge/Compose_WebView-v2.0.3-334155?style=for-the-badge">
+  </a>
+  <a href="https://github.com/yoimerdr/compose-virtualjoystick-multiplatform">
+    <img alt="Virtual Joystick" src="https://img.shields.io/badge/Virtual_Joystick-v1.0.0-0F172A?style=for-the-badge">
+  </a>
+</p>
 
-**Ludens** es un wrapper de **Compose Multiplatform** desarrollado en **Kotlin**, diseñado para portar juegos de RPG Maker MV/MZ a dispositivos móviles (Android e iOS). Este proyecto facilita la integración de tu juego HTML5 en una aplicación nativa moderna, ofreciendo control total sobre la configuración y el despliegue.
+Ludens es un wrapper de Compose Multiplatform desarrollado en Kotlin para portar juegos RPG Maker MV/MZ a dispositivos moviles. Integra tu exportacion HTML5 en una app nativa y agrega controles y ajustes moviles configurables.
 
 <p align="center">
   <img src="resources/images/samples/ludens-0.2.0-sample.gif" alt="Ludens Demo" width="450">
 </p>
 
-[Descargar APK de Ejemplo](https://drive.google.com/file/d/1-IyLUKFAGt-fpSf4jBSzhtAzN3VLv5Sm/view?usp=sharing)
+<p align="center">
+  <a href="https://github.com/yoimerdr/ludens/releases/latest"><strong>Descargar APK de Ejemplo</strong></a>
+</p>
 
-## Características
+## Caracteristicas
 
-*   **WebView Optimizado**: Integra tu juego RPG Maker MV/MZ sin problemas.
-*   **Controles en Pantalla (Overlay)**:
-    *   Joystick Virtual.
-    *   Botones Configurables (A, B, X, Y).
-*   **Pantalla de Ajustes Completa**:
-    *   **Sistema**: Tema (Claro/Oscuro/Sistema), Idioma (Sistema/Inglés/Español).
-    *   **Herramientas**: Silenciar audio, Mostrar FPS, Alternar WebGL.
-    *   **Controles**: Activar/Desactivar, Ajustar Opacidad, Posición de botones y Mapeo de teclas.
-    *   **Acciones**: Menú de acciones rápidas configurable (Orden, Habilitar/Deshabilitar).
-*   **Configuración Fácil**: Personaliza ID, versión y nombre desde `gradle.properties`.
-*   **Compose Resources**: Gestión eficiente de assets en `composeResources/files`.
+- Integracion WebView optimizada para RPG Maker MV/MZ.
+- Controles en pantalla (overlay):
+  - Joystick virtual.
+  - Botones configurables (A, B, X, Y).
+- Pantalla de ajustes completa:
+  - Sistema: Tema (Claro/Oscuro/Sistema), Idioma (Sistema/Ingles/Espanol).
+  - Herramientas: Silenciar audio, Mostrar FPS, Alternar WebGL.
+  - Controles: Activar/Desactivar, Opacidad, Posiciones, Mapeo de teclas.
+  - Acciones: Menu de acciones rapidas configurable (Orden, Habilitar/Deshabilitar).
+- Configuracion de app/build desde [`ludens.properties`](ludens.properties).
+- Gestion eficiente de assets en `composeResources/files`.
 
-> **Nota**: Este proyecto no incluye un sistema de guardado nativo integrado; los archivos de guardado son gestionados por el propio motor del juego (RPG Maker) dentro del WebView (LocalStorage/IndexedDB).
+> [!NOTE]
+> Este proyecto no incluye un sistema de guardado nativo integrado. Los guardados se gestionan dentro del WebView por RPG Maker (LocalStorage/IndexedDB).
 
-## Guía Rápida
+## Guia Rapida
 
-> **Advertencia**: La construcción para **iOS** aún no está completamente configurada (usa la configuración por defecto de la plantilla). Esta guía se centra en Android.
+> [!WARNING]
+> La construccion para iOS aun no esta completamente configurada (usa defaults de plantilla). Esta guia se centra en Android.
 
-> **Testeo**: Se recomienda encarecidamente probar el juego en un emulador o dispositivo real. Algunos plugins de RPG Maker pueden no ser compatibles con el WebView móvil.
+> [!TIP]
+> Valida siempre en emulador o dispositivo real. Algunos plugins de RPG Maker pueden comportarse distinto en WebView movil.
 
 ### Requisitos Previos
 
-*   **Android Studio**: Se recomienda **Otter 2 Feature Drop | 2025.2.2** o superior.
-    -   [Guía de configuración](https://developer.android.com/courses/pathways/android-basics-compose-unit-1-pathway-2)
-*   **JDK**: Versión 17 o superior.
-*   **RPG Maker MV/MZ**: Tu proyecto exportado para web.
-    -   *Opcional*: Incluir y activar el plugin [`YDP_Ludens.js`](resources/plugins/js/YDP_Ludens.js) para activar algunas funcionalidades adicionales en el cliente ludens. Puedes encontrar la última versión y otros plugins recomendados en el [repositorio rpgm-plugins](https://github.com/yoimerdr/rpgm-plugins).
-        *   **Recomendación**: Debe ser el **primer plugin** en tu gestor de plugins.
-        *   **Compatibilidad**: Necesario para soportar versiones antiguas de WebView (soluciona errores en la verificación de carga de `fonts`).
-    -   *Importante*: Verificar que los plugins utilizados en tu juego sean compatibles con entornos móviles (WebView).
+- Android Studio Otter 2 Feature Drop (2025.2.2) o superior.
+  - [Guia de configuracion](https://developer.android.com/courses/pathways/android-basics-compose-unit-1-pathway-2)
+- JDK 17 o superior.
+- Proyecto RPG Maker MV/MZ exportado para web.
+  - Opcional: activar [`YDP_Ludens.js`](resources/plugins/js/YDP_Ludens.js) para compatibilidad/funciones extra.
+  - Ultima version y plugins recomendados en [rpgm-plugins](https://github.com/yoimerdr/rpgm-plugins).
+  - Recomendacion: colocalo como primer plugin en el gestor.
+  - Compatibilidad: util para errores de carga de fuentes en WebView antiguo.
+  - Importante: verifica compatibilidad movil de todos tus plugins.
 
-### Game Export
-Exporta tu juego desde RPG Maker. La opción recomendada es **Android / iOS**. Si no está disponible, selecciona **Web Browsers**.
+### Exportar el Juego
 
-Dependiendo de la versión (MV/MZ), obtendrás una carpeta con el nombre de tu juego (que contiene `www`) o directamente la carpeta `www`. Lo importante es localizar dónde está el archivo `index.html` y los assets.
+Exporta desde RPG Maker usando `Android / iOS` (recomendado). Si no esta disponible, usa `Web Browsers`.
+
+Segun la version MV/MZ, puedes obtener una carpeta de juego que contiene `www` o directamente la carpeta `www`. En ambos casos, `index.html` es obligatorio.
 
 ### Importar Assets
-Mueve la carpeta **www** completa dentro de `files`. Es **necesario** que los archivos mantengan esta estructura, ya que la aplicación buscará el archivo `index.html` en la carpeta `www`.
 
-Ubicación de destino: `composeApp/src/commonMain/composeResources/files`
+Mueve la carpeta completa `www` a:
 
-La estructura final debe verse así:
+`composeApp/src/commonMain/composeResources/files`
+
+Estructura requerida:
 
 ```text
 files/
@@ -73,56 +98,56 @@ files/
        └── index.html
 ```
 
-### Android
+### Configuracion Android
 
-#### Configuración
-Edita el archivo `gradle.properties` en la raíz del proyecto para personalizar tu aplicación:
+Edita [`ludens.properties`](ludens.properties):
 
 ```properties
-# Identificador único de la aplicación
-ludens.applicationId=com.tuorganizacion.ejemplo
+# Identificador unico de la aplicacion
+ludens.android.id=com.tuorganizacion.ejemplo
 
-# Versión visible para el usuario
-ludens.applicationVersion=1.0
+# Version visible para el usuario
+ludens.android.version=1.0.0
 
-# Nombre de la aplicación en el sistema
-ludens.applicationName=Nombre del Juego
+# Version interna entera
+ludens.android.versionCode=1
+
+# Nombre de la aplicacion en el sistema
+ludens.android.name=Nombre del Juego
 
 # Nombre corto debajo del icono
-ludens.applicationLauncherName=Juego
+ludens.android.launcherName=Juego
 ```
 
-#### Compilar
+[`gradle.properties`](gradle.properties) se sigue usando para opciones de build de Gradle/Kotlin. La identidad y ajustes de Ludens se configuran en [`ludens.properties`](ludens.properties).
 
-> **Guía Completa**: Para un tutorial detallado con imágenes y pasos de configuración específicos, revisa la **[Guía de Construcción](BUILD.es.md)**.
+### Compilar
 
-##### Debug Build (Pruebas)
-Para pruebas rápidas en emulador o dispositivo:
-Ejecuta `./gradlew assembleDebug`.
-El APK se generará en: `composeApp/build/outputs/apk/debug/`
+Para flujo completo con capturas y firma release, revisa [BUILD.es.md](BUILD.es.md).
 
-##### Release Build
-Para generar un APK firmado para producción:
-1.  Crea tu firma y configura su uso creando un archivo `keystore.properties` en la raíz (usa `keystore.properties.template` como referencia).
-2.  Ejecuta `./gradlew assembleRelease`.
-3.  El APK firmado estará en: `composeApp/build/outputs/apk/release/`
+- Debug: `./gradlew assembleDebug`
+  - Salida: `composeApp/build/outputs/apk/debug/`
+- Release: `./gradlew assembleRelease`
+  - Crea antes [`keystore.properties`](keystore.properties) (ver [`keystore.properties.template`](keystore.properties.template)).
+  - Salida: `composeApp/build/outputs/apk/release/`
 
 ### iOS
-*Próximamente* - La configuración actual es la predeterminada de Compose Multiplatform.
+
+Proximamente. La configuracion actual sigue la plantilla por defecto de Compose Multiplatform.
 
 ## Contribuciones
 
-¡Las contribuciones son bienvenidas! Por favor, siéntete libre de enviar un Pull Request. Para cambios mayores, por favor abre un issue primero para discutir qué te gustaría cambiar.
+Las contribuciones son bienvenidas. Para cambios grandes, abre un issue primero.
 
-1. Haz un Fork del repositorio
-2. Crea tu rama de características (`git checkout -b feature/AmazingFeature`)
-3. Haz Commit de tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Haz Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+1. Haz fork del repositorio.
+2. Crea tu rama (`git checkout -b feature/AmazingFeature`).
+3. Haz commit (`git commit -m 'Add some AmazingFeature'`).
+4. Haz push (`git push origin feature/AmazingFeature`).
+5. Abre un Pull Request.
 
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia Apache 2.0 - mira el archivo [LICENSE](LICENSE) para más detalles.
+Apache 2.0. Revisa [`LICENSE`](LICENSE).
 
 ## Enlaces
 
@@ -133,11 +158,10 @@ Este proyecto está licenciado bajo la Licencia Apache 2.0 - mira el archivo [LI
 
 ## Agradecimientos
 
-- Construido con [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
 - [Compose WebView Multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)
 - [Compose Virtual Joystick](https://github.com/yoimerdr/compose-virtualjoystick-multiplatform)
 
 ---
 
-**¡Si encuentras útil este proyecto, por favor considera darle una ⭐ en GitHub!**
-
+Si este proyecto te ayuda, considera darle una estrella.

@@ -61,7 +61,9 @@ Antes de exportar tu juego, considera lo siguiente:
 ### Estructura de Directorios
 Familiarízate con la ubicación de los archivos clave:
 *   `composeApp/src/commonMain/composeResources/files`: Aquí irá tu juego.
-*   `gradle.properties`: Aquí configurarás el nombre y versión.
+*   [`ludens.properties`](ludens.properties): Configuración principal de Ludens (identidad app, flags de manifest, permisos y preset de settings).
+*   [`gradle.properties`](gradle.properties): Opciones de Gradle/Kotlin para rendimiento y sistema de build.
+*   [`keystore.properties`](keystore.properties): Credenciales locales de firma release (no subir al repositorio).
 
 ## Exportar el Juego
 1.  Abre tu proyecto en RPG Maker MV o MZ.
@@ -94,27 +96,63 @@ La aplicación espera encontrar `index.html` dentro de `www`.
 ## Android
 ### Personalización
 
-Edita el archivo `gradle.properties` en la raíz del proyecto.
+Edita el archivo [`ludens.properties`](ludens.properties) en la raíz del proyecto.
 
 ```properties
 # ID único (formato com.dominio.nombre)
-ludens.applicationId=com.miestudio.rpg
+ludens.android.id=com.miestudio.rpg
 
-# Versión visible (ej. 1.0)
-ludens.applicationVersion=1.0
+# Versión visible (ej. 1.0.0)
+ludens.android.version=1.0.0
+
+# Versión interna (entero)
+ludens.android.versionCode=1
 
 # Nombre en Ajustes
-ludens.applicationName=Mi RPG Épico
+ludens.android.name=Mi RPG Épico
 
 # Nombre en el Launcher (Icono)
-ludens.applicationLauncherName=Mi RPG
+ludens.android.launcherName=Mi RPG
 ```
 
+> [!IMPORTANT]
+> Ludens ahora lee primero [`ludens.properties`](ludens.properties). Si no existe, puede leer las mismas claves `ludens.*` desde [`gradle.properties`](gradle.properties); claves antiguas como `ludens.applicationId` ya no son compatibles.
+
 <p align="center">
-  <img src="resources/images/guide/ludens-project-properties.png" alt="Configuración en gradle.properties" height="320">
+  <img src="resources/images/guide/ludens-project-properties.png" alt="Configuración en ludens.properties" height="320">
   <br>
   <em>Figura 6: Modificación de las propiedades del proyecto para personalizar ID, versión y nombre.</em>
 </p>
+
+#### Configuración Opcional de Android/Manifest
+
+También puedes personalizar comportamiento Android con [`ludens.properties`](ludens.properties):
+
+```properties
+# Placeholders del manifest
+ludens.android.manifest.allowBackup=true
+ludens.android.manifest.largeHeap=true
+ludens.android.manifest.hardwareAccelerated=true
+ludens.android.manifest.screenOrientation=sensorLandscape
+ludens.android.manifest.usesCleartextTraffic=false
+ludens.android.manifest.resizeableActivity=false
+
+# Manifest de permisos generado 
+# Todos los permisos listados son opcionales; 
+# El wrapper no requiere ni usa funcionalidades que dependan de ellos.
+# Si tu juego requiere permisos adicionales aparte de acceso basico de red
+# Es posible que necesites editar el codigo fuente del wrapper.
+ludens.android.permissions.internet=false
+ludens.android.permissions.networkState=false
+ludens.android.permissions.wakeLock=false
+ludens.android.permissions.accessWifiState=false
+ludens.android.permissions.changeWifiState=false
+```
+
+Estos valores son consumidos por plugins personalizados en `build-logic` durante la compilación.
+
+> [!TIP]
+> Ludens soporta más propiedades de configuración. Revisa directamente [`ludens.properties`](ludens.properties) para ver la lista completa y su descripción.
 
 #### Icono de la App
 Reemplaza las imágenes en `composeApp/src/androidMain/res/mipmap-*` o usa la herramienta **Image Asset Studio**:
@@ -165,7 +203,8 @@ Si prefieres usar la interfaz de Android Studio:
 #### Resultado
 Independientemente del método, el APK aparecerá en: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`.
 
-> **Recomendación**: Instala este APK en un emulador o dispositivo real para verificar que el juego carga y los plugins funcionan correctamente.
+> [!TIP]
+> Instala este APK en un emulador o dispositivo real para verificar que el juego carga y los plugins funcionan correctamente.
 
 <p align="center">
   <img src="resources/images/guide/ludens-build-debug.png" alt="Resultado del Build" height="320">
@@ -223,7 +262,7 @@ Esta opción te guía paso a paso para firmar tu aplicación.
 Similar al proceso de Debug, esta opción es ideal para automatizar el build, pero requiere configuración manual previa.
 
 1.  Asegúrate de tener tu archivo `.jks` (Keystore) generado (puedes usar el paso 3 de la Opción A para crearlo).
-2.  Crea/Edita el archivo `keystore.properties` en la raíz del proyecto con la ruta y credenciales:
+2.  Crea/Edita el archivo [`keystore.properties`](keystore.properties) en la raíz del proyecto con la ruta y credenciales:
 
     ```properties
     storePassword=tu_store_password
@@ -231,6 +270,8 @@ Similar al proceso de Debug, esta opción es ideal para automatizar el build, pe
     keyAlias=tu_alias
     storeFile=C:/Ruta/A/Tu/llave.jks
     ```
+
+    Puedes usar [`keystore.properties.template`](keystore.properties.template) como referencia.
 
 3.  Ejecuta la tarea `assembleRelease` desde la ventana de configuraciones (como se vio en la sección Debug) o desde la terminal:
     ```bash
