@@ -3,6 +3,7 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,17 +11,21 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeGestures
 import androidx.compose.foundation.layout.union
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionCard
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.features.settings.presentation.section.AboutSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.section.ActionSettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.section.ControlsSettingsSection
@@ -34,6 +39,9 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.Cont
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.RootSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ToolsSettingsViewModel
+import com.yoimerdr.compose.ludens.ui.components.layout.ResponsiveBox
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalBreakpoints
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalRadius
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 
 /**
@@ -56,7 +64,8 @@ fun SettingsContents(
     actionViewModel: ActionSettingsViewModel,
 ) {
     val spacing = LocalSpacing.current
-    val color = MaterialTheme.colorScheme.surfaceContainerLowest
+    val breakpoints = LocalBreakpoints.current
+    val contentColor = MaterialTheme.colorScheme.surfaceContainerLowest
 
     val insets = WindowInsets.safeGestures
     val verticalPadding = insets
@@ -64,6 +73,7 @@ fun SettingsContents(
         .union(
             WindowInsets(
                 top = spacing.medium,
+                bottom = spacing.medium
             )
         )
         .asPaddingValues()
@@ -78,110 +88,253 @@ fun SettingsContents(
         )
         .asPaddingValues()
 
-    OptionCard(
-        shape = RectangleShape,
-        padding = PaddingValues.Zero,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        SettingsContents(
-            viewModel = viewModel,
-            controlsViewModel = controlsViewModel,
-            toolsViewModel = toolsViewModel,
-            systemViewModel = systemViewModel,
-            actionViewModel = actionViewModel,
-            horizontalPadding = horizontalPadding,
-            verticalPadding = verticalPadding,
-            color = color,
-            onClose = onClose
-        )
-    }
+    val railWidth = 192.dp
+    val shellGap = spacing.large
+    val contentMaxWidth = 980.dp
 
+    ResponsiveBox(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        compact = {
+            SettingsSectionContent(
+                centered = false,
+                compact = true,
+                contentColor = contentColor,
+                horizontalPadding = horizontalPadding,
+                verticalPadding = verticalPadding,
+                viewModel = viewModel,
+                controlsViewModel = controlsViewModel,
+                toolsViewModel = toolsViewModel,
+                systemViewModel = systemViewModel,
+                actionViewModel = actionViewModel,
+                contentMaxWidth = contentMaxWidth,
+                shellGap = shellGap,
+                onClose = onClose,
+            )
+        },
+        medium = {
+            SettingsSectionContent(
+                centered = maxWidth >= breakpoints.extraLarge,
+                compact = false,
+                contentColor = contentColor,
+                horizontalPadding = horizontalPadding,
+                verticalPadding = verticalPadding,
+                viewModel = viewModel,
+                controlsViewModel = controlsViewModel,
+                toolsViewModel = toolsViewModel,
+                systemViewModel = systemViewModel,
+                actionViewModel = actionViewModel,
+                contentMaxWidth = contentMaxWidth,
+                railWidth = railWidth,
+                shellGap = shellGap,
+                onClose = onClose,
+            )
+        },
+    )
 }
 
-/**
- * Internal settings content layout with precalculated padding values.
- *
- * @param viewModel The settings view model.
- * @param horizontalPadding The horizontal padding values.
- * @param verticalPadding The vertical padding values.
- * @param color The background color for the content area.
- * @param onClose Callback invoked when the settings screen is closed.
- */
 @Composable
-private fun SettingsContents(
+private fun CompactSettingsContent(
+    contentColor: Color,
     viewModel: RootSettingsViewModel,
     controlsViewModel: ControlsSettingsViewModel,
     toolsViewModel: ToolsSettingsViewModel,
     systemViewModel: SystemSettingsViewModel,
     actionViewModel: ActionSettingsViewModel,
-    horizontalPadding: PaddingValues,
-    verticalPadding: PaddingValues,
-    color: Color,
+    contentMaxWidth: Dp = 980.dp,
+    shellGap: Dp = LocalSpacing.current.large,
     onClose: () -> Unit,
 ) {
-    val section = viewModel.section
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .widthIn(max = contentMaxWidth),
+        verticalArrangement = Arrangement.spacedBy(shellGap),
+    ) {
+        SideTabOptions(
+            section = viewModel.section,
+            vertical = false,
+            onEvent = viewModel::handle,
+            onBack = onClose,
+        )
+
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = contentColor,
+            shape = MaterialTheme.shapes.large,
+            shadowElevation = 0.dp,
+        ) {
+            SettingsSectionContent(
+                viewModel = viewModel,
+                section = viewModel.section,
+                controlsViewModel = controlsViewModel,
+                toolsViewModel = toolsViewModel,
+                systemViewModel = systemViewModel,
+                actionViewModel = actionViewModel,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExpandedSettingsContent(
+    centered: Boolean,
+    contentColor: Color,
+    viewModel: RootSettingsViewModel,
+    controlsViewModel: ControlsSettingsViewModel,
+    toolsViewModel: ToolsSettingsViewModel,
+    systemViewModel: SystemSettingsViewModel,
+    actionViewModel: ActionSettingsViewModel,
+    contentMaxWidth: Dp = 980.dp,
+    railWidth: Dp = 192.dp,
+    shellGap: Dp = LocalSpacing.current.large,
+    onClose: () -> Unit,
+) {
+    val spacing = LocalSpacing.current
+    val shellMaxWidth: Dp = railWidth + shellGap + contentMaxWidth
 
     Row(
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.Start
+        modifier = Modifier
+            .fillMaxSize()
+            .widthIn(max = if (centered) shellMaxWidth else Dp.Unspecified),
+        horizontalArrangement = Arrangement.spacedBy(shellGap),
+        verticalAlignment = Alignment.Top,
     ) {
-        Box(
-            modifier = Modifier
-                .padding(horizontalPadding)
-                .padding(verticalPadding)
+        SideTabOptions(
+            modifier = Modifier.width(railWidth)
                 .fillMaxHeight(),
+            section = viewModel.section,
+            vertical = true,
+            onEvent = viewModel::handle,
+            onBack = onClose,
+        )
+
+        Surface(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .widthIn(max = contentMaxWidth),
+            color = contentColor,
+            shadowElevation = 0.dp,
+            shape = MaterialTheme.shapes.large,
         ) {
-            SideTabOptions(
-                section = section,
-                onEvent = viewModel::handle,
-                onBack = onClose
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(spacing.medium)
+            ) {
+                SettingsSectionContent(
+                    viewModel = viewModel,
+                    section = viewModel.section,
+                    controlsViewModel = controlsViewModel,
+                    toolsViewModel = toolsViewModel,
+                    systemViewModel = systemViewModel,
+                    actionViewModel = actionViewModel,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsSectionContent(
+    centered: Boolean,
+    compact: Boolean,
+    contentColor: Color,
+    horizontalPadding: PaddingValues,
+    verticalPadding: PaddingValues,
+    viewModel: RootSettingsViewModel,
+    controlsViewModel: ControlsSettingsViewModel,
+    toolsViewModel: ToolsSettingsViewModel,
+    systemViewModel: SystemSettingsViewModel,
+    actionViewModel: ActionSettingsViewModel,
+    contentMaxWidth: Dp = 980.dp,
+    railWidth: Dp = 192.dp,
+    shellGap: Dp = LocalSpacing.current.large,
+    onClose: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontalPadding)
+            .padding(verticalPadding),
+        contentAlignment = if (centered) Alignment.TopCenter else Alignment.TopStart,
+    ) {
+        if (compact) {
+            CompactSettingsContent(
+                contentColor = contentColor,
+                viewModel = viewModel,
+                controlsViewModel = controlsViewModel,
+                toolsViewModel = toolsViewModel,
+                systemViewModel = systemViewModel,
+                actionViewModel = actionViewModel,
+                contentMaxWidth = contentMaxWidth,
+                shellGap = shellGap,
+                onClose = onClose,
+            )
+        } else {
+            ExpandedSettingsContent(
+                centered = centered,
+                contentColor = contentColor,
+                viewModel = viewModel,
+                controlsViewModel = controlsViewModel,
+                toolsViewModel = toolsViewModel,
+                systemViewModel = systemViewModel,
+                actionViewModel = actionViewModel,
+                contentMaxWidth = contentMaxWidth,
+                railWidth = railWidth,
+                shellGap = shellGap,
+                onClose = onClose,
+            )
+        }
+    }
+}
+
+/**
+ * Renders the currently selected settings section without altering its behavior.
+ *
+ * @param viewModel The settings view model.
+ */
+@Composable
+private fun SettingsSectionContent(
+    viewModel: RootSettingsViewModel,
+    controlsViewModel: ControlsSettingsViewModel,
+    toolsViewModel: ToolsSettingsViewModel,
+    systemViewModel: SystemSettingsViewModel,
+    actionViewModel: ActionSettingsViewModel,
+    section: SettingsSection,
+) {
+    when (section) {
+        SettingsSection.Controls -> {
+            ControlsSettingsSection(
+                viewModel = controlsViewModel
             )
         }
 
-        Box(
-            modifier = Modifier
-                .background(color)
-                .fillMaxHeight()
-                .padding(horizontalPadding)
-                .padding(verticalPadding)
-        ) {
-            when (section) {
-                SettingsSection.Controls -> {
-                    ControlsSettingsSection(
-                        viewModel = controlsViewModel
-                    )
+        SettingsSection.Tools -> {
+            ToolsSettingsSection(
+                viewModel = toolsViewModel,
+                onNavigate = { destination ->
+                    viewModel.handle(SettingsEvent.NavigateTo(destination))
                 }
-
-                SettingsSection.Tools -> {
-                    ToolsSettingsSection(
-                        viewModel = toolsViewModel,
-                        onNavigate = { destination ->
-                            viewModel.handle(SettingsEvent.NavigateTo(destination))
-                        }
-                    )
-                }
-
-                SettingsSection.System -> {
-                    SystemSettingsSection(
-                        viewModel = systemViewModel
-                    )
-                }
-
-                SettingsSection.About -> {
-                    AboutSection()
-                }
-
-                SettingsSection.Actions -> {
-                    ActionSettingsSection(
-                        viewModel = actionViewModel
-                    )
-                }
-
-                else -> {}
-            }
+            )
         }
 
+        SettingsSection.System -> {
+            SystemSettingsSection(
+                viewModel = systemViewModel
+            )
+        }
+
+        SettingsSection.About -> {
+            AboutSection()
+        }
+
+        SettingsSection.Actions -> {
+            ActionSettingsSection(
+                viewModel = actionViewModel
+            )
+        }
     }
 }
