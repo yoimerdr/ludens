@@ -31,6 +31,7 @@ import com.yoimerdr.compose.ludens.ui.components.layout.Card
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDock
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDockHandleButton
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalWebFeatures
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Games
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
@@ -187,13 +188,19 @@ fun SettingsActions(
     onActionClick: (ActionItemState) -> Unit,
 ) {
     val plugin = LocalPlugin.current
+    val features = LocalWebFeatures.current
+
     SettingsActions(
         modifier = modifier,
         onConfiguration = onConfiguration,
         actions = if (actions.enabled) {
             actions.items
                 .sortedBy { it.order }
-                .filterNot { it.type == ActionType.ToggleWebGL && !plugin.canToggleDrawEngine }
+                .filterNot {
+                    (it.type == ActionType.ToggleWebGL && (!plugin.canToggleDrawEngine || !features.supportsWebGL)) ||
+                            (it.type == ActionType.ToggleFPS && !plugin.isEnabled)
+
+                }
                 .map { item ->
                     val isActive = when (item.type) {
                         ActionType.ToggleMute -> toolSettings.isMuted
