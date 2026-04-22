@@ -9,6 +9,8 @@ import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -35,9 +38,9 @@ import com.yoimerdr.compose.ludens.ui.state.layout.setOpenEdge
 
 
 /**
- * Creates a slide-in transition from this edge.
+ * Creates a subtle enter transition from this edge.
  *
- * The content slides in from the specified edge towards the center.
+ * The content fades and scales from the edge nearest the opener.
  *
  * @param animationSpec The animation specification for the transition.
  */
@@ -47,17 +50,37 @@ fun Edge.asSlideInTransition(
         visibilityThreshold = IntOffset.VisibilityThreshold,
     ),
 ): EnterTransition {
+    val scaleSpec = spring<Float>(stiffness = Spring.StiffnessMediumLow)
     return when (this) {
-        Edge.Right -> slideInHorizontally(animationSpec) { -it / 2 }
-        Edge.Left -> slideInHorizontally(animationSpec) { it / 2 }
-        Edge.Bottom -> slideInVertically(animationSpec) { -it / 2 }
-        Edge.Top -> slideInVertically(animationSpec) { it / 2 }
+        Edge.Right -> fadeIn() + scaleIn(
+            animationSpec = scaleSpec,
+            initialScale = 0.94f,
+            transformOrigin = TransformOrigin(0f, 0.5f)
+        ) + slideInHorizontally(animationSpec) { -it / 6 }
+
+        Edge.Left -> fadeIn() + scaleIn(
+            animationSpec = scaleSpec,
+            initialScale = 0.94f,
+            transformOrigin = TransformOrigin(1f, 0.5f)
+        ) + slideInHorizontally(animationSpec) { it / 6 }
+
+        Edge.Bottom -> fadeIn() + scaleIn(
+            animationSpec = scaleSpec,
+            initialScale = 0.94f,
+            transformOrigin = TransformOrigin(0.5f, 0f)
+        ) + slideInVertically(animationSpec) { -it / 6 }
+
+        Edge.Top -> fadeIn() + scaleIn(
+            animationSpec = scaleSpec,
+            initialScale = 0.94f,
+            transformOrigin = TransformOrigin(0.5f, 1f)
+        ) + slideInVertically(animationSpec) { it / 6 }
     }
 }
 
 /**
- * Creates a slide-out transition towards this edge.
- * The content slides out from the center towards the specified edge.
+ * Creates a subtle exit transition towards this edge.
+ * The content fades and collapses back into the opener side.
  *
  * @param animationSpec The animation specification for the transition.
  */
@@ -67,11 +90,31 @@ fun Edge.asSlideOutTransition(
         visibilityThreshold = IntOffset.VisibilityThreshold,
     ),
 ): ExitTransition {
+    val scaleSpec = spring<Float>(stiffness = Spring.StiffnessMediumLow)
     return when (this) {
-        Edge.Right -> slideOutHorizontally(animationSpec) { -it / 2 }
-        Edge.Left -> slideOutHorizontally(animationSpec) { it / 2 }
-        Edge.Bottom -> slideOutVertically(animationSpec) { -it / 2 }
-        Edge.Top -> slideOutVertically(animationSpec) { it / 2 }
+        Edge.Right -> fadeOut() + scaleOut(
+            animationSpec = scaleSpec,
+            targetScale = 0.94f,
+            transformOrigin = TransformOrigin(0f, 0.5f)
+        ) + slideOutHorizontally(animationSpec) { -it / 6 }
+
+        Edge.Left -> fadeOut() + scaleOut(
+            animationSpec = scaleSpec,
+            targetScale = 0.94f,
+            transformOrigin = TransformOrigin(1f, 0.5f)
+        ) + slideOutHorizontally(animationSpec) { it / 6 }
+
+        Edge.Bottom -> fadeOut() + scaleOut(
+            animationSpec = scaleSpec,
+            targetScale = 0.94f,
+            transformOrigin = TransformOrigin(0.5f, 0f)
+        ) + slideOutVertically(animationSpec) { -it / 6 }
+
+        Edge.Top -> fadeOut() + scaleOut(
+            animationSpec = scaleSpec,
+            targetScale = 0.94f,
+            transformOrigin = TransformOrigin(0.5f, 1f)
+        ) + slideOutVertically(animationSpec) { it / 6 }
     }
 }
 
