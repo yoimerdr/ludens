@@ -14,10 +14,9 @@ import androidx.navigation.NavController
 import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.app.navigation.navigateTo
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
-import com.yoimerdr.compose.ludens.core.presentation.extension.settings.getEnabled
 import com.yoimerdr.compose.ludens.features.settings.presentation.layout.SettingsContents
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
-import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateShowFps
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateActionEnabled
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateUseWebGL
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlsSettingsViewModel
@@ -139,13 +138,11 @@ private fun SettingsEffects(
 
     LaunchedEffect(plugin, actions) {
         // Try to disable items if for some reason they are enabled while the plugin is disabled or the features are not supported
-        val items = actions.items.getEnabled(ActionType.ToggleFPS, ActionType.ToggleWebGL)
-
-        items.forEach {
+        actions.items.forEachIndexed { index, it ->
             when (it.type) {
                 ActionType.ToggleFPS -> {
                     if (it.enabled && !plugin.isEnabled) {
-                        actionsViewModel.handle(UpdateShowFps(false))
+                        actionsViewModel.handle(UpdateActionEnabled(index, false))
                     }
                 }
 
