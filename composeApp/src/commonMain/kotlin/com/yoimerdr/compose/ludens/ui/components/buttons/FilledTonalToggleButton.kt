@@ -10,7 +10,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalStrokes
 
 /**
  * A filled tonal button that can be toggled between selected and unselected states.
@@ -46,19 +46,29 @@ fun FilledTonalToggleButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     selected: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
-        disabledContainerColor = Color.Transparent
-    ),
-    border: BorderStroke? = ButtonDefaults.outlinedButtonBorder(enabled),
+    colors: ButtonColors? = null,
+    border: BorderStroke? = null,
     elevation: ButtonElevation? = null,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable (RowScope.() -> Unit),
 ) {
-    val colors = colors.copy(
-        containerColor = if (selected)
-            colors.containerColor
-        else colors.disabledContainerColor
+    val strokes = LocalStrokes.current
+    val palette = colors ?: ButtonDefaults.filledTonalButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        disabledContentColor = MaterialTheme.colorScheme.onSurface,
     )
+    val resolvedColors = palette.copy(
+        containerColor = if (selected) palette.containerColor else palette.disabledContainerColor,
+        contentColor = if (selected) palette.contentColor else palette.disabledContentColor,
+    )
+    val resolvedBorder = border ?: BorderStroke(
+        width = strokes.thin,
+        color = if (selected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.outlineVariant,
+    )
+
     FilledTonalButton(
         onClick = onClick,
         modifier = modifier,
@@ -67,7 +77,7 @@ fun FilledTonalToggleButton(
         interactionSource = interactionSource,
         content = content,
         shape = MaterialTheme.shapes.medium,
-        colors = colors,
-        border = border,
+        colors = resolvedColors,
+        border = resolvedBorder,
     )
 }

@@ -100,7 +100,7 @@ fun LinkText(
     modifier: Modifier = Modifier,
     linkStyle: TextLinkStyles = TextLinkStyles(
         style = SpanStyle(
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.tertiary,
             textDecoration = TextDecoration.Underline
         )
     ),
@@ -224,7 +224,7 @@ fun LinkText(
     part: String? = null,
     linkStyle: TextLinkStyles = TextLinkStyles(
         style = SpanStyle(
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.tertiary,
             textDecoration = TextDecoration.Underline
         )
     ),

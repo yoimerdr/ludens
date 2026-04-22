@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -17,7 +18,6 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalStrokes
 import com.yoimerdr.compose.ludens.ui.components.provider.ProvideContentColorTextStyle
 
 /**
@@ -64,21 +65,28 @@ fun SideTab(
     },
     enabled: Boolean = true,
     selected: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
-        disabledContainerColor = Color.Transparent
-    ),
+    colors: ButtonColors? = null,
     interactionSource: MutableInteractionSource? = null,
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit,
 ) {
-
-    val colors = colors
-        .let {
-            it.copy(
-                containerColor = if (selected) it.containerColor
-                else it.disabledContainerColor,
-            )
-        }
+    val strokes = LocalStrokes.current
+    val palette = colors ?: ButtonDefaults.filledTonalButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = Color.Transparent,
+        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    val resolvedColors = palette.copy(
+        containerColor = if (selected) palette.containerColor else palette.disabledContainerColor,
+        contentColor = if (selected) palette.contentColor else palette.disabledContentColor,
+    )
+    val border = if (selected) {
+        BorderStroke(
+            width = strokes.thin,
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+    } else null
 
     FilledTonalButton(
         onClick = onClick,
@@ -86,11 +94,13 @@ fun SideTab(
             .semantics {
                 role = Role.Tab
                 this.selected = selected
-            },
+        },
         interactionSource = interactionSource,
         enabled = enabled,
-        colors = colors,
+        colors = resolvedColors,
         shape = MaterialTheme.shapes.medium,
+        border = border,
+        contentPadding = padding,
     ) {
         Row(
             modifier = Modifier
@@ -136,22 +146,29 @@ fun SideTab(
     enabled: Boolean = true,
     expanded: Boolean = true,
     selected: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
-        disabledContainerColor = Color.Transparent
-    ),
+    colors: ButtonColors? = null,
     onClick: () -> Unit,
     interactionSource: MutableInteractionSource? = null,
     start: @Composable () -> Unit,
     end: @Composable () -> Unit,
 ) {
     val source = interactionSource ?: remember { MutableInteractionSource() }
+    val palette = colors ?: ButtonDefaults.filledTonalButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = Color.Transparent,
+        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    val resolvedContainerColor = if (selected) palette.containerColor else palette.disabledContainerColor
+    val resolvedContentColor = if (selected) palette.contentColor else palette.disabledContentColor
+
     if (expanded) {
         val spacing = LocalSpacing.current
         SideTab(
             modifier = modifier,
             enabled = enabled,
             selected = selected,
-            colors = colors,
+            colors = palette,
             onClick = onClick,
             interactionSource = interactionSource,
         ) {
@@ -175,16 +192,9 @@ fun SideTab(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val targetColors = colors
-                .let {
-                    it.copy(
-                        containerColor = if (selected) it.containerColor
-                        else it.disabledContainerColor,
-                    )
-                }
             ProvideContentColorTextStyle(
                 textStyle = MaterialTheme.typography.labelLarge,
-                contentColor = MaterialTheme.colorScheme.contentColorFor(colors.containerColor)
+                contentColor = resolvedContentColor
             ) {
                 FilledTonalIconButton(
                     onClick = onClick,
@@ -195,8 +205,10 @@ fun SideTab(
                     interactionSource = source,
                     enabled = enabled,
                     colors = IconButtonDefaults.filledTonalIconButtonColors(
-                        containerColor = targetColors.containerColor,
-                        disabledContainerColor = targetColors.disabledContainerColor
+                        containerColor = resolvedContainerColor,
+                        contentColor = resolvedContentColor,
+                        disabledContainerColor = palette.disabledContainerColor,
+                        disabledContentColor = palette.disabledContentColor,
                     ),
                     shape = MaterialTheme.shapes.medium,
                     content = start,
@@ -241,9 +253,7 @@ fun SideTab(
     enabled: Boolean = true,
     expanded: Boolean = true,
     selected: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(
-        disabledContainerColor = Color.Transparent
-    ),
+    colors: ButtonColors? = null,
     onClick: () -> Unit,
     interactionSource: MutableInteractionSource? = null,
     icon: ImageVector,

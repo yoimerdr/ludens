@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.TextUnit.Companion.Unspecified
 
 /**
  * Displays small-sized text with predefined styling.
@@ -54,14 +54,14 @@ fun SmallText(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     autoSize: TextAutoSize? = null,
-    fontSize: TextUnit = 11.sp,
+    fontSize: TextUnit = Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
     fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = 0.4.sp,
+    letterSpacing: TextUnit = Unspecified,
     textDecoration: TextDecoration? = null,
     textAlign: TextAlign? = null,
-    lineHeight: TextUnit = 16.sp,
+    lineHeight: TextUnit = Unspecified,
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,

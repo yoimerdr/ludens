@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -67,8 +67,8 @@ fun ConfirmationDialog(
     message: String,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     title: String = stringResource(Res.string.are_sure),
     confirmText: String = stringResource(Res.string.accept),
     dismissText: String = stringResource(Res.string.cancel),
@@ -76,14 +76,19 @@ fun ConfirmationDialog(
 ) {
     if (showDialog) {
         val spacing = LocalSpacing.current
+        val targetColors = colors ?: CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        )
+        val targetElevation = elevation ?: CardDefaults.cardElevation()
         Dialog(
             onDismissRequest = onDismiss,
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             ElevatedCard(
                 modifier = modifier,
-                colors = colors,
-                elevation = elevation,
+                colors = targetColors,
+                elevation = targetElevation,
             ) {
                 Column(
                     modifier = Modifier
@@ -119,11 +124,14 @@ fun ConfirmationDialog(
                             )
                         }
 
-                        FilledTonalButton(
+                        Button(
                             onClick = onConfirm,
                             modifier = Modifier.weight(1f),
                             shape = MaterialTheme.shapes.medium,
-                            colors = ButtonDefaults.buttonColors()
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                            )
                         ) {
                             Text(
                                 text = confirmText,
