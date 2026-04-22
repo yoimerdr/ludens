@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.features.settings.presentation.section.AboutSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.section.ActionSettingsSection
@@ -75,6 +78,16 @@ fun SettingsContents(
             )
         )
         .asPaddingValues()
+        .let {
+            val top = it.calculateTopPadding()
+
+            PaddingValues(
+                top = top,
+                bottom = top,
+                start = it.calculateStartPadding(LayoutDirection.Ltr),
+                end = it.calculateEndPadding(LayoutDirection.Ltr)
+            )
+        }
 
     val railWidth = 192.dp
     val shellGap = spacing.large
