@@ -13,8 +13,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.yoimerdr.compose.ludens.app.navigation.Destination
 import com.yoimerdr.compose.ludens.app.navigation.navigateTo
+import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
+import com.yoimerdr.compose.ludens.core.presentation.extension.settings.getEnabled
 import com.yoimerdr.compose.ludens.features.settings.presentation.layout.SettingsContents
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateShowFps
+import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateUseWebGL
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ControlsSettingsViewModel
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.RootSettingsViewModel
@@ -25,6 +29,8 @@ import com.yoimerdr.compose.ludens.ui.components.dialogs.widthInDialog
 import com.yoimerdr.compose.ludens.ui.components.interaction.reject
 import com.yoimerdr.compose.ludens.ui.components.interaction.resolve
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalInteractionManager
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalWebFeatures
 import kotlinx.coroutines.launch
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_text_restarting_confirmation
@@ -57,17 +63,13 @@ fun SettingsScreen(
     val interactionManager = LocalInteractionManager.current
     val request by interactionManager.request.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect {
-            when (it) {
-                is SettingsEvent.NavigateTo -> {
-                    nav.navigate(it.destination.route)
-                }
-
-                else -> {}
-            }
-        }
-    }
+    SettingsEffects(
+        viewModel,
+        actionViewModel,
+        onNavigate = { destination ->
+            nav.navigateTo(destination)
+        },
+    )
 
     BackHandler {
         if (request != null) {
@@ -111,5 +113,52 @@ fun SettingsScreen(
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun SettingsEffects(
+    viewModel: RootSettingsViewModel,
+    actionsViewModel: ActionSettingsViewModel,
+    onNavigate: (Destination) -> Unit,
+) {
+    LaunchedEffect(Unit) {
+        viewModel.events.collect {
+            when (it) {
+                is SettingsEvent.NavigateTo -> onNavigate(it.destination)
+
+                else -> {}
+            }
+        }
+    }
+
+    val plugin = LocalPlugin.current
+    val features = LocalWebFeatures.current
+
+    val actions by actionsViewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(plugin, actions) {
+        // Try to disable items if for some reason they are enabled while the plugin is disabled or the features are not supported
+        val items = actions.items.getEnabled(ActionType.ToggleFPS, ActionType.ToggleWebGL)
+
+        items.forEach {
+            when (it.type) {
+                ActionType.ToggleFPS -> {
+                    if (it.enabled && !plugin.isEnabled) {
+                        actionsViewModel.handle(UpdateShowFps(false))
+                    }
+                }
+
+                ActionType.ToggleWebGL -> {
+                    if (it.enabled && (!features.supportsWebGL || !plugin.canToggleDrawEngine)) {
+                        actionsViewModel.handle(
+                            UpdateUseWebGL(false)
+                        )
+                    }
+                }
+
+                else -> {}
+            }
+        }
     }
 }

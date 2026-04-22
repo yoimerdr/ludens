@@ -29,6 +29,7 @@ import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.U
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateActionsEnabled
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.ActionSettingsViewModel
 import com.yoimerdr.compose.ludens.ui.components.fields.SwitchField
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Drag
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Games
@@ -36,12 +37,12 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
 import com.yoimerdr.compose.ludens.ui.icons.outlined.SpeakerMute
 import com.yoimerdr.compose.ludens.ui.icons.outlined.TopSpeed
 import com.yoimerdr.compose.ludens.ui.icons.outlined.WindowDevTools
-import sh.calvin.reorderable.ReorderableCollectionItemScope
-import sh.calvin.reorderable.ReorderableItem
-import sh.calvin.reorderable.rememberReorderableLazyListState
 import ludens.composeapp.generated.resources.Res
 import ludens.composeapp.generated.resources.stc_actions_show_quick
 import org.jetbrains.compose.resources.stringResource
+import sh.calvin.reorderable.ReorderableCollectionItemScope
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 /**
  * A reorderable action setting option card.
@@ -61,11 +62,23 @@ private fun ReorderableCollectionItemScope.ActionSettingOption(
     enabled: Boolean = true,
     onCheckedChange: (Boolean) -> Unit,
 ) {
+    val plugin = LocalPlugin.current
+    val isSettings = item.type == ActionType.Settings
+    val isToggleWebGL = item.type == ActionType.ToggleWebGL
+    val isToggleFPS = item.type == ActionType.ToggleFPS
+
+    val isEnabled = if (isSettings) true
+    else if (isToggleWebGL)
+        plugin.canToggleDrawEngine && item.enabled
+    else if (isToggleFPS)
+        plugin.isEnabled && item.enabled
+    else item.enabled
+
     ToolOption(
         prefix = {
             val color = LocalContentColor.current
             CompositionLocalProvider(
-                LocalContentColor provides if (item.enabled) color
+                LocalContentColor provides if (isEnabled) color
                 else color.copy(alpha = 0.38f)
             ) {
                 Icon(
@@ -86,32 +99,44 @@ private fun ReorderableCollectionItemScope.ActionSettingOption(
         },
     ) {
         Row {
-            val isSettings = item.type == ActionType.Settings
+
             val canMove = if (isSettings) enabled
-            else enabled && item.enabled
+            else {
+                val result = (enabled && item.enabled)
+                if (isToggleWebGL || isToggleFPS)
+                    isEnabled
+                else result
+            }
+
             Checkbox(
-                checked = item.enabled,
+                checked = isEnabled,
                 enabled = if (isSettings) false
+                else if (isToggleWebGL)
+                    plugin.canToggleDrawEngine && enabled
+                else if (isToggleFPS)
+                    plugin.isEnabled && enabled
                 else enabled,
                 onCheckedChange = onCheckedChange,
             )
 
-                IconButton(
-                    modifier = Modifier.draggableHandle(
-                        enabled = canMove
-                    ),
-                    enabled = canMove,
-                    onClick = {},
-                ) {
-                    Icon(
-                        imageVector = LudensIcons.Default.Drag,
-                        contentDescription = "Move",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+            IconButton(
+                modifier = Modifier.draggableHandle(
+                    enabled = canMove
+                ),
+                enabled = canMove,
+                onClick = {},
+            ) {
+                Icon(
+                    imageVector = LudensIcons.Default.Drag,
+                    contentDescription = "Move",
+                    tint = if (canMove)
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+                )
             }
         }
     }
+}
 
 /**
  * The action settings section displaying quick actions configuration.
@@ -162,7 +187,9 @@ fun ActionSettingsSection(
 
         itemsIndexed(settings.items, key = { index, it -> it.type }) { index, item ->
             ReorderableItem(
-                state = reorderable, key = item.type, enabled = item.enabled
+                state = reorderable,
+                key = item.type,
+                enabled = item.enabled,
             ) {
                 ActionSettingOption(
                     item = item,
