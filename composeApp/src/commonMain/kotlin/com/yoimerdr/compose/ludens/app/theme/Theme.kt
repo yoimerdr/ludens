@@ -1,10 +1,13 @@
 package com.yoimerdr.compose.ludens.app.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -82,6 +85,14 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
+private val shapes = Shapes(
+    extraSmall = RoundedCornerShape(5.dp),
+    small = RoundedCornerShape(8.dp),
+    medium = RoundedCornerShape(8.dp),
+    large = RoundedCornerShape(11.dp),
+    extraLarge = RoundedCornerShape(12.dp),
+)
+
 @Composable
 fun LudensTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -95,7 +106,7 @@ fun LudensTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        shapes = shapes,
+        content = content,
     )
 }
-
