@@ -94,20 +94,30 @@ class ActionSettingsViewModel(
         updateState {
             val source = items.getOrNull(event.index)
             if (enabled && source != null && source.type != ActionType.Settings) {
-                val (enabled, disabled) = items.partition { it.enabled }
+                val reordered = buildList {
+                    items.forEachIndexed { index, item ->
+                        if (index != event.index && item.enabled) {
+                            add(item.copy(order = index))
+                        }
+                    }
 
-                val last = if (event.enabled) enabled.lastOrNull() ?: disabled.first()
-                else disabled.lastOrNull() ?: enabled.last()
+                    if (event.enabled) {
+                        add(source.copy(enabled = true, order = size))
+                    }
 
-                val items = items.toPersistentList().mutate {
-                    it[event.index] = source.copy(
-                        enabled = event.enabled,
-                        order = last.order + 1,
-                    )
-                    it.sortBy { item -> item.order }
+                    items.forEachIndexed { index, item ->
+                        if (index != event.index && !item.enabled) {
+                            add(item.copy(order = size))
+                        }
+                    }
+
+                    if (!event.enabled) {
+                        add(source.copy(enabled = false, order = size))
+                    }
                 }
+                    .toPersistentList()
 
-                copy(items = items)
+                copy(items = reordered)
             } else this
         }
     }
