@@ -23,9 +23,13 @@ gradlePlugin {
             id = "ludens.build.compose.resources.files"
             implementationClass = "ludens.build.compose.resources.ComposeResourceFilesPlugin"
         }
-        register("composeGenerateSettingsPreset") {
+        register("ludensComposeGenerateSettingsPreset") {
             id = "ludens.build.compose.settings.preset"
             implementationClass = "ludens.build.compose.settings.SettingsPresetPlugin"
+        }
+        register("ludensPermissionsManifest") {
+            id = "ludens.build.android.permissions.manifest"
+            implementationClass = "ludens.build.android.configuration.PermissionsManifestPlugin"
         }
     }
 }

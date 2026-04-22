@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.google.ksp)
     id("ludens.build.compose.resources.files")
     id("ludens.build.compose.settings.preset")
+    id("ludens.build.android.permissions.manifest")
     alias(libs.plugins.buildKonfig)
 }
 
@@ -30,6 +31,11 @@ buildkonfig {
             Type.STRING,
             "LUDENS_ISSUES_URL",
             "https://github.com/yoimerdr/ludens/issues"
+        )
+        buildConfigField(
+            Type.BOOLEAN,
+            "LUDENS_IMMERSIVE",
+            ludensConfiguration.android.immersive.toString()
         )
     }
 }
@@ -103,15 +109,29 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
+        // Core app identity comes from `ludens.properties`.
         applicationId = ludensConfiguration.android.id
         minSdk = ludensConfiguration.android.minSDK
         targetSdk = ludensConfiguration.android.targetSDK
-        versionCode = 1
+        versionCode = ludensConfiguration.android.versionCode
         versionName = ludensConfiguration.android.version
 
         resValue("string", "app_name", ludensConfiguration.android.name)
         resValue("string", "app_launcher_name", ludensConfiguration.android.launcherName)
+
+        // Manifest placeholders are resolved in `src/androidMain/AndroidManifest.xml`.
+        manifestPlaceholders["ludensAllowBackup"] = ludensConfiguration.android.manifest.allowBackup
+        manifestPlaceholders["ludensLargeHeap"] = ludensConfiguration.android.manifest.largeHeap
+        manifestPlaceholders["ludensHardwareAccelerated"] =
+            ludensConfiguration.android.manifest.hardwareAccelerated
+        manifestPlaceholders["ludensScreenOrientation"] =
+            ludensConfiguration.android.manifest.screenOrientation
+        manifestPlaceholders["ludensUsesCleartextTraffic"] =
+            ludensConfiguration.android.manifest.usesCleartextTraffic
+        manifestPlaceholders["ludensResizeableActivity"] =
+            ludensConfiguration.android.manifest.resizeableActivity
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -135,7 +155,10 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.getByName("release")
         }
         getByName("debug") {
@@ -172,6 +195,7 @@ dependencies {
 }
 
 // Trigger Common Metadata Generation from Native tasks
-tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
-    dependsOn("kspCommonMainKotlinMetadata")
-}
+tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }
+    .configureEach {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }

@@ -7,49 +7,69 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
+/**
+ * Generates the Kotlin object consumed by the app as the default settings preset.
+ *
+ * The generated file is compiled into `commonMain` and exposes constants such as
+ * `presetName` and `preset.toolMuted`.
+ */
 abstract class SettingsPresetGenerationTask : DefaultTask() {
 
+    /** Kotlin package used by the generated source file. */
     @get:Input
     abstract val packageName: Property<String>
 
+    /** Top-level object name written to the generated Kotlin source. */
     @get:Input
     abstract val objectName: Property<String>
 
+    /** Resolved preset name that will be emitted as `presetName`. */
     @get:Input
     abstract val presetName: Property<String>
 
+    /** Resolved default value for the muted tool flag. */
     @get:Input
     abstract val toolMuted: Property<Boolean>
 
+    /** Resolved default value for the FPS counter flag. */
     @get:Input
     abstract val toolShowFPS: Property<Boolean>
 
+    /** Resolved default value for the WebGL flag. */
     @get:Input
     abstract val toolUseWebgl: Property<Boolean>
 
+    /** Resolved default value for the virtual controls visibility. */
     @get:Input
     abstract val controlEnabled: Property<Boolean>
 
+    /** Resolved alpha value for the virtual controls. */
     @get:Input
     abstract val controlAlpha: Property<Float>
 
+    /** Resolved default value for the quick actions panel. */
     @get:Input
     abstract val actionEnabled: Property<Boolean>
 
+    /** Resolved default list of quick action items. */
     @get:Input
     abstract val actionItems: Property<String>
 
+    /** Resolved default system theme. */
     @get:Input
     abstract val systemTheme: Property<String>
 
+    /** Resolved default system language. */
     @get:Input
     abstract val systemLanguage: Property<String>
 
+    /** Output file that will contain the generated Kotlin source. */
     @get:OutputFile
     abstract val outputFile: RegularFileProperty
 
     @TaskAction
     fun generate() {
+        // Build the final Kotlin source from the resolved preset values.
         val content = buildString {
             appendLine("package ${packageName.get()}")
             appendLine()

@@ -8,6 +8,12 @@ import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+/**
+ * Registers the task that generates `LudensSettingsPreset.kt` from `ludens.properties`.
+ *
+ * The plugin resolves the Ludens configuration once, wires the generation task into the KMP
+ * source set and makes all Kotlin compile tasks depend on the generated file.
+ */
 class SettingsPresetPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -30,7 +36,7 @@ class SettingsPresetPlugin : Plugin<Project> {
 
                 outputFile.set(
                     layout.buildDirectory.file(
-                        "generated/ludensSettingsPreset/commonMain/kotlin/com/yoimerdr/compose/ludens/generated/settings/LudensSettingsPreset.kt"
+                        "generated/ludens/compose/settings/LudensSettingsPreset.kt"
                     )
                 )
             }
