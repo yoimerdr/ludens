@@ -20,9 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.GraphicsKey
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.KeyboardKey
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyboardItemState
 import com.yoimerdr.compose.ludens.ui.components.buttons.OutlinedIconButton
 import com.yoimerdr.compose.ludens.ui.extensions.modifier.noClickable
 
@@ -99,16 +101,28 @@ fun ControlButton(
  * @param control The control key item state containing the current key selection and control information.
  * @param enabled Whether the button and dropdown menu are enabled for interaction. Defaults to true.
  * @param items The set of available input keys to display in the dropdown menu.
+ * @param text A composable function that defines how to display each key in the dropdown menu. By default, it shows the name of the key.
  * @param onSelected Callback invoked when a new input key is selected from the menu.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ControlButton(
-    control: ControlKeyItemState,
-    items: Set<InputKey>,
+    control: ControlKeyboardItemState<*>,
+    items: Set<KeyboardKey>,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onSelected: (InputKey) -> Unit,
+    text: @Composable (it: KeyboardKey) -> Unit = {
+        val name = when (it) {
+            is InputKey -> it.name
+            is GraphicsKey -> it.name
+            else -> it.toString()
+        }
+
+        Text(
+            text = name,
+        )
+    },
+    onSelected: (KeyboardKey) -> Unit,
 ) {
 
     var selected by remember(control) { mutableStateOf(control.key) }
@@ -131,11 +145,13 @@ fun ControlButton(
             ) {
                 items.forEach {
                     DropdownMenuItem(
-                        text = { Text(it.name) }, onClick = {
+                        text = { text(it) },
+                        onClick = {
                             expanded = false
                             selected = it
                             onSelected(it)
-                        }, enabled = selected != it
+                        },
+                        enabled = selected != it,
                     )
                 }
             }

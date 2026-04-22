@@ -13,10 +13,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.GraphicsKey
 import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.KeyboardKey
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.label
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyboardItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ControlButton
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.ControlOptionCard
@@ -52,12 +54,12 @@ private fun ControlAlphaPreview(
     control: ControlItemState,
     index: Int,
     keys: Set<ItemType>,
-    editableKeys: Set<InputKey>,
+    editableKeys: Set<KeyboardKey>,
     onEvent: (UpdateControlKey) -> Unit,
 ) {
     when (control.type) {
         in keys -> {
-            if (control is ControlKeyItemState) {
+            if (control is ControlKeyboardItemState<*>) {
                 ControlButton(
                     control = control,
                     enabled = settings.enabled && control.enabled,
@@ -112,6 +114,8 @@ fun ControlsSettingsSection(
 ) {
     val keyControls = ItemType.keys
     val editableKeys = InputKey.controls
+    val editableGraphicKeys = GraphicsKey.entries
+        .toSet()
 
     OptionsContainer(
         modifier = modifier, state = state
@@ -172,7 +176,7 @@ fun ControlsSettingsSection(
                         control = control,
                         index = index,
                         keys = keyControls,
-                        editableKeys = editableKeys,
+                        editableKeys = editableKeys + editableGraphicKeys,
                         onEvent = onEvent
                     )
                 }) {

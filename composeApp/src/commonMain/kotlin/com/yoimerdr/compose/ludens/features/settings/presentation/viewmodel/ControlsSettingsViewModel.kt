@@ -4,10 +4,14 @@ import androidx.lifecycle.viewModelScope
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
 import com.yoimerdr.compose.ludens.core.domain.usecase.GetControlSettingsUseCase
 import com.yoimerdr.compose.ludens.core.domain.usecase.UpdateControlSettingsUseCase
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.GraphicsKey
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toDomain
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlGraphicKeyState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlInputKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyboardItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlSettingsState
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.UpdateControlAlpha
@@ -139,8 +143,27 @@ class ControlsSettingsViewModel(
      */
     fun updateControlKey(event: UpdateControlKey) {
         updateControl(event.index) {
-            if (this is ControlKeyItemState) copy(key = event.key)
-            else this
+            when (this) {
+                is ControlKeyboardItemState<*> -> {
+                    when (event.key) {
+                        is InputKey -> {
+                            if (this is ControlInputKeyItemState)
+                                copy(key = event.key)
+                            else ControlInputKeyItemState(type, enabled, alpha, event.key)
+                        }
+
+                        is GraphicsKey -> {
+                            if (this is ControlGraphicKeyState)
+                                copy(key = event.key)
+                            else ControlGraphicKeyState(type, enabled, alpha, event.key)
+                        }
+
+                        else -> this
+                    }
+                }
+
+                else -> this
+            }
         }
     }
 

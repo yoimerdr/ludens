@@ -1,6 +1,6 @@
 package com.yoimerdr.compose.ludens.features.settings.presentation.state.events
 
-import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.InputKey
+import com.yoimerdr.compose.ludens.core.infrastructure.adapter.script.key.KeyboardKey
 
 sealed interface ControlSettingsEvent : SettingsEvent {
     /**
@@ -52,9 +52,9 @@ data class UpdateControlAlpha(
  * Updates the key binding for a specific control.
  *
  * @param index The control index.
- * @param key The input key to bind.
+ * @param key The keyboard key to bind.
  */
 class UpdateControlKey(
     val index: Int,
-    val key: InputKey,
+    val key: KeyboardKey,
 ) : ControlSettingsEvent.UpdateSettings

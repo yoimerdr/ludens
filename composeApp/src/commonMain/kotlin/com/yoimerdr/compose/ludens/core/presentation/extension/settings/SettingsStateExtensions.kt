@@ -11,8 +11,9 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemTheme
 import com.yoimerdr.compose.ludens.core.infrastructure.extension.key.toInputKey
 import com.yoimerdr.compose.ludens.core.presentation.mapper.settings.toUIModel
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ActionItemState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlGraphicKeyState
+import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlInputKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlItemState
-import com.yoimerdr.compose.ludens.core.presentation.model.settings.ControlKeyItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.PositionableItemState
 import com.yoimerdr.compose.ludens.core.presentation.model.settings.SettingsState
 import ludens.composeapp.generated.resources.Res
@@ -259,7 +260,10 @@ val ControlItemState.label: String
                 .toInputKey()
 
             val input = when (this) {
-                is ControlKeyItemState -> this.key
+                is ControlInputKeyItemState,
+                is ControlGraphicKeyState,
+                    -> this.key
+
                 else -> null
             } ?: defaultKey
 
