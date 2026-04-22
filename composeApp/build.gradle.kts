@@ -32,6 +32,11 @@ buildkonfig {
             "LUDENS_ISSUES_URL",
             "https://github.com/yoimerdr/ludens/issues"
         )
+        buildConfigField(
+            Type.BOOLEAN,
+            "LUDENS_IMMERSIVE",
+            ludensConfiguration.android.immersive.toString()
+        )
     }
 }
 
@@ -108,7 +113,7 @@ android {
         applicationId = ludensConfiguration.android.id
         minSdk = ludensConfiguration.android.minSDK
         targetSdk = ludensConfiguration.android.targetSDK
-        versionCode = 1
+        versionCode = ludensConfiguration.android.versionCode
         versionName = ludensConfiguration.android.version
 
         resValue("string", "app_name", ludensConfiguration.android.name)
@@ -117,10 +122,14 @@ android {
         // Manifest placeholders are resolved in `src/androidMain/AndroidManifest.xml`.
         manifestPlaceholders["ludensAllowBackup"] = ludensConfiguration.android.manifest.allowBackup
         manifestPlaceholders["ludensLargeHeap"] = ludensConfiguration.android.manifest.largeHeap
-        manifestPlaceholders["ludensHardwareAccelerated"] = ludensConfiguration.android.manifest.hardwareAccelerated
-        manifestPlaceholders["ludensScreenOrientation"] = ludensConfiguration.android.manifest.screenOrientation
-        manifestPlaceholders["ludensUsesCleartextTraffic"] = ludensConfiguration.android.manifest.usesCleartextTraffic
-        manifestPlaceholders["ludensResizeableActivity"] = ludensConfiguration.android.manifest.resizeableActivity
+        manifestPlaceholders["ludensHardwareAccelerated"] =
+            ludensConfiguration.android.manifest.hardwareAccelerated
+        manifestPlaceholders["ludensScreenOrientation"] =
+            ludensConfiguration.android.manifest.screenOrientation
+        manifestPlaceholders["ludensUsesCleartextTraffic"] =
+            ludensConfiguration.android.manifest.usesCleartextTraffic
+        manifestPlaceholders["ludensResizeableActivity"] =
+            ludensConfiguration.android.manifest.resizeableActivity
     }
 
     packaging {

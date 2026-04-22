@@ -20,6 +20,12 @@ data class LudensAndroidConfiguration(
      */
     val version: String = "1.0",
     /**
+     * App version code.
+     *
+     * Maps from `ludens.android.versionCode`.
+     * */
+    val versionCode: Int = 1,
+    /**
      * App display name used in settings.
      *
      * Maps from `ludens.android.name`.
@@ -43,6 +49,14 @@ data class LudensAndroidConfiguration(
      * Maps from `ludens.android.targetSDK`.
      */
     val targetSDK: Int = 36,
+    /**
+     * Whether to enable immersive mode by default.
+     *
+     * Immersive means fullscreen with hidden system bars and edge-to-edge content.
+     *
+     * Maps from `ludens.android.immersive`.
+     */
+    val immersive: Boolean = true,
     /**
      * Android manifest flags.
      *

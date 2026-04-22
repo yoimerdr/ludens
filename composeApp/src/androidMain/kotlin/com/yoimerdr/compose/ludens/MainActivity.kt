@@ -1,6 +1,5 @@
 package com.yoimerdr.compose.ludens
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +8,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.yoimerdr.compose.ludens.app.App
+import com.yoimerdr.compose.ludens.konfig.generated.BuildKonfig
 import org.koin.android.ext.koin.androidContext
 
 
@@ -16,8 +16,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 
         immersive()
 
@@ -36,6 +34,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun immersive() {
+        if(!BuildKonfig.LUDENS_IMMERSIVE)
+            return
+
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
         insetsController.apply {
             hide(WindowInsetsCompat.Type.statusBars())
