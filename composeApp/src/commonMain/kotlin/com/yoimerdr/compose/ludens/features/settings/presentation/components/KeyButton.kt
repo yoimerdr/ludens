@@ -36,7 +36,8 @@ fun KeyActionButton(
     content: @Composable BoxScope.() -> Unit,
 ) {
     OutlinedIconButton(
-        border = border, modifier = modifier
+        border = border,
+        modifier = modifier,
     ) {
         Box(
             modifier = Modifier.fillMaxWidth().noClickable(),
@@ -71,7 +72,8 @@ fun KeyActionButton(
         border = border,
     ) {
         Text(
-            text, style = MaterialTheme.typography.titleLarge
+            text,
+            style = MaterialTheme.typography.titleLarge,
         )
     }
 }

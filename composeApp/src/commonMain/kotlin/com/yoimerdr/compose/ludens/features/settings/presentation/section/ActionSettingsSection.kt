@@ -9,6 +9,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -95,20 +96,22 @@ private fun ReorderableCollectionItemScope.ActionSettingOption(
                 onCheckedChange = onCheckedChange,
             )
 
-            IconButton(
-                modifier = Modifier.draggableHandle(
-                    enabled = canMove
-                ),
-                enabled = canMove,
-                onClick = {},
-            ) {
-                Icon(
-                    imageVector = LudensIcons.Default.Drag, contentDescription = "Move"
-                )
+                IconButton(
+                    modifier = Modifier.draggableHandle(
+                        enabled = canMove
+                    ),
+                    enabled = canMove,
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = LudensIcons.Default.Drag,
+                        contentDescription = "Move",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
-}
 
 /**
  * The action settings section displaying quick actions configuration.

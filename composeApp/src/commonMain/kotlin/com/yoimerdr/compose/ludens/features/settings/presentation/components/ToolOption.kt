@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,9 +32,9 @@ import com.yoimerdr.compose.ludens.ui.icons.outlined.ArrowRight
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the tool option is enabled and can respond to user interactions. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param prefix The composable content to be displayed at the start (left side) of the card, provided as a [RowScope] lambda.
@@ -54,9 +53,9 @@ fun ToolOption(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     prefix: @Composable RowScope.() -> Unit,
@@ -102,9 +101,9 @@ fun ToolOption(
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the tool option is enabled and can respond to user interactions. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param content The custom content to be displayed at the end of the card, provided as a [RowScope] lambda.
@@ -120,9 +119,9 @@ fun ToolOption(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit,
@@ -174,9 +173,9 @@ fun ToolOption(
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the switch is enabled and can be toggled by the user. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param checked The current checked state of the switch. True means on/enabled, false means off/disabled.
@@ -191,9 +190,9 @@ fun ToolSwitchOption(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     checked: Boolean,
@@ -239,9 +238,9 @@ fun ToolSwitchOption(
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the action button is enabled and can be clicked. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  */
@@ -255,9 +254,9 @@ fun ToolActionOption(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
 ) {

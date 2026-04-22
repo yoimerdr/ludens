@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -128,7 +127,8 @@ private fun AboutFooter(
                 LinkText(
                     text = it.part,
                     url = it.url,
-                    style = MaterialTheme.typography.labelSmall
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
         }
@@ -162,9 +162,7 @@ fun AboutSection(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            OptionCard(
-                colors = CardDefaults.outlinedCardColors()
-            ) {
+            OptionCard {
                 AboutHeader()
 
                 AboutFooter()

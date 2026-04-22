@@ -172,7 +172,7 @@ private fun BoxScope.MovableActions(
     onSwap: (bounds: Rect) -> Unit,
     onReset: () -> Unit,
 ) {
-    val shape = MaterialTheme.shapes.small
+    val shape = MaterialTheme.shapes.large
 
     val sizePx = with(LocalDensity.current) {
         padSize.toPx()
@@ -185,7 +185,9 @@ private fun BoxScope.MovableActions(
         exit = fadeOut()
     ) {
         OptionCard(
-            padding = PaddingValues.Zero, elevation = CardDefaults.cardElevation(), shape = shape
+            padding = PaddingValues.Zero,
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            shape = shape,
         ) {
             FlowRow {
                 IconButton(
