@@ -14,19 +14,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
 /**
- * A splash screen with a design that includes a scaling and translating image.
+ * Displays the splash logo with a game-like floating entrance and pulse.
  *
- * @param modifier The modifier to be applied to the component.
- * @param imagePainter The painter for the image to be displayed.
- * @param contentDescription The content description for the image.
- * @param maxSize The maximum size of the image.
- * @param duration The duration of the animation in milliseconds.
+ * The animation keeps the logo centered while applying a subtle rise, scale, and alpha pulse.
+ * It is intentionally less rigid than a product-site motion system and works better as a game
+ * launcher splash.
+ *
+ * @param modifier The modifier applied to the splash container.
+ * @param imagePainter The painter used to render the logo.
+ * @param contentDescription Accessibility description for the logo.
+ * @param maxSize Maximum rendered size for the logo.
+ * @param duration Duration in milliseconds for each animation cycle.
  */
 @Composable
 fun DesignSplash(
@@ -39,44 +44,21 @@ fun DesignSplash(
     val infiniteTransition = rememberInfiniteTransition(label = "DesignSplashTransition")
 
     val scale by infiniteTransition.animateFloat(
-        initialValue = 0.95f,
-        targetValue = 1.4f,
+        initialValue = 0.90f,
+        targetValue = 1.02f,
         animationSpec = infiniteRepeatable(
             animation = tween(duration, easing = LinearOutSlowInEasing),
-            repeatMode = RepeatMode.Restart
+            repeatMode = RepeatMode.Reverse
         ),
         label = "scale",
     )
 
-    val idleScale by infiniteTransition.animateFloat(
-        initialValue = 0.95f,
-        targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(duration, easing = LinearOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "idleScale"
-    )
-
-    val offsetY by infiniteTransition.animateFloat(
-        initialValue = -10f,
-        targetValue = 10f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                duration,
-                easing = LinearOutSlowInEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "offsetY"
-    )
-
     val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.5f,
-        targetValue = 0f,
+        initialValue = 0.58f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(duration, easing = LinearOutSlowInEasing),
-            repeatMode = RepeatMode.Restart
+            animation = tween(duration / 2, easing = LinearOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
         ),
         label = "alpha"
     )
@@ -96,24 +78,10 @@ fun DesignSplash(
                 )
                 .fillMaxSize()
                 .graphicsLayer {
+                    transformOrigin = TransformOrigin.Center
                     scaleX = scale
                     scaleY = scale
                     this.alpha = alpha
-                }
-        )
-
-        Image(
-            painter = imagePainter,
-            contentDescription = contentDescription,
-            modifier = Modifier
-                .sizeIn(
-                    maxWidth = maxSize.width,
-                    maxHeight = maxSize.height
-                ).fillMaxSize()
-                .graphicsLayer {
-                    translationY = offsetY
-                    scaleX = idleScale
-                    scaleY = idleScale
                 }
         )
     }

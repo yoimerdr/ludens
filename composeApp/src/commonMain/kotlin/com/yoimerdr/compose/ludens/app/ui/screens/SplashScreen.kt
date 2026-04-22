@@ -2,6 +2,7 @@ package com.yoimerdr.compose.ludens.app.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,19 +26,19 @@ import kotlinx.coroutines.delay
 /**
  * Primary gradient color for the splash screen.
  */
-val SplashPrimaryColor = Color(0xFF67D4F9)
+val SplashPrimaryColor = Color(0xFF2457D7)
 
 /**
  * Secondary gradient color for the splash screen.
  */
-val SplashSecondaryColor = Color(0xFFE6B4FF)
+val SplashSecondaryColor = Color(0xFF7A57FF)
 
 /**
- * Displays the application splash screen with loading animation and WebView initialization.
+ * Displays the application splash screen while the WebView and feature state initialize.
  *
- * This composable shows a branded splash screen with a vertical gradient background while
- * initializing the WebView and its features. Once both the minimum display delay and WebView
- * initialization are complete, it navigates to the Home screen.
+ * This composable shows a branded splash screen with a soft gradient background and a centered
+ * logo animation. Once both the minimum display delay and WebView initialization are complete,
+ * it navigates to the home screen.
  *
  * The splash screen performs two parallel operations:
  * 1. Displays the splash animation for the specified delay duration
@@ -80,11 +81,10 @@ fun SplashScreen(
 }
 
 /**
- * Renders the splash screen content with gradient background and branding.
+ * Renders the splash screen content with a gradient background and branding.
  *
- * This private composable displays a vertical gradient background from [SplashPrimaryColor]
- * to [SplashSecondaryColor], overlaid with the Ludens logo animation. It also triggers
- * WebView initialization in the background.
+ * Displays a branded gradient background, overlaid with the Ludens logo animation. It also
+ * triggers WebView initialization in the background.
  *
  * @param onLoad Callback invoked with [WebFeaturesState] when WebView initialization completes.
  */
@@ -92,8 +92,9 @@ fun SplashScreen(
 private fun SplashContent(onLoad: ((WebFeaturesState) -> Unit)) {
     Box(
         modifier = Modifier
+            .fillMaxSize()
             .background(
-                Brush.verticalGradient(
+                Brush.linearGradient(
                     colors = listOf(
                         SplashPrimaryColor,
                         SplashSecondaryColor,
@@ -104,7 +105,7 @@ private fun SplashContent(onLoad: ((WebFeaturesState) -> Unit)) {
         DesignSplash(
             imagePainter = rememberVectorPainter(LudensIcons.Brand.Ludens),
             contentDescription = "Ludens Logo",
-            duration = 1500
+            duration = 1800
         )
     }
 
