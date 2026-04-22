@@ -3,14 +3,17 @@ package com.yoimerdr.compose.ludens.features.home.presentation.sections
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.app.theme.outlineDark
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ItemType
@@ -28,6 +31,7 @@ import com.yoimerdr.compose.ludens.ui.components.layout.Card
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDock
 import com.yoimerdr.compose.ludens.ui.components.layout.FloatingDockHandleButton
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalPlugin
+import com.yoimerdr.compose.ludens.ui.components.provider.LocalWebFeatures
 import com.yoimerdr.compose.ludens.ui.icons.LudensIcons
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Games
 import com.yoimerdr.compose.ludens.ui.icons.outlined.Settings
@@ -85,6 +89,13 @@ fun SettingsActions(
     if (actions.isEmpty()) {
         OutlinedIconButton(
             border = null,
+            colors = IconButtonDefaults.outlinedIconButtonColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+            ),
+            shape = MaterialTheme.shapes.large,
             onClick = onConfiguration,
             modifier = offset
                 .alpha(control.alpha)
@@ -109,6 +120,12 @@ fun SettingsActions(
         ) {
             Card(
                 padding = PaddingValues.Zero,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                shape = MaterialTheme.shapes.large,
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             ) {
                 Column {
                     actions.forEach { (isActive, item) ->
@@ -171,13 +188,19 @@ fun SettingsActions(
     onActionClick: (ActionItemState) -> Unit,
 ) {
     val plugin = LocalPlugin.current
+    val features = LocalWebFeatures.current
+
     SettingsActions(
         modifier = modifier,
         onConfiguration = onConfiguration,
         actions = if (actions.enabled) {
             actions.items
                 .sortedBy { it.order }
-                .filterNot { it.type == ActionType.ToggleWebGL && !plugin.canToggleDrawEngine }
+                .filterNot {
+                    (it.type == ActionType.ToggleWebGL && (!plugin.canToggleDrawEngine || !features.supportsWebGL)) ||
+                            (it.type == ActionType.ToggleFPS && !plugin.isEnabled)
+
+                }
                 .map { item ->
                     val isActive = when (item.type) {
                         ActionType.ToggleMute -> toolSettings.isMuted

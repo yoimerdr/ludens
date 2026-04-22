@@ -5,7 +5,9 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -14,8 +16,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.core.domain.model.key.KeyEventType
 import com.yoimerdr.compose.ludens.ui.components.buttons.OutlinedIconButton
+import com.yoimerdr.compose.ludens.ui.components.layout.Card
 
 /**
  * Displays an action button that detects press and release gestures.
@@ -38,29 +42,40 @@ fun KeyControlButton(
     OutlinedIconButton(
         modifier = modifier
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-                .indication(source, ripple())
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            onClick(KeyEventType.Down)
-                            source.emit(PressInteraction.Press(it))
-                            try {
-                                awaitRelease()
-                            } finally {
-                                source.emit(PressInteraction.Release(PressInteraction.Press(it)))
-                                onClick(KeyEventType.Up)
-                            }
-                        },
-                    )
-                },
-            contentAlignment = Alignment.Center,
+        Card(
+            modifier = Modifier.fillMaxSize(),
+            padding = PaddingValues(0.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            shape = MaterialTheme.shapes.large,
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleLarge,
-            )
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .indication(source, ripple())
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onPress = {
+                                onClick(KeyEventType.Down)
+                                source.emit(PressInteraction.Press(it))
+                                try {
+                                    awaitRelease()
+                                } finally {
+                                    source.emit(PressInteraction.Release(PressInteraction.Press(it)))
+                                    onClick(KeyEventType.Up)
+                                }
+                            },
+                        )
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
         }
     }
 }
