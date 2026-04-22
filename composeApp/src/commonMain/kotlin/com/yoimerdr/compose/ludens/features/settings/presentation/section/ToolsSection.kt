@@ -110,7 +110,7 @@ fun ToolsSettingsSection(
                 title = stringResource(Res.string.stc_tools_use_webgl),
                 icon = LudensIcons.Default.WindowDevTools,
                 iconDescription = "WebGL",
-                enabled = features.supportsWebGL,
+                enabled = features.supportsWebGL && plugin.canToggleDrawEngine,
                 checked = settings.useWebGL,
                 onCheckedChange = {
                     onEvent(
