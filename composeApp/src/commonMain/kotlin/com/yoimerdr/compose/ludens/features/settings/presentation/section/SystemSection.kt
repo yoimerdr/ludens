@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -64,7 +63,6 @@ private fun ResetAction(
     onEvent: (RestoreDefaultSettings) -> Unit,
 ) {
     OptionCard(
-        colors = CardDefaults.outlinedCardColors(),
         prefix = {
             OptionName(
                 text = stringResource(Res.string.stc_system_reset_default)
@@ -144,7 +142,6 @@ private fun AppearanceAction(
     val spacing = LocalSpacing.current
     OptionCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.outlinedCardColors()
     ) {
         OptionName(
             text = stringResource(Res.string.stc_system_appearance)
@@ -192,7 +189,6 @@ private fun LanguageAction(
 
     OptionCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.outlinedCardColors(),
         prefix = {
             OptionName(
                 text = stringResource(Res.string.stc_system_language)

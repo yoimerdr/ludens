@@ -3,9 +3,11 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.section
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
@@ -17,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
@@ -98,18 +101,22 @@ fun SideTabOptions(
     section: SettingsSection,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
-    color: Color = MaterialTheme.colorScheme.surface,
+    vertical: Boolean = true,
+    color: Color? = null,
     onBack: () -> Unit,
     onEvent: (SettingsEvent.OnSelectSection) -> Unit,
 ) {
     val spacing = LocalSpacing.current
+    val containerColor = color ?: MaterialTheme.colorScheme.surfaceContainerLowest
 
     Surface(
         modifier = modifier
             .sizeIn(
-                maxWidth = 192.dp
+                maxWidth = if (vertical) 192.dp else Dp.Unspecified
             ),
-        color = color
+        color = containerColor,
+        shape = MaterialTheme.shapes.large,
+        shadowElevation = 0.dp,
     ) {
         Column {
             Box(
@@ -127,19 +134,40 @@ fun SideTabOptions(
                 }
             }
 
-            OptionsContainer(
-                state = state,
-                verticalArrangement = Arrangement.spacedBy(spacing.small),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                items(SettingsSection.entries) {
-                    SettingsTabOption(
-                        selected = section == it,
-                        option = it,
-                        onClick = {
-                            onEvent(SettingsEvent.OnSelectSection(it))
-                        }
-                    )
+            if (vertical) {
+                OptionsContainer(
+                    state = state,
+                    verticalArrangement = Arrangement.spacedBy(spacing.small),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    items(SettingsSection.entries) {
+                        SettingsTabOption(
+                            modifier = Modifier.fillMaxWidth(),
+                            selected = section == it,
+                            option = it,
+                            onClick = {
+                                onEvent(SettingsEvent.OnSelectSection(it))
+                            }
+                        )
+                    }
+                }
+            } else {
+                LazyRow(
+                    state = state,
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(spacing.small),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    items(SettingsSection.entries) {
+                        SettingsTabOption(
+                            modifier = Modifier.sizeIn(minWidth = 120.dp),
+                            selected = section == it,
+                            option = it,
+                            onClick = {
+                                onEvent(SettingsEvent.OnSelectSection(it))
+                            }
+                        )
+                    }
                 }
             }
         }

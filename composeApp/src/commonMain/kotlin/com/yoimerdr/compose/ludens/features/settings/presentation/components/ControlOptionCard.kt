@@ -9,12 +9,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.unit.dp
 import com.yoimerdr.compose.ludens.ui.components.fields.SwitchField
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 
@@ -28,9 +29,9 @@ import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
  * @param onClick Optional callback to be invoked when the card is clicked. If null, the card is not clickable.
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param header Optional composable content to be displayed at the top of the card, provided as a [ColumnScope] lambda.
@@ -47,9 +48,9 @@ fun ControlOptionCard(
     onClick: (() -> Unit)? = null,
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     header: (@Composable ColumnScope.() -> Unit)? = null,
@@ -62,7 +63,7 @@ fun ControlOptionCard(
         horizontalAlignment = horizontalAlignment,
         shape = shape,
         colors = colors,
-        elevation = elevation,
+        elevation = elevation ?: CardDefaults.cardElevation(defaultElevation = 0.dp),
         border = border,
         interactionSource = interactionSource,
     ) {
@@ -92,9 +93,9 @@ fun ControlOptionCard(
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the control settings are enabled. Affects the switch field interaction. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.outlinedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param enabledAlpha Whether the alpha slider is enabled and can be adjusted. Defaults to true.
@@ -116,9 +117,9 @@ fun ControlOptionCard(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     enabledAlpha: Boolean = true,

@@ -15,10 +15,12 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.yoimerdr.compose.ludens.ui.components.layout.Card
 import com.yoimerdr.compose.ludens.ui.components.layout.Spaced
@@ -35,9 +37,9 @@ import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the card is enabled and can respond to user interactions. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.elevatedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param content The content to be displayed inside the card, provided as a [ColumnScope] lambda.
@@ -49,22 +51,36 @@ fun OptionCard(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val targetShape = shape ?: MaterialTheme.shapes.large
+    val targetColors = colors ?: CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    )
+    val targetElevation = elevation ?: CardDefaults.cardElevation(
+        defaultElevation = 0.dp,
+        pressedElevation = 0.dp,
+        focusedElevation = 0.dp,
+        hoveredElevation = 0.dp,
+        draggedElevation = 0.dp,
+        disabledElevation = 0.dp,
+    )
+
     Card(
         modifier = modifier,
         onClick = onClick,
         padding = padding,
         horizontalAlignment = horizontalAlignment,
         enabled = enabled,
-        shape = shape,
-        colors = colors,
-        elevation = elevation,
+        shape = targetShape,
+        colors = targetColors,
+        elevation = targetElevation,
         border = border,
         interactionSource = interactionSource,
         content = content,
@@ -83,9 +99,9 @@ fun OptionCard(
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the card is enabled and can respond to user interactions. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.elevatedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param prefix The content to be displayed at the start (left) of the card, provided as a [RowScope] lambda.
@@ -98,9 +114,9 @@ fun OptionCard(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     prefix: @Composable RowScope.() -> Unit,
@@ -141,9 +157,9 @@ fun OptionCard(
  * @param padding The padding to be applied to the content inside the card. Defaults to medium spacing.
  * @param horizontalAlignment The horizontal alignment of the content within the card column. Defaults to [Alignment.Start].
  * @param enabled Whether the card is enabled and can respond to user interactions. Defaults to true.
- * @param shape The shape of the card's container. Defaults to [CardDefaults.elevatedShape].
- * @param colors The colors to be used for the card's container. Defaults to [CardDefaults.elevatedCardColors].
- * @param elevation The elevation configuration for the card. Defaults to [CardDefaults.elevatedCardElevation].
+ * @param shape The shape of the card's container. Defaults to the base card shape.
+ * @param colors The colors to be used for the card's container. Defaults to the base card colors.
+ * @param elevation The elevation configuration for the card. Defaults to 0.dp.
  * @param border Optional border to be drawn around the card.
  * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this card.
  * @param content The custom content to be displayed at the end of the card, provided as a [RowScope] lambda.
@@ -159,9 +175,9 @@ fun OptionCard(
     padding: PaddingValues = PaddingValues(LocalSpacing.current.medium),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.elevatedShape,
-    colors: CardColors = CardDefaults.elevatedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    shape: Shape? = null,
+    colors: CardColors? = null,
+    elevation: CardElevation? = null,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit,
