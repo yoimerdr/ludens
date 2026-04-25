@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -212,15 +210,13 @@ fun <T> ExposedDropdownMenuBoxScope.SearchableDropdownMenuPanel(
     ExposedDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
-        modifier = modifier.widthIn(min = 240f.dp, max = 320f.dp)
-            .heightIn(
-                min = maxListHeight,
-                max = maxListHeight
-            )
+        modifier = modifier
+            .widthIn(min = 240f.dp, max = 320f.dp)
             .height(IntrinsicSize.Max),
     ) {
         Column(
             modifier = Modifier
+                .height(maxListHeight)
                 .padding(spacing.small)
                 .then(contentModifier),
             verticalArrangement = Arrangement.spacedBy(spacing.small)
@@ -272,8 +268,7 @@ fun <T> ExposedDropdownMenuBoxScope.SearchableDropdownMenuPanel(
                     }
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .requiredHeight(maxListHeight),
+                    .fillMaxWidth(),
                 measurePolicy = BlockIntrinsicsMeasurePolicy
             )
         }
