@@ -86,6 +86,11 @@ Mueve la carpeta completa `www` a:
 
 `composeApp/src/commonMain/composeResources/files`
 
+> [!WARNING]
+> **Sensibilidad de Mayúsculas/Minúsculas**: El sistema de archivos de Windows es **insensible** (`/Path/Example` = `/path/example`), pero Android e iOS usan sistemas de archivos **sensibles**. Asegúrate de que todas las referencias a archivos en el código de tu juego (imágenes, audio, archivos de datos) usen nombres **exactamente iguales**. Si un archivo se llama `MiImagen.png`, debes referenciarlo como `MiImagen.png`, no como `miimagen.png`. Esta es una causa común de fallos silenciosos en móviles.
+> 
+> **Tip**: Puedes usar el plugin **[YDP_CrossAssets](https://github.com/yoimerdr/rpgm-plugins)** del repositorio rpgm-plugins para normalizar automáticamente las rutas de archivos y evitar este problema.
+
 Estructura requerida:
 
 ```text

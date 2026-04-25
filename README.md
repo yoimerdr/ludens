@@ -86,6 +86,11 @@ Move the full `www` folder to:
 
 `composeApp/src/commonMain/composeResources/files`
 
+> [!WARNING]
+> **Case Sensitivity**: Windows file system is **case-insensitive** (`/Path/Example` = `/path/example`), but Android and iOS use **case-sensitive** file systems. Ensure that all file references in your game's code (images, audio, data files) use **exact matching names**. If a file is named `MyImage.png`, you must reference it as `MyImage.png`, not `myimage.png`. This is a common source of silent failures on mobile.
+> 
+> **Tip**: You can use the plugin **[YDP_CrossAssets](https://github.com/yoimerdr/rpgm-plugins)** from the rpgm-plugins repository to automatically normalize file paths and avoid this issue.
+
 Required structure:
 
 ```text

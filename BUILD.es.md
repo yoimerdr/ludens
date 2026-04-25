@@ -81,6 +81,11 @@ Familiarízate con la ubicación de los archivos clave:
 
 Este es el paso más crítico.
 
+> [!WARNING]
+> **Sensibilidad de Mayúsculas/Minúsculas**: El sistema de archivos de Windows es **insensible** (`/Path/Example` = `/path/example`), pero Android e iOS usan sistemas de archivos **sensibles**. Asegúrate de que todas las referencias a archivos en el código de tu juego (imágenes, audio, archivos de datos) usen nombres **exactamente iguales**. Si un archivo se llama `MiImagen.png`, debes referenciarlo como `MiImagen.png`, no como `miimagen.png`. Esta es una causa común de fallos silenciosos en móviles.
+>
+> **Tip**: Puedes usar el plugin **[YDP_CrossAssets](https://github.com/yoimerdr/rpgm-plugins)** del repositorio rpgm-plugins para normalizar automáticamente las rutas de archivos y evitar este problema.
+
 1.  Navega a la carpeta del proyecto en tu explorador de archivos:
     `composeApp/src/commonMain/composeResources/files`
 2.  Copia la carpeta **`www`** completa de tu exportación y pégala dentro de `files` o si solo cuentas con los assets del juego, crea la carpeta `www` y pega los archivos dentro de ella.

@@ -81,6 +81,11 @@ Familiarize yourself with the location of key files:
 
 This is the most critical step.
 
+> [!WARNING]
+> **Case Sensitivity**: Windows file system is **case-insensitive** (`/Path/Example` = `/path/example`), but Android and iOS use **case-sensitive** file systems. Ensure that all file references in your game's code (images, audio, data files) use **exact matching names**. If a file is named `MyImage.png`, you must reference it as `MyImage.png`, not `myimage.png`. This is a common source of silent failures on mobile.
+>
+> **Tip**: You can use the plugin **[YDP_CrossAssets](https://github.com/yoimerdr/rpgm-plugins)** from the rpgm-plugins repository to automatically normalize file paths and avoid this issue.
+
 1.  Navigate to the project folder in your file explorer:
     `composeApp/src/commonMain/composeResources/files`
 2.  Copy the entire **`www`** folder from your export and paste it inside `files`, or if you only have the game assets, create the `www` folder and paste the files inside it.
