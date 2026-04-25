@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed missing file/path handling for resource bootstrapping.
 - Fixed settings layout padding mismatches.
 - Fixed behavior around unexpected active actions.
-- Fixed control and key handling paths for graphic and keyboard inputs.
+- Fixed black screen for RPG Maker MZ games.
 
 ## [0.2.0] - 2026-02-05
 
