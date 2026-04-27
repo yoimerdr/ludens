@@ -1,7 +1,7 @@
 *.iml
 .kotlin
 .gradle
-**/build/
+build/
 xcuserdata
 !src/**/build/
 local.properties
@@ -17,3 +17,5 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+keystore.properties
+*.jks
