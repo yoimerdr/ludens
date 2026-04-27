@@ -4,10 +4,8 @@ description: Configuración específica de Android para Ludens.
 ---
 
 Las propiedades de identidad y el manifest específicos de Android se gestionan a través de
-`ludens.properties` en la
-raíz del proyecto. Este sistema te permite personalizar tu aplicación sin tocar código Kotlin ni
-scripts de compilación
-complejos.
+`ludens.properties` en la raíz del proyecto. Este sistema te permite personalizar tu aplicación sin
+tocar código Kotlin ni scripts de compilación complejos.
 
 ## Identidad de la Aplicación
 

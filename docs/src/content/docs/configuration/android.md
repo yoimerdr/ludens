@@ -4,9 +4,8 @@ description: Android specific configuration for Ludens.
 ---
 
 Android-specific application identity and manifest properties are managed through
-`ludens.properties` in the project
-root. This system allows you to customize your app without touching Kotlin code or complex build
-scripts.
+`ludens.properties` in the project root. This system allows you to customize your app without
+touching Kotlin code or complex build scripts.
 
 ## Application Identity
 
@@ -39,15 +38,13 @@ Configure these properties using the `ludens.android.*` prefix:
 
 :::note
 The `id` must follow the reverse domain format and must be unique if you plan to publish on the
-Google
-Play Store. Changing it after publication creates a new listing.
+Google Play Store. Changing it after publication creates a new listing.
 :::
 
 ## Application Icon
 
 Replace the default icon by updating the images in `composeApp/src/androidMain/res/mipmap-*`
-directories, or use the *
-*Image Asset Studio** tool in Android Studio:
+directories, or use the **Image Asset Studio** tool in Android Studio:
 
 1. Right-click on `composeApp/src/androidMain/res`.
 2. Select **New > Image Asset**.
@@ -68,8 +65,7 @@ The `mipmap-*` directories contain icons at different resolutions:
 ## Manifest Configuration
 
 Ludens automatically generates the `AndroidManifest.xml` based on these properties. This allows for
-safe and predictable
-manifest management.
+safe and predictable manifest management.
 
 ```properties
 # ----- Android Manifest -----
@@ -84,9 +80,8 @@ ludens.android.manifest.resizeableActivity=false
 ### Game Orientation
 
 By default, Ludens forces the application into landscape mode using `sensorLandscape`. This ensures
-the game rotates
-according to the device sensor but stays in a horizontal orientation. To change this, modify the
-`ludens.android.manifest.screenOrientation` property.
+the game rotates according to the device sensor but stays in a horizontal orientation. To change
+this, modify the `ludens.android.manifest.screenOrientation` property.
 
 #### Common Orientations
 
@@ -118,9 +113,8 @@ those permissions.
 Ludens makes this easy with built-in toggles.
 
 For example, if your game fetches highscores from an online leaderboard, you will need the
-`internet` permission. If
-your game should prevent the screen from turning off during long cutscenes, use the `wakeLock`
-permission.
+`internet` permission. If your game should prevent the screen from turning off during long
+cutscenes, use the `wakeLock`permission.
 
 ```properties
 # ----- Android Permissions -----

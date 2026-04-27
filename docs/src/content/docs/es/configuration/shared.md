@@ -3,12 +3,15 @@ title: Configuración Compartida
 description: Propiedades de configuración agnósticas de la plataforma para Ludens.
 ---
 
-Las propiedades de configuración compartida se gestionan a través de `ludens.properties` en la raíz del proyecto. Estos
-ajustes afectan la lógica central de la aplicación y la interfaz de usuario en todas las plataformas.
+Las propiedades de configuración compartida se gestionan a través de `ludens.properties` en la raíz
+del proyecto. Estos
+ajustes afectan la lógica central de la aplicación y la interfaz de usuario en todas las
+plataformas.
 
 ## Presets de Ajustes
 
-Ludens utiliza presets para simplificar la configuración inicial. Puedes elegir entre varios presets incorporados o usar
+Ludens utiliza presets para simplificar la configuración inicial. Puedes elegir entre varios presets
+incorporados o usar
 el nombre `custom` para definir tu propio comportamiento.
 
 Edita tu archivo `ludens.properties`:
@@ -40,7 +43,8 @@ La siguiente propiedad se configura bajo el prefijo `ludens.settings.*`:
 
 ## Configuración de Preset Personalizado
 
-Las siguientes propiedades solo se consumen cuando `ludens.settings.presetName` está configurado como `custom`. Te
+Las siguientes propiedades solo se consumen cuando `ludens.settings.presetName` está configurado
+como `custom`. Te
 permiten ajustar con precisión el estado inicial del juego:
 
 ```properties

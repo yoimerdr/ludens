@@ -3,11 +3,13 @@ title: Shared Configuration
 description: Platform-agnostic configuration properties for Ludens.
 ---
 
-Shared configuration properties are managed through `ludens.properties` in the project root. These settings affect the core application logic and the user interface across all platforms.
+Shared configuration properties are managed through `ludens.properties` in the project root. These
+settings affect the core application logic and the user interface across all platforms.
 
 ## Settings Presets
 
-Ludens uses presets to simplify the initial configuration. You can choose from several built-in presets or use the `custom` name to define your own behavior.
+Ludens uses presets to simplify the initial configuration. You can choose from several built-in
+presets or use the `custom` name to define your own behavior.
 
 Edit your `ludens.properties`:
 
@@ -21,13 +23,13 @@ ludens.settings.presetName=recommended
 The following property is configured under the `ludens.settings.*` prefix:
 
 | Property     | Default       | Values                                                           | Description                      |
-| ------------ | ------------- | ---------------------------------------------------------------- | -------------------------------- |
+|--------------|---------------|------------------------------------------------------------------|----------------------------------|
 | `presetName` | `recommended` | `recommended`, `noactions`, `nocontrols`, `minimalist`, `custom` | Selects the active preset logic. |
 
 #### Built-in Presets
 
 | Name          | Behavior                                                                      |
-| ------------- | ----------------------------------------------------------------------------- |
+|---------------|-------------------------------------------------------------------------------|
 | `recommended` | (Default) Balanced setup with on-screen controls and quick actions enabled.   |
 | `noactions`   | Disables the quick actions panel but keeps on-screen controls.                |
 | `nocontrols`  | Disables on-screen controls but keeps the quick actions panel for navigation. |
@@ -38,7 +40,8 @@ The following property is configured under the `ludens.settings.*` prefix:
 
 ## Custom Preset Configuration
 
-The following properties are only consumed when `ludens.settings.presetName` is set to `custom`. They allow you to fine-tune the game's default state:
+The following properties are only consumed when `ludens.settings.presetName` is set to `custom`.
+They allow you to fine-tune the game's default state:
 
 ```properties
 # Custom preset overrides
@@ -58,7 +61,7 @@ ludens.settings.preset.systemLanguage=system
 These properties use the `ludens.settings.preset.*` prefix:
 
 | Property         | Type    | Default    | Values / Description                                                   |
-| ---------------- | ------- | ---------- | ---------------------------------------------------------------------- |
+|------------------|---------|------------|------------------------------------------------------------------------|
 | `toolMuted`      | Boolean | `false`    | Default audio mute state (`true`, `false`).                            |
 | `toolShowFps`    | Boolean | `false`    | Default visibility for the FPS counter.                                |
 | `toolUseWebgl`   | Boolean | `false`    | Default WebGL switch state (MV only).                                  |

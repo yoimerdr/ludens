@@ -5,30 +5,40 @@ description: Version history and updates for the Ludens project.
 
 This page documents the release history and major changes for the Ludens project.
 
-For a complete list of commits and minor fixes, please refer to the [GitHub Releases](https://github.com/yoimerdr/ludens/releases) page.
+For a complete list of commits and minor fixes, please refer to
+the [GitHub Releases](https://github.com/yoimerdr/ludens/releases) page.
 
 ## v0.3.0 - 2026-04-25
 
 ### Added
 
-- `build-logic` module with custom Gradle plugins for Ludens configuration, generated resources, and generated permissions.
-- Root `ludens.properties` configuration as the main source for app identity, manifest flags, permissions, and settings presets.
+- `build-logic` module with custom Gradle plugins for Ludens configuration, generated resources, and
+  generated permissions.
+- Root `ludens.properties` configuration as the main source for app identity, manifest flags,
+  permissions, and settings presets.
 - Typed compose resource accessors and settings preset generation.
 - Platform-specific WebView helpers and memory-management utilities for Android and iOS.
 - New keyboard control model and related UI state for game input mapping.
-- Expanded range of keys supported by the control buttons to include standard and specific graphic keys.
-- Responsive layout primitives and reusable design tokens for spacing, radius, strokes, and breakpoints.
+- Expanded range of keys supported by the control buttons to include standard and specific graphic
+  keys.
+- Responsive layout primitives and reusable design tokens for spacing, radius, strokes, and
+  breakpoints.
 - Searchable dropdown component for control selection flows.
 - Boot resource handling, including `www/index.html` and memory-cleaner boot script support.
 
 ### Changed
 
-- Android build now reads Ludens configuration from `ludens.properties` and applies app identity and manifest placeholders from that model.
-- Settings preset generation now resolves default values from the new configuration pipeline instead of hardcoded app-side defaults.
-- Home and settings screens were reworked for updated control behavior, action ordering, and more responsive layouts.
-- Theme, typography, spacing, card, floating, and dock components were refreshed to match a new visual system.
+- Android build now reads Ludens configuration from `ludens.properties` and applies app identity and
+  manifest placeholders from that model.
+- Settings preset generation now resolves default values from the new configuration pipeline instead
+  of hardcoded app-side defaults.
+- Home and settings screens were reworked for updated control behavior, action ordering, and more
+  responsive layouts.
+- Theme, typography, spacing, card, floating, and dock components were refreshed to match a new
+  visual system.
 - WebView startup and lifecycle handling were updated to improve stability and memory behavior.
-- The plugin and settings experience was updated around `YDP_Ludens.js` and related control/key handling.
+- The plugin and settings experience was updated around `YDP_Ludens.js` and related control/key
+  handling.
 
 ### Fixed
 
@@ -82,5 +92,6 @@ Initial project release.
 - Simplified Asset Injection (composeResources/files/www)
 
 :::note
-iOS support is planned for future releases. The current codebase contains shared logic, but build configuration is currently Android-focused.
+iOS support is planned for future releases. The current codebase contains shared logic, but build
+configuration is currently Android-focused.
 :::
