@@ -1,0 +1,41 @@
+---
+title: Positionable Elements
+description: Reference guide for how on-screen elements are positioned in Ludens.
+slug: 0.1.0/reference/positions
+---
+
+Ludens allows players to customize the layout of the on-screen controls and overlays to best fit their device and playstyle. This system relies on storing the coordinates of positionable elements.
+
+## What are Positionable Elements?
+
+The positionable elements in Ludens are grouped into three main categories (`PositionableType`):
+
+1. **Joystick**: The virtual directional pad used for character movement.
+2. **Keys**: The group of action buttons (A, B, X, Y). Note that these are positioned as a group, not individually.
+3. **Actions**: The floating button that opens the quick actions menu.
+
+## Coordinate System
+
+When an element is moved, its position is stored as **screen coordinates (X and Y offsets)** relative to its default anchoring point.
+
+* **Storage**: Positions are saved persistently using DataStore (Protocol Buffers). This means customized layouts survive application restarts and device reboots.
+* **Offsets vs. Absolute Coordinates**: Because mobile devices have varying screen sizes and aspect ratios, storing absolute pixel coordinates (e.g., `X: 1500, Y: 800`) would cause elements to drift off-screen when the game is played on a different device or if the device is rotated. Ludens calculates relative offsets based on default anchoring points (e.g., the bottom-right corner for action buttons). If you move a button 50px to the left, it stays 50px left of its anchor on both a small phone and a large tablet.
+
+## Adjusting Positions
+
+Positions can be modified from within the application:
+
+1. Open the **Quick Actions Menu**.
+2. Tap the **Settings** icon.
+3. Navigate to the **Tools** section.
+4. Tap on **Positions**.
+
+This opens a dedicated layout editing mode where you can drag and drop the Joystick, Keys group, and Actions button freely across the screen.
+
+While in this mode, the game WebView remains visible in the background so you can align the controls exactly where you need them relative to the game's UI.
+
+## Resetting Positions
+
+If elements get lost off-screen or if the player prefers the original layout, there is a built-in mechanism to reset positions:
+
+In the settings screen, there is an option to restore all elements to their default anchoring points. This clears the saved X and Y offsets from the DataStore and reverts the UI to its factory state.

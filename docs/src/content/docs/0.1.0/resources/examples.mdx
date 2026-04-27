@@ -1,0 +1,138 @@
+---
+title: Examples
+description: Practical examples of common Ludens workflows and configurations.
+slug: 0.1.0/resources/examples
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+This page provides practical examples for common workflows when using Ludens.
+
+## Example 1: Minimal Setup
+
+The simplest possible setup — export your game and build with default settings.
+
+### Steps
+
+1. Export your RPG Maker MV game with the **Android / iOS** deployment option.
+2. Copy the `www` folder to:
+   ```text
+   composeApp/src/commonMain/composeResources/files/www/
+   ```
+3. Edit `gradle.properties`:
+   ```properties
+   ludens.applicationId=com.example.mygame
+   ludens.applicationVersion=1.0
+   ludens.applicationName=My Game
+   ludens.applicationLauncherName=My Game
+   ```
+4. Run:
+   ```bash
+   ./gradlew assembleDebug
+   ```
+
+### Result
+
+A debug APK at `composeApp/build/outputs/apk/debug/composeApp-debug.apk` ready for testing.
+
+***
+
+## Example 2: Custom Icon and Signed Release
+
+A full production workflow with custom branding.
+
+### Steps
+
+1. Complete the [Minimal Setup](#example-1-minimal-setup) above.
+
+2. **Set a custom icon** using Image Asset Studio:
+   * Right-click `composeApp/src/androidMain/res`
+   * Select **New > Image Asset**
+   * Import your game icon (recommended: 512×512 px PNG)
+
+3. **Create a signing keystore** (if you don't have one):
+   * In Android Studio: **Build > Generate Signed Bundle / APK**
+   * Select **APK**, click **Next**
+   * Click **Create new...** and fill in the keystore details
+   * Save the `.jks` file securely
+
+4. **Configure signing**:
+   ```properties title="keystore.properties"
+   storePassword=my_secure_password
+   keyPassword=my_key_password
+   keyAlias=my_key_alias
+   storeFile=C:/keys/my-game-key.jks
+   ```
+
+5. **Build the release APK**:
+   ```bash
+   ./gradlew assembleRelease
+   ```
+
+### Result
+
+A signed release APK at `composeApp/build/outputs/apk/release/composeApp-release.apk` ready for distribution.
+
+***
+
+## Example 3: Using the YDP\_Ludens Plugin
+
+Integrate the recommended plugin for better WebView compatibility.
+
+### Steps
+
+1. Download [`YDP_Ludens.js`](https://github.com/yoimerdr/rpgm-plugins) from the rpgm-plugins repository.
+
+2. Place it in your RPG Maker project's `js/plugins/` folder.
+
+3. Open your RPG Maker project and go to the **Plugin Manager**.
+
+4. Add `YDP_Ludens` and move it to the **top** of the plugin list.
+
+5. Save and re-export the game.
+
+6. Copy the updated `www` folder to Ludens and rebuild.
+
+### Benefits
+
+* Fixes font loading verification errors on older WebView versions.
+* Enables additional client-side features supported by Ludens.
+
+***
+
+## Example 4: File Structure Reference
+
+A complete view of the project structure after setup:
+
+<FileTree>
+  * ludens/
+    * composeApp/
+      * src/
+        * androidMain/
+          * res/
+            * mipmap-mdpi/ App icon (48px)
+            * mipmap-hdpi/ App icon (72px)
+            * mipmap-xhdpi/ App icon (96px)
+            * mipmap-xxhdpi/ App icon (144px)
+            * mipmap-xxxhdpi/ App icon (192px)
+        * commonMain/
+          * composeResources/
+            * files/
+              * www/ Your game
+                * audio/
+                * data/
+                * fonts/
+                * img/
+                * js/
+                  * plugins/
+                    * YDP\_Ludens.js
+                * index.html
+      * build/
+        * outputs/
+          * apk/
+            * debug/ Debug APK output
+            * release/ Release APK output
+    * gradle.properties App configuration
+    * keystore.properties Signing credentials
+    * keystore.properties.template Template reference
+</FileTree>

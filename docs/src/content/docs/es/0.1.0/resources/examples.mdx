@@ -1,0 +1,138 @@
+---
+title: Ejemplos
+description: Ejemplos prácticos de flujos de trabajo y configuraciones comunes de Ludens.
+slug: es/0.1.0/resources/examples
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+Esta página proporciona ejemplos prácticos para flujos de trabajo comunes al usar Ludens.
+
+## Ejemplo 1: Configuración Mínima
+
+La configuración más simple posible — exporta tu juego y compila con ajustes por defecto.
+
+### Pasos
+
+1. Exporta tu juego de RPG Maker MV con la opción de despliegue **Android / iOS**.
+2. Copia la carpeta `www` a:
+   ```text
+   composeApp/src/commonMain/composeResources/files/www/
+   ```
+3. Edita `gradle.properties`:
+   ```properties
+   ludens.applicationId=com.ejemplo.mijuego
+   ludens.applicationVersion=1.0
+   ludens.applicationName=Mi Juego
+   ludens.applicationLauncherName=Mi Juego
+   ```
+4. Ejecuta:
+   ```bash
+   ./gradlew assembleDebug
+   ```
+
+### Resultado
+
+Un APK de debug en `composeApp/build/outputs/apk/debug/composeApp-debug.apk` listo para pruebas.
+
+***
+
+## Ejemplo 2: Icono Personalizado y Release Firmado
+
+Un flujo de trabajo completo de producción con branding personalizado.
+
+### Pasos
+
+1. Completa la [Configuración Mínima](#ejemplo-1-configuración-mínima) anterior.
+
+2. **Establece un icono personalizado** usando Image Asset Studio:
+   * Clic derecho en `composeApp/src/androidMain/res`
+   * Selecciona **New > Image Asset**
+   * Importa el icono de tu juego (recomendado: PNG de 512×512 px)
+
+3. **Crea un keystore de firma** (si no tienes uno):
+   * En Android Studio: **Build > Generate Signed Bundle / APK**
+   * Selecciona **APK**, clic en **Next**
+   * Clic en **Create new...** y completa los datos del keystore
+   * Guarda el archivo `.jks` de forma segura
+
+4. **Configura la firma**:
+   ```properties title="keystore.properties"
+   storePassword=mi_password_seguro
+   keyPassword=mi_key_password
+   keyAlias=mi_alias
+   storeFile=C:/llaves/mi-juego-key.jks
+   ```
+
+5. **Compila el APK release**:
+   ```bash
+   ./gradlew assembleRelease
+   ```
+
+### Resultado
+
+Un APK release firmado en `composeApp/build/outputs/apk/release/composeApp-release.apk` listo para distribución.
+
+***
+
+## Ejemplo 3: Usando el Plugin YDP\_Ludens
+
+Integra el plugin recomendado para mejor compatibilidad con WebView.
+
+### Pasos
+
+1. Descarga [`YDP_Ludens.js`](https://github.com/yoimerdr/rpgm-plugins) del repositorio rpgm-plugins.
+
+2. Colócalo en la carpeta `js/plugins/` de tu proyecto RPG Maker.
+
+3. Abre tu proyecto de RPG Maker y ve al **Gestor de Plugins**.
+
+4. Agrega `YDP_Ludens` y muévelo a la **parte superior** de la lista de plugins.
+
+5. Guarda y vuelve a exportar el juego.
+
+6. Copia la carpeta `www` actualizada a Ludens y recompila.
+
+### Beneficios
+
+* Corrige errores de verificación de carga de fuentes en versiones antiguas de WebView.
+* Habilita funcionalidades adicionales del lado del cliente soportadas por Ludens.
+
+***
+
+## Ejemplo 4: Referencia de Estructura de Archivos
+
+Una vista completa de la estructura del proyecto después de la configuración:
+
+<FileTree>
+  * ludens/
+    * composeApp/
+      * src/
+        * androidMain/
+          * res/
+            * mipmap-mdpi/ Icono de app (48px)
+            * mipmap-hdpi/ Icono de app (72px)
+            * mipmap-xhdpi/ Icono de app (96px)
+            * mipmap-xxhdpi/ Icono de app (144px)
+            * mipmap-xxxhdpi/ Icono de app (192px)
+        * commonMain/
+          * composeResources/
+            * files/
+              * www/ Tu juego
+                * audio/
+                * data/
+                * fonts/
+                * img/
+                * js/
+                  * plugins/
+                    * YDP\_Ludens.js
+                * index.html
+      * build/
+        * outputs/
+          * apk/
+            * debug/ Salida APK debug
+            * release/ Salida APK release
+    * gradle.properties Configuración de la app
+    * keystore.properties Credenciales de firma
+    * keystore.properties.template Referencia de plantilla
+</FileTree>

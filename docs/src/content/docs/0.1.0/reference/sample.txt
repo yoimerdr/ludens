@@ -1,0 +1,13 @@
+:::note
+If you use custom input plugins in your RPG Maker project to map specific keys, you must make sure that the `code` assigned to your on-screen button matches the JavaScript key code your plugin expects.
+
+**Practical Example:**
+If your game uses a Quest Journal plugin that opens when the player presses the "Q" key on a keyboard (JavaScript KeyCode `81`), you can configure the on-screen "Y" button in Ludens to have an Input Key of `81`. Now, tapping "Y" on the mobile screen will instantly open your Quest Journal.
+:::
+
+:::note
+Si usas plugins de entrada personalizados en tu proyecto de RPG Maker para mapear teclas específicas, debes asegurarte de que el `código` asignado a tu botón en pantalla coincida con el código de tecla de JavaScript que tu plugin espera.
+
+**Ejemplo Práctico:**
+Si tu juego usa un plugin de Diario de Misiones que se abre cuando el jugador presiona la tecla "Q" en un teclado (Código JavaScript `81`), puedes configurar el botón "Y" en la pantalla de Ludens para que tenga un Input Key de `81`. Ahora, tocar "Y" en la pantalla del móvil abrirá instantáneamente tu Diario de Misiones.
+:::

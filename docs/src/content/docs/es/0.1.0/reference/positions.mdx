@@ -1,0 +1,42 @@
+---
+title: Elementos Posicionables
+description: Guía de referencia sobre cómo se posicionan los elementos en
+  pantalla en Ludens.
+slug: es/0.1.0/reference/positions
+---
+
+Ludens permite a los jugadores personalizar la disposición de los controles en pantalla y las superposiciones para que se adapten mejor a su dispositivo y estilo de juego. Este sistema se basa en almacenar las coordenadas de los elementos posicionables.
+
+## ¿Qué son los Elementos Posicionables?
+
+Los elementos posicionables en Ludens se agrupan en tres categorías principales (`PositionableType`):
+
+1. **Joystick**: El pad direccional virtual utilizado para el movimiento del personaje.
+2. **Keys (Teclas)**: El grupo de botones de acción (A, B, X, Y). Ten en cuenta que estos se posicionan como un grupo, no individualmente.
+3. **Actions (Acciones)**: El botón flotante que abre el menú de acciones rápidas.
+
+## Sistema de Coordenadas
+
+Cuando se mueve un elemento, su posición se almacena como **coordenadas de pantalla (desplazamientos X e Y)** relativas a su punto de anclaje por defecto.
+
+* **Almacenamiento**: Las posiciones se guardan de forma persistente utilizando DataStore (Protocol Buffers). Esto significa que los diseños personalizados sobreviven a los reinicios de la aplicación y del dispositivo.
+* **Desplazamientos vs. Coordenadas Absolutas**: Debido a que los dispositivos móviles tienen diferentes tamaños de pantalla y relaciones de aspecto, almacenar coordenadas absolutas en píxeles (ej., `X: 1500, Y: 800`) causaría que los elementos quedaran fuera de la pantalla al jugar en un dispositivo diferente o al rotarlo. Ludens calcula desplazamientos relativos basados en puntos de anclaje predeterminados (ej., la esquina inferior derecha para los botones de acción). Si mueves un botón 50px a la izquierda, permanecerá 50px a la izquierda de su anclaje tanto en un teléfono pequeño como en una tablet grande.
+
+## Ajustar Posiciones
+
+Las posiciones se pueden modificar desde dentro de la aplicación:
+
+1. Abre el **Menú de Acciones Rápidas**.
+2. Toca el icono de **Ajustes**.
+3. Navega a la sección **Herramientas**.
+4. Toca en **Posiciones**.
+
+Esto abre un modo de edición de diseño dedicado donde puedes arrastrar y soltar el Joystick, el grupo de Teclas y el botón de Acciones libremente por la pantalla.
+
+Mientras estás en este modo, el WebView del juego permanece visible en el fondo para que puedas alinear los controles exactamente donde los necesitas en relación a la interfaz del juego.
+
+## Restablecer Posiciones
+
+Si los elementos se pierden fuera de la pantalla o si el jugador prefiere el diseño original, existe un mecanismo incorporado para restablecer las posiciones:
+
+En la pantalla de ajustes, hay una opción para restaurar todos los elementos a sus puntos de anclaje predeterminados. Esto borra los desplazamientos X e Y guardados del DataStore y revierte la interfaz de usuario a su estado de fábrica.

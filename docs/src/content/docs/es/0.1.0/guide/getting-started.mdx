@@ -1,0 +1,110 @@
+---
+title: Primeros Pasos
+description: Prerrequisitos y configuración del entorno para compilar juegos de
+  RPG Maker MV y MZ para móviles con Ludens.
+head:
+  - tag: meta
+    attrs:
+      name: keywords
+      content: rpg maker mv android port, rpg maker mz android, rpg maker mv ios, rpg
+        maker mz ios, compose multiplatform rpg maker, configurar rpg maker
+        móvil
+slug: es/0.1.0/guide/getting-started
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+Esta guía te lleva a través de los prerrequisitos y la configuración inicial necesaria para construir tus juegos de **RPG Maker MV y MZ** como aplicaciones nativas usando Ludens.
+
+### Cómo funciona Ludens
+
+Antes de empezar, es útil entender la arquitectura: Ludens no recompila nativamente el código JavaScript de tu juego a Java/Kotlin. En su lugar, toma tu juego de RPG Maker exportado para web y lo envuelve en un contenedor **Compose Multiplatform**. Ejecuta el juego usando un **WebView** nativo móvil mientras renderiza una interfaz nativa transparente superpuesta sobre él. Esta interfaz contiene el joystick virtual y los botones de acción, los cuales se comunican con el motor del juego subyacente inyectando eventos JavaScript.
+
+:::caution[Soporte iOS]
+La compilación para **iOS** aún no está completamente configurada y usa la configuración por defecto de la plantilla Compose Multiplatform. Esta guía se centra en Android.
+:::
+
+## Prerrequisitos
+
+### Android Studio
+
+Descarga e instala Android Studio. Se recomienda la versión **Otter 2 Feature Drop | 2025.2.2** o superior.
+
+* [Descargar Android Studio](https://developer.android.com/studio)
+* [Guía de Instalación](https://developer.android.com/studio/install)
+* [Guía de Configuración Oficial](https://developer.android.com/courses/pathways/android-basics-compose-unit-1-pathway-2)
+
+![Pantalla de bienvenida de Android Studio donde se puede verificar la versión instalada.](../../../../../assets/images/guide/android-studio-setup.png)
+
+Asegúrate de que los siguientes componentes se incluyan durante la instalación:
+
+* **Android SDK**
+* **Android SDK Platform-Tools**
+* **Android Virtual Device** (recomendado para pruebas)
+
+### Java Development Kit (JDK)
+
+El proyecto requiere **Java 17** o superior. Android Studio generalmente incluye una versión compatible (JetBrains Runtime), pero puedes instalar JDK 17 manualmente si es necesario. Si compilas fuera de Android Studio, asegúrate de tener configurada la variable de entorno `JAVA_HOME`.
+
+* [Guía Oficial de Instalación del JDK](https://docs.oracle.com/java/javase/17/install/overview-jdk-installation.html)
+
+### Herramienta de Compilación Gradle
+
+Ludens incluye un Gradle Wrapper, lo que significa que **no** necesitas instalar Gradle manualmente. El proyecto usa el script incluido (`gradlew` para macOS/Linux, `gradlew.bat` para Windows) para asegurar que se usa la versión correcta de Gradle automáticamente.
+
+### Juego de RPG Maker MV/MZ
+
+Necesitas tu proyecto de RPG Maker exportado para despliegue web. Consulta la sección [Exportar el Juego](/es/0.1.0/guide/game-export/) para más detalles.
+
+### Plugin Recomendado
+
+Incluir el plugin [`YDP_Ludens.js`](https://github.com/yoimerdr/rpgm-plugins) en tu proyecto de RPG Maker es opcional pero altamente recomendado:
+
+* **Corrección de Carga de Fuentes**: RPG Maker MV depende de métodos síncronos obsoletos para la carga de fuentes. Los WebViews modernos de Android bloquean esto, resultando en texto invisible. El plugin parchea el motor para usar las APIs asíncronas modernas de Web Fonts.
+* **Puente con el Motor**: Permite una comunicación más fluida entre el cliente nativo de Ludens y el motor del juego.
+* **Ubicación**: **Debe ser el primer plugin** en la lista de tu gestor de plugins para asegurar que parchea los comportamientos principales antes de que se ejecute cualquier otro plugin.
+* La última versión y otros plugins recomendados están disponibles en el [repositorio rpgm-plugins](https://github.com/yoimerdr/rpgm-plugins).
+
+![El plugin YDP\_Ludens.js debe colocarse en la parte superior de la lista para asegurar su correcta carga.](../../../../../assets/images/guide/plugin-manager-ydp_ludens.png)
+
+:::note[Compatibilidad de Plugins]
+Muchos plugins de RPG Maker están diseñados solo para PC (escritorio). Verifica que todos los plugins usados en tu juego sean compatibles con entornos móviles (WebView) antes de compilar.
+:::
+
+## Obtener el Proyecto
+
+1. Clona el repositorio o descárgalo como ZIP y extráelo:
+   ```bash
+   git clone https://github.com/yoimerdr/ludens.git
+   ```
+2. Abre **Android Studio**.
+3. Selecciona **Open** y navega hasta la carpeta del proyecto `ludens`.
+4. Espera a que Gradle termine de sincronizar. **Nota:** La primera vez que abras el proyecto, Gradle descargará las dependencias necesarias. Este proceso puede tardar varios minutos y descargar alrededor de 500MB de datos.
+
+### Orientación del Juego
+
+Por defecto, la aplicación Ludens está configurada para ejecutarse en modo Horizontal (`sensorLandscape`). Si tu juego está diseñado para modo Vertical (Portrait), necesitarás cambiar esta configuración en el Android Manifest. Consulta la guía de [Configuración Android](/es/0.1.0/configuration/android/#orientación-del-juego) para más detalles.
+
+![Vista del proyecto en Android Studio una vez finalizada la sincronización de Gradle.](../../../../../assets/images/guide/ludens-android-studio-project.png)
+
+## Estructura de Directorios
+
+Una vez abierto el proyecto, familiarízate con estas ubicaciones clave:
+
+<FileTree>
+  * ludens/
+    * composeApp/
+      * src/
+        * commonMain/
+          * composeResources/
+            * files/ Tu juego va aquí
+    * gradle.properties Configuración de la app
+    * keystore.properties.template Plantilla de firma
+</FileTree>
+
+## Siguientes Pasos
+
+Una vez que tu entorno esté listo, procede a:
+
+1. [Exportar tu juego](/es/0.1.0/guide/game-export/) desde RPG Maker.
+2. [Configurar y compilar](/es/0.1.0/guide/build/android/) tu APK de Android.

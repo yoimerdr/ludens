@@ -1,0 +1,84 @@
+---
+title: Ludens
+description: La solución definitiva para portar juegos de RPG Maker MV y MZ a
+  Android e iOS con Compose Multiplatform.
+template: splash
+hero:
+  title: Ludens
+  tagline: Porta tus juegos de RPG Maker MV y MZ a Android e iOS con Compose
+    Multiplatform.
+  image:
+    alt: Demo de Ludens
+    file: ../../../../assets/samples/ludens-0.2.0-sample.gif
+  actions:
+    - text: Comenzar
+      link: /es/0.1.0/guide/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: Ver en GitHub
+      link: https://github.com/yoimerdr/ludens
+      icon: external
+      variant: minimal
+head:
+  - tag: meta
+    attrs:
+      name: keywords
+      content: rpg maker mv android port, rpg maker mz android, rpg maker mv ios, rpg
+        maker mz ios, compose multiplatform rpg maker, portar rpg maker a
+        android, rpg maker mz ios español
+  - tag: meta
+    attrs:
+      property: og:title
+      content: Ludens - Documentación para portar RPG Maker MV/MZ a Android e iOS
+  - tag: meta
+    attrs:
+      property: og:description
+      content: Lleva tus juegos de RPG Maker MV y MZ a Android e iOS con Ludens y
+        Compose Multiplatform.
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: '{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Ludens","applicationCategory":"DeveloperApplication","operatingSystem":"Android,
+      iOS","url":"https://tryludens.vercel.app/es/","description":"La mejor
+      forma de portar juegos de RPG Maker MV y MZ a Android e iOS usando Compose
+      Multiplatform.","keywords":"rpg maker mv android port,rpg maker mz
+      android,rpg maker mv ios,rpg maker mz ios,compose multiplatform rpg
+      maker"}'
+slug: es/0.1.0
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## ¿Por qué Ludens?
+
+Ludens te permite transformar tu juego existente en una aplicación móvil profesional para Android e iOS. Impulsado por Kotlin y **Compose Multiplatform**, elimina la necesidad de reescribir tu código — solo exporta, configura y compila para tu plataforma de destino.
+
+<CardGrid>
+  <Card title="WebView Optimizado" icon="laptop">
+    Integra sin problemas tu juego HTML5 de RPG Maker en un shell móvil nativo con soporte completo de WebView.
+  </Card>
+
+  <Card title="Controles en Pantalla" icon="setting">
+    Joystick virtual integrado y botones configurables (A, B, X, Y) con opacidad y posiciones ajustables.
+  </Card>
+
+  <Card title="Pantalla de Ajustes" icon="list-format">
+    Interfaz completa de ajustes: tema, idioma, silenciar audio, mostrar FPS, alternar WebGL, diseño de controles y acciones rápidas.
+  </Card>
+
+  <Card title="Configuración Fácil" icon="document">
+    Personaliza el ID, versión, nombre e icono de tu app directamente desde `gradle.properties` — sin cambios de código Kotlin.
+  </Card>
+</CardGrid>
+
+## Enlaces Rápidos
+
+<CardGrid>
+  <LinkCard title="Visión General" href="/es/overview/" description="Conoce qué es Ludens y qué ofrece." />
+
+  <LinkCard title="Primeros Pasos" href="/es/guide/getting-started/" description="Configura tu entorno y prerrequisitos." />
+
+  <LinkCard title="Configuración" href="/es/configuration/android/" description="Personaliza las propiedades de tu aplicación." />
+
+  <LinkCard title="Preguntas Frecuentes" href="/es/faq/" description="Preguntas comunes y solución de problemas." />
+</CardGrid>
