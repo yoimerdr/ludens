@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import com.yoimerdr.compose.ludens.ui.components.layout.BlockIntrinsicsMeasurePolicy
 import com.yoimerdr.compose.ludens.ui.components.provider.LocalSpacing
 import ludens.composeapp.generated.resources.Res
@@ -172,7 +173,7 @@ fun <T> SearchableDropdownMenuAnchor(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> ExposedDropdownMenuBoxScope.SearchableDropdownMenuPanel(
+fun <T> SearchableDropdownMenuPanel(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     entries: Set<T>,
@@ -207,12 +208,14 @@ fun <T> ExposedDropdownMenuBoxScope.SearchableDropdownMenuPanel(
         }
     }
 
-    ExposedDropdownMenu(
+
+    DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
         modifier = modifier
             .widthIn(min = 240f.dp, max = 320f.dp)
             .height(IntrinsicSize.Max),
+        properties = PopupProperties(focusable = true)
     ) {
         Column(
             modifier = Modifier
@@ -225,7 +228,8 @@ fun <T> ExposedDropdownMenuBoxScope.SearchableDropdownMenuPanel(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = onSearchQueryChange,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     singleLine = true,
                     placeholder = {
                         Text(searchPlaceholder ?: stringResource(Res.string.search))
