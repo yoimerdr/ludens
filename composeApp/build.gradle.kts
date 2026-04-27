@@ -25,8 +25,8 @@ buildkonfig {
     packageName = "com.yoimerdr.compose.ludens.konfig.generated"
 
     defaultConfigs {
-        buildConfigField(Type.STRING, "LUDENS_VERSION", "0.2.0")
-        buildConfigField(Type.STRING, "LUDENS_WEBSITE_URL", "https://github.com/yoimerdr/ludens")
+        buildConfigField(Type.STRING, "LUDENS_VERSION", "0.3.0")
+        buildConfigField(Type.STRING, "LUDENS_WEBSITE_URL", "https://tryludens.vercel.app/")
         buildConfigField(
             Type.STRING,
             "LUDENS_ISSUES_URL",
