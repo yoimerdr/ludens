@@ -1,0 +1,634 @@
+/* ==========================================================================
+   Ludens Documentation — Custom Starlight Theme
+   Design System: Vercel-inspired with glassmorphism accents
+   Reference: DESIGN.md
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Font Imports — Geist Sans & Geist Mono
+   -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/Geist-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/Geist-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/Geist-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-mono/GeistMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-mono/GeistMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --------------------------------------------------------------------------
+   2. CSS Custom Properties — Vercel Color System
+   -------------------------------------------------------------------------
+*/   
+:root {
+  /* Vercel Neutrals */
+  --v-black: #171717;
+  --v-white: #ffffff;
+  --v-gray-50: #fafafa;
+  --v-gray-100: #ebebeb;
+  --v-gray-200: #d4d4d4;
+  --v-gray-400: #808080;
+  --v-gray-500: #666666;
+  --v-gray-600: #4d4d4d;
+  --v-gray-900: #171717;
+
+  /* Workflow Accents */
+  --v-ship-red: #ff5b4f;
+  --v-preview-pink: #de1d8d;
+  --v-develop-blue: #0a72ef;
+
+  /* Typography Scale */
+  --v-font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --v-font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', 'Roboto Mono', 'Menlo', monospace;
+}
+
+/* --------------------------------------------------------------------------
+   3. Starlight Token Overrides — Dark Mode (Default)
+   -------------------------------------------------------------------------- */
+
+:root {
+  --sl-font: var(--v-font-sans);
+  --sl-font-mono: var(--v-font-mono);
+
+  /* Dark mode colors */
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #fafafa;
+  --sl-color-gray-2: #ebebeb;
+  --sl-color-gray-3: #a0a0a0;
+  --sl-color-gray-4: #808080;
+  --sl-color-gray-5: #333333;
+  --sl-color-gray-6: #111111;
+  --sl-color-black: #000000;
+
+  --sl-color-accent-low: #0a1929;
+  --sl-color-accent: #3b82f6;
+  --sl-color-accent-high: #93c5fd;
+
+  --sl-color-bg: #000000;
+  --sl-color-bg-nav: #000000;
+  --sl-color-bg-sidebar: #0a0a0a;
+  --sl-color-hairline-light: #222222;
+  --sl-color-hairline: #333333;
+
+  --sl-color-text: #a0a0a0;
+  --sl-color-text-accent: #3b82f6;
+
+  --sl-text-xs: 0.75rem;
+  --sl-text-sm: 0.875rem;
+  --sl-text-base: 1rem;
+  --sl-text-lg: 1.125rem;
+  --sl-text-xl: 1.25rem;
+  --sl-text-2xl: 1.5rem;
+  --sl-text-3xl: 2rem;
+  --sl-text-4xl: 2.5rem;
+  --sl-text-5xl: 3rem;
+
+  --sl-nav-height: 3.5rem;
+  --sl-sidebar-width: 17rem;
+  --sl-content-width: 50rem;
+
+  font-feature-settings: "liga" 1;
+
+  /* Dark mode specific shadows and glass */
+  --v-glass-bg: rgba(0, 0, 0, 0.72);
+  --v-glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --v-shadow-border: rgba(255, 255, 255, 0.1) 0px 0px 0px 1px;
+  --v-shadow-card: rgba(255, 255, 255, 0.1) 0px 0px 0px 1px,
+                   rgba(0, 0, 0, 0.4) 0px 2px 2px,
+                   rgba(0, 0, 0, 0.4) 0px 8px 8px -8px,
+                   rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  --v-badge-bg: #0a1929;
+  --v-badge-text: #93c5fd;
+}
+
+/* --------------------------------------------------------------------------
+   3b. Starlight Token Overrides — Light Mode
+   -------------------------------------------------------------------------- */
+
+:root[data-theme='light'] {
+  /* Light mode colors */
+  --sl-color-white: #171717; /* Darkest text */
+  --sl-color-gray-1: #111111;
+  --sl-color-gray-2: #333333;
+  --sl-color-gray-3: #808080;
+  --sl-color-gray-4: #a0a0a0;
+  --sl-color-gray-5: #ebebeb;
+  --sl-color-gray-6: #fafafa;
+  --sl-color-black: #ffffff; /* Lightest background */
+
+  --sl-color-accent-low: #ebf5ff;
+  --sl-color-accent: #0a72ef;
+  --sl-color-accent-high: #0068d6;
+
+  --sl-color-bg: #ffffff;
+  --sl-color-bg-nav: #ffffff;
+  --sl-color-bg-sidebar: #fafafa;
+  --sl-color-hairline-light: #ebebeb;
+  --sl-color-hairline: #e5e5e5;
+
+  --sl-color-text: #4d4d4d;
+  --sl-color-text-accent: #0a72ef;
+
+  /* Light mode specific shadows and glass */
+  --v-glass-bg: rgba(255, 255, 255, 0.72);
+  --v-glass-border: 1px solid rgba(0, 0, 0, 0.1);
+  --v-shadow-border: rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  --v-shadow-card: rgba(0, 0, 0, 0.08) 0px 0px 0px 1px,
+                   rgba(0, 0, 0, 0.04) 0px 2px 2px,
+                   rgba(0, 0, 0, 0.04) 0px 8px 8px -8px,
+                   #ffffff 0px 0px 0px 1px inset;
+  --v-badge-bg: #ebf5ff;
+  --v-badge-text: #0068d6;
+}
+
+/* --------------------------------------------------------------------------
+   4. Global Resets & Base Typography
+   -------------------------------------------------------------------------- */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--v-font-sans);
+  font-feature-settings: "liga" 1;
+  letter-spacing: -0.01em;
+}
+
+/* Headings — Geist compressed tracking */
+h1, h2, h3, h4, h5, h6,
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3 {
+  font-family: var(--v-font-sans);
+  font-weight: 600;
+  color: var(--sl-color-white);
+}
+
+.sl-markdown-content h1 {
+  font-size: var(--sl-text-4xl);
+  letter-spacing: -2.4px;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.sl-markdown-content h2 {
+  font-size: var(--sl-text-3xl);
+  letter-spacing: -1.28px;
+  line-height: 1.2;
+  margin-top: 2.5rem;
+}
+
+.sl-markdown-content h3 {
+  font-size: var(--sl-text-2xl);
+  letter-spacing: -0.96px;
+  line-height: 1.33;
+}
+
+.sl-markdown-content h4 {
+  font-size: var(--sl-text-xl);
+  letter-spacing: -0.32px;
+  line-height: 1.5;
+}
+
+/* Body text */
+.sl-markdown-content p,
+.sl-markdown-content li {
+  font-size: var(--sl-text-base);
+  line-height: 1.7;
+  color: var(--sl-color-text);
+}
+
+/* Links */
+.sl-markdown-content a:not(.card-link) {
+  color: var(--sl-color-text-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--sl-color-hairline);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.sl-markdown-content a:not(.card-link):hover {
+  text-decoration-color: var(--sl-color-text-accent);
+}
+
+/* Code (inline) */
+.sl-markdown-content code:not(pre code) {
+  font-family: var(--v-font-mono);
+  font-size: 0.875em;
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  box-shadow: var(--v-shadow-border);
+}
+
+/* Code blocks */
+.sl-markdown-content pre {
+  font-family: var(--v-font-mono);
+  font-feature-settings: "liga" 1;
+  border: none;
+  box-shadow: var(--v-shadow-card);
+  border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Navigation — Shadow-as-border, Glassmorphism
+   -------------------------------------------------------------------------- */
+
+header.header {
+  background: var(--v-glass-bg);
+  backdrop-filter: var(--v-glass-blur);
+  -webkit-backdrop-filter: var(--v-glass-blur);
+  border-bottom: none;
+  box-shadow: var(--v-shadow-border);
+}
+
+/* Site Title (Ludens Logo Text) */
+a.site-title {
+  font-family: var(--v-font-sans);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: -0.05em;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  gap: 0px;
+}
+
+a.site-title:hover {
+  opacity: 0.85;
+}
+
+/* Gradient effect only on the text, avoiding the img */
+a.site-title span, 
+a.site-title :not(img) {
+  background: linear-gradient(90deg, #81d0fb 0%, #c461fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Sidebar */
+.sidebar-pane {
+  border-right: none;
+  box-shadow: var(--v-shadow-border);
+}
+
+nav.sidebar a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  border-radius: 6px;
+  color: var(--sl-color-text);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+nav.sidebar a[aria-current="page"] {
+  font-weight: 600;
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-accent-high);
+}
+
+nav.sidebar a:hover:not([aria-current="page"]) {
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+}
+
+/* --------------------------------------------------------------------------
+   6. Cards & Containers — Shadow Stack
+   -------------------------------------------------------------------------- */
+
+.card {
+  background: var(--sl-color-black);
+  border: none;
+  box-shadow: var(--v-shadow-card);
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--v-shadow-border),
+              rgba(0, 0, 0, 0.08) 0px 4px 8px,
+              rgba(0, 0, 0, 0.06) 0px 12px 24px -8px;
+  transform: translateY(-1px);
+}
+
+:root[data-theme='dark'] .card:hover {
+  box-shadow: var(--v-shadow-border),
+              rgba(0, 0, 0, 0.4) 0px 4px 8px,
+              rgba(0, 0, 0, 0.4) 0px 12px 24px -8px;
+}
+
+/* Starlight built-in card grids */
+.sl-link-card {
+  border: none !important;
+  box-shadow: var(--v-shadow-card);
+  border-radius: 8px;
+  background: var(--sl-color-black);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.sl-link-card:hover {
+  box-shadow: var(--v-shadow-border),
+              rgba(0, 0, 0, 0.08) 0px 4px 8px,
+              rgba(0, 0, 0, 0.06) 0px 12px 24px -8px;
+  transform: translateY(-1px);
+}
+
+:root[data-theme='dark'] .sl-link-card:hover {
+  box-shadow: var(--v-shadow-border),
+              rgba(0, 0, 0, 0.4) 0px 4px 8px,
+              rgba(0, 0, 0, 0.4) 0px 12px 24px -8px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Aside / Callout Boxes — Glassmorphism
+   -------------------------------------------------------------------------- */
+
+.starlight-aside {
+  border: none;
+  box-shadow: var(--v-shadow-card);
+  border-radius: 8px;
+  background: var(--v-glass-bg);
+  backdrop-filter: var(--v-glass-blur);
+  -webkit-backdrop-filter: var(--v-glass-blur);
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--sl-color-accent);
+}
+
+.starlight-aside--note {
+  border-left-color: var(--v-develop-blue);
+}
+
+.starlight-aside--tip {
+  border-left-color: #10b981;
+}
+
+.starlight-aside--caution {
+  border-left-color: #f59e0b;
+}
+
+.starlight-aside--danger {
+  border-left-color: var(--v-ship-red);
+}
+
+/* --------------------------------------------------------------------------
+   8. Badges — Pill style
+   -------------------------------------------------------------------------- */
+
+.sl-badge {
+  font-family: var(--v-font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  padding: 0.1em 0.65em;
+  border: none;
+  box-shadow: var(--v-shadow-border);
+}
+
+.sl-badge.default {
+  background: var(--v-badge-bg);
+  color: var(--v-badge-text);
+}
+
+/* --------------------------------------------------------------------------
+   9. Table of Contents
+   -------------------------------------------------------------------------- */
+
+starlight-toc a {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--sl-color-text);
+  opacity: 0.8;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+starlight-toc a:hover,
+starlight-toc a[aria-current="true"] {
+  color: var(--sl-color-white);
+  opacity: 1;
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   10. Images in Content
+   -------------------------------------------------------------------------- */
+
+.sl-markdown-content img {
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 2px;
+  max-width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   11. Buttons — Vercel style
+   -------------------------------------------------------------------------- */
+
+/* Primary dark CTA */
+a.sl-flex:is(.action),
+.action.primary {
+  background: var(--sl-color-white) !important;
+  color: var(--sl-color-black) !important;
+  border: none !important;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  box-shadow: none;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+a.sl-flex:is(.action):hover,
+.action.primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Secondary ghost CTA */
+.action.minimal {
+  background: var(--sl-color-black) !important;
+  color: var(--sl-color-white) !important;
+  border: none !important;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  box-shadow: var(--v-shadow-border);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.action.minimal:hover {
+  background: var(--sl-color-gray-6) !important;
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   12. Focus Ring — Accessibility
+   -------------------------------------------------------------------------- */
+
+*:focus-visible {
+  outline: 2px solid var(--v-focus-blue);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   13. Hero Section Override
+   -------------------------------------------------------------------------- */
+
+.hero {
+  padding-block: 4rem;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -2.4px;
+  line-height: 1.05;
+  color: var(--sl-color-white);
+}
+
+.hero .tagline {
+  font-size: var(--sl-text-xl);
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--sl-color-text);
+  max-width: 42ch;
+}
+
+/* --------------------------------------------------------------------------
+   14. Footer
+   -------------------------------------------------------------------------- */
+
+.page-footer {
+  border-top: none;
+  box-shadow: inset 0 1px 0 0 var(--sl-color-hairline);
+}
+
+/* --------------------------------------------------------------------------
+   15. Pagination
+   -------------------------------------------------------------------------- */
+
+.pagination-links a {
+  border: none;
+  box-shadow: var(--v-shadow-card);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.pagination-links a:hover {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 0px 1px,
+              rgba(0, 0, 0, 0.06) 0px 4px 8px;
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   16. Search
+   -------------------------------------------------------------------------- */
+
+button[data-open-modal] {
+  border: none;
+  box-shadow: var(--v-shadow-ring);
+  border-radius: 6px;
+  font-family: var(--v-font-sans);
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   17. Responsive Adjustments
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .sl-markdown-content h1 {
+    font-size: var(--sl-text-3xl);
+    letter-spacing: -1.28px;
+  }
+
+  .sl-markdown-content h2 {
+    font-size: var(--sl-text-2xl);
+    letter-spacing: -0.96px;
+  }
+
+  .hero h1 {
+    letter-spacing: -1.6px;
+  }
+}
+
+@media (max-width: 400px) {
+  .sl-markdown-content h1 {
+    font-size: var(--sl-text-2xl);
+    letter-spacing: -0.96px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   18. Smooth Transitions
+   -------------------------------------------------------------------------- */
+
+* {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 0s;
+}
+
+a, button, .card, .sl-link-card, .pagination-links a, nav.sidebar a {
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
+}
+
+/* --------------------------------------------------------------------------
+   19. Mobile Menu Button Override
+   -------------------------------------------------------------------------- */
+
+starlight-menu-button button {
+  background-color: var(--sl-color-black) !important;
+  color: var(--sl-color-white) !important;
+  box-shadow: var(--v-shadow-border) !important;
+}
+
+starlight-menu-button[aria-expanded='true'] button {
+  background-color: var(--sl-color-gray-6) !important;
+}
+
+:root[data-theme='light'] starlight-menu-button button {
+  background-color: var(--sl-color-black) !important;
+  color: var(--sl-color-white) !important;
+}
+
+:root[data-theme='light'] starlight-menu-button[aria-expanded='true'] button {
+  background-color: var(--sl-color-gray-6) !important;
+}

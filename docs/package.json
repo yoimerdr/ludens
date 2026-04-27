@@ -1,0 +1,19 @@
+{
+  "name": "ludens-docs",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "6.1.6",
+    "@astrojs/starlight": "0.38.4",
+    "starlight-versions": "0.8.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}
