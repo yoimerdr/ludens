@@ -50,7 +50,7 @@ Sí. Para tener varios juegos instalados simultáneamente sin que se sobreescrib
 - **Nombre de la app**: Edita `ludens.applicationName` y `ludens.applicationLauncherName` en `gradle.properties`.
 - **Icono de la app**: Reemplaza las imágenes en los directorios `composeApp/src/androidMain/res/mipmap-*` o usa el **Image Asset Studio** de Android Studio (clic derecho en `res` > **New > Image Asset**).
 
-Consulta la página de [Configuración](/docs/es/configuration/android/) para más detalles.
+Consulta la página de [Configuración](/es/configuration/android/) para más detalles.
 
 ### ¿Qué es `keystore.properties`?
 

@@ -5,8 +5,8 @@ import starlightVersions from 'starlight-versions';
 
 // https://astro.build/config
 export default defineConfig({
-  // site: "",
-  base: '/docs',
+  site: "https://ludens-project.vercel.app",
+  base: '/',
   integrations: [
     starlight({
       title: 'Ludens',
