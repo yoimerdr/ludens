@@ -1,9 +1,14 @@
 ---
 title: Overview
-description: What Ludens is, what it does, and who it is for.
+description: Learn how to port RPG Maker MV and MZ games to Android and iOS with Ludens.
+head:
+  - tag: meta
+    attrs:
+      name: keywords
+      content: rpg maker mv android port, rpg maker mz android, rpg maker mv ios, rpg maker mz ios, compose multiplatform rpg maker
 ---
 
-**Ludens** is a **Compose Multiplatform** wrapper developed in **Kotlin**, designed to port RPG Maker MV/MZ games to mobile devices (Android and iOS). It takes your HTML5 game export and wraps it in a modern native application, giving you full control over configuration and deployment.
+**Ludens** is a **Compose Multiplatform** wrapper developed in **Kotlin**, designed to help you bring your **RPG Maker MV & MZ** projects to mobile devices. It takes your HTML5 game export and wraps it in a modern native application, giving you full control over configuration and deployment for both Android and iOS.
 
 ## What Problem Does It Solve?
 

@@ -1,6 +1,11 @@
 ---
 title: Preguntas Frecuentes
-description: Preguntas frecuentes sobre Ludens.
+description: FAQ de Ludens sobre compatibilidad, plugins, WebView y compilación para juegos de RPG Maker MV/MZ.
+head:
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué versiones de RPG Maker son compatibles?","acceptedAnswer":{"@type":"Answer","text":"Ludens soporta RPG Maker MV y RPG Maker MZ exportados como HTML5."}},{"@type":"Question","name":"¿Puedo usar plugins de RPG Maker en Android?","acceptedAnswer":{"@type":"Answer","text":"Muchos plugins funcionan, pero plugins de escritorio o dependientes de Node.js pueden fallar en WebView móvil."}},{"@type":"Question","name":"¿Puedo generar Android App Bundle (AAB)?","acceptedAnswer":{"@type":"Answer","text":"Sí. Ejecuta ./gradlew bundleRelease para generar un build AAB."}}]}'
 ---
 
 ## General

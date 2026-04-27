@@ -1,6 +1,11 @@
 ---
 title: FAQ
-description: Frequently asked questions about Ludens.
+description: FAQ for RPG Maker MV/MZ Android porting with Ludens, including compatibility, plugins, WebView, and APK build issues.
+head:
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which RPG Maker versions are supported?","acceptedAnswer":{"@type":"Answer","text":"Ludens supports RPG Maker MV and RPG Maker MZ games exported as HTML5."}},{"@type":"Question","name":"Can I use RPG Maker plugins on Android?","acceptedAnswer":{"@type":"Answer","text":"Many plugins work, but desktop-only plugins and Node.js API based plugins may fail on mobile WebView."}},{"@type":"Question","name":"Can I generate an Android App Bundle (AAB)?","acceptedAnswer":{"@type":"Answer","text":"Yes. Run ./gradlew bundleRelease to generate an AAB build."}}]}'
 ---
 
 ## General

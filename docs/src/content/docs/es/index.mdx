@@ -1,10 +1,10 @@
 ---
 title: Ludens
-description: Porta tus juegos de RPG Maker MV/MZ a Android e iOS con Compose Multiplatform.
+description: La solución definitiva para portar juegos de RPG Maker MV y MZ a Android e iOS con Compose Multiplatform.
 template: splash
 hero:
   title: Ludens
-  tagline: Un wrapper de Compose Multiplatform para portar juegos de RPG Maker MV/MZ a dispositivos móviles.
+  tagline: Porta tus juegos de RPG Maker MV y MZ a Android e iOS con Compose Multiplatform.
   image:
     alt: Demo de Ludens
     file: ../../../assets/samples/ludens-0.2.0-sample.gif
@@ -17,13 +17,30 @@ hero:
       link: https://github.com/yoimerdr/ludens
       icon: external
       variant: minimal
+head:
+  - tag: meta
+    attrs:
+      name: keywords
+      content: rpg maker mv android port, rpg maker mz android, rpg maker mv ios, rpg maker mz ios, compose multiplatform rpg maker, portar rpg maker a android, rpg maker mz ios español
+  - tag: meta
+    attrs:
+      property: og:title
+      content: Ludens - Documentación para portar RPG Maker MV/MZ a Android e iOS
+  - tag: meta
+    attrs:
+      property: og:description
+      content: Lleva tus juegos de RPG Maker MV y MZ a Android e iOS con Ludens y Compose Multiplatform.
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: '{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Ludens","applicationCategory":"DeveloperApplication","operatingSystem":"Android, iOS","url":"https://tryludens.vercel.app/es/","description":"La mejor forma de portar juegos de RPG Maker MV y MZ a Android e iOS usando Compose Multiplatform.","keywords":"rpg maker mv android port,rpg maker mz android,rpg maker mv ios,rpg maker mz ios,compose multiplatform rpg maker"}'
 ---
 
 import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 ## ¿Por qué Ludens?
 
-Ludens te permite tomar tu juego existente de RPG Maker MV/MZ y envolverlo en una aplicación móvil nativa impulsada por Kotlin y Compose Multiplatform. No necesitas reescribir tu juego — solo exporta, configura y compila.
+Ludens te permite transformar tu juego existente en una aplicación móvil profesional para Android e iOS. Impulsado por Kotlin y **Compose Multiplatform**, elimina la necesidad de reescribir tu código — solo exporta, configura y compila para tu plataforma de destino.
 
 <CardGrid>
   <Card title="WebView Optimizado" icon="laptop">
