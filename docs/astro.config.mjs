@@ -80,6 +80,11 @@ export default defineConfig({
           translations: { es: 'Configuración' },
           items: [
             {
+              label: 'Shared',
+              translations: { es: 'Compartida' },
+              slug: 'configuration/shared',
+            },
+            {
               label: 'Android',
               slug: 'configuration/android',
             },

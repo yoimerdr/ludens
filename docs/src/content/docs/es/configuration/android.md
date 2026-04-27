@@ -3,64 +3,188 @@ title: Configuración Android
 description: Configuración específica de Android para Ludens.
 ---
 
-Todas las propiedades de identidad y compilación de la aplicación se gestionan a través de `gradle.properties` en la raíz del proyecto. No se requieren cambios de código Kotlin para la personalización básica.
+Las propiedades de identidad y el manifest específicos de Android se gestionan a través de
+`ludens.properties` en la
+raíz del proyecto. Este sistema te permite personalizar tu aplicación sin tocar código Kotlin ni
+scripts de compilación
+complejos.
 
-## Propiedades de la Aplicación
+## Identidad de la Aplicación
 
-Edita el archivo `gradle.properties` en la raíz del proyecto:
+Estas propiedades definen el nombre del paquete, la versión y los nombres mostrados por el sistema
+Android.
 
 ```properties
-# Identificador único de la aplicación (formato de dominio inverso)
-ludens.applicationId=com.tuorganizacion.ejemplo
-
-# Versión visible para el usuario
-ludens.applicationVersion=1.0
-
-# Nombre de la aplicación mostrado en ajustes del sistema
-ludens.applicationName=Nombre del Juego
-
-# Nombre corto mostrado bajo el icono de la pantalla de inicio
-ludens.applicationLauncherName=Juego
+# ----- Android Identity -----
+ludens.android.id=com.ludens.compose.ludens
+ludens.android.version=0.3.0
+ludens.android.versionCode=1
+ludens.android.name=Ludens
+ludens.android.launcherName=Ludens
+ludens.android.minSDK=21
+ludens.android.targetSDK=36
+ludens.android.immersive=true
 ```
 
-![Modificación de las propiedades del proyecto para personalizar ID, versión y nombre.](../../../../assets/images/guide/ludens-project-properties.png)
+Configura estas propiedades usando el prefijo `ludens.android.*`:
 
-### Referencia de Propiedades
-
-| Propiedad                         | Formato                 | Descripción                                                |
-|-----------------------------------|-------------------------|------------------------------------------------------------|
-| `ludens.applicationId`            | `com.dominio.nombre`    | Identificador único de la app. Debe ser único en la Play Store. |
-| `ludens.applicationVersion`       | `x.y` (ej., `1.0`)     | Cadena de versión visible para el usuario.                  |
-| `ludens.applicationName`          | Texto libre             | Nombre completo de la aplicación mostrado en ajustes del sistema. |
-| `ludens.applicationLauncherName`  | Texto corto             | Nombre mostrado bajo el icono de la pantalla de inicio.     |
+| Propiedad      | Tipo     | Por defecto                 | Descripción                                                      |
+|----------------|----------|-----------------------------|------------------------------------------------------------------|
+| `id`           | String   | `com.ludens.compose.ludens` | Identificador único de la aplicación (package name).             |
+| `version`      | String   | `0.3.0`                     | Nombre de la versión visible para el usuario.                    |
+| `versionCode`  | Entero   | `1`                         | Código de versión interno para actualizaciones en la Play Store. |
+| `name`         | String   | `Ludens`                    | Nombre completo de la aplicación en ajustes del sistema.         |
+| `launcherName` | String   | `Ludens`                    | Nombre mostrado bajo el icono en la pantalla de inicio.          |
+| `minSDK`       | Entero   | `21`                        | Nivel mínimo de API de Android soportado.                        |
+| `targetSDK`    | Entero   | `36`                        | Nivel de API de Android al que se dirige la compilación.         |
+| `immersive`    | Booleano | `true`                      | Activa el modo inmersivo (oculta las barras del sistema).        |
 
 :::note
-El `applicationId` debe seguir el formato de dominio inverso y debe ser único si planeas publicar en Google Play Store. Cambiarlo después de la publicación crea un nuevo listado.
+El `id` debe seguir el formato de dominio invertido y debe ser único si planeas publicar en Google
+Play
+Store. Cambiarlo después de la publicación crea una nueva ficha de aplicación.
 :::
 
 ## Icono de la Aplicación
 
-Reemplaza el icono por defecto actualizando las imágenes en los directorios `composeApp/src/androidMain/res/mipmap-*`, o usa la herramienta **Image Asset Studio** de Android Studio:
+Reemplaza el icono predeterminado actualizando las imágenes en los directorios
+`composeApp/src/androidMain/res/mipmap-*`, o usa la herramienta **Image Asset Studio** en Android
+Studio:
 
-1. Clic derecho en `composeApp/src/androidMain/res`.
+1. Haz clic derecho en `composeApp/src/androidMain/res`.
 2. Selecciona **New > Image Asset**.
-3. Configura el icono usando la imagen de tu juego.
+3. Configura el icono usando el arte de tu juego.
 
 ![Uso de Image Asset Studio para actualizar el icono de la aplicación.](../../../../assets/images/guide/ludens-application-icon.png)
 
 Los directorios `mipmap-*` contienen iconos en diferentes resoluciones:
 
-| Directorio      | Resolución |
-|-----------------|------------|
-| `mipmap-mdpi`   | 48×48 px   |
-| `mipmap-hdpi`   | 72×72 px   |
-| `mipmap-xhdpi`  | 96×96 px   |
-| `mipmap-xxhdpi` | 144×144 px |
-| `mipmap-xxxhdpi`| 192×192 px |
+| Directorio       | Resolución |
+|------------------|------------|
+| `mipmap-mdpi`    | 48×48 px   |
+| `mipmap-hdpi`    | 72×72 px   |
+| `mipmap-xhdpi`   | 96×96 px   |
+| `mipmap-xxhdpi`  | 144×144 px |
+| `mipmap-xxxhdpi` | 192×192 px |
+
+## Configuración del Manifest
+
+Ludens genera automáticamente el archivo `AndroidManifest.xml` basándose en estas propiedades. Esto
+permite una gestión
+segura y predecible del manifest.
+
+```properties
+# ----- Android Manifest -----
+ludens.android.manifest.allowBackup=true
+ludens.android.manifest.largeHeap=true
+ludens.android.manifest.hardwareAccelerated=true
+ludens.android.manifest.screenOrientation=sensorLandscape
+ludens.android.manifest.usesCleartextTraffic=false
+ludens.android.manifest.resizeableActivity=false
+```
+
+### Orientación del Juego
+
+Por defecto, Ludens fuerza la aplicación al modo horizontal usando `sensorLandscape`. Esto asegura
+que el juego rote
+según el sensor del dispositivo pero se mantenga en una orientación horizontal. Para cambiar esto,
+modifica la propiedad
+`ludens.android.manifest.screenOrientation`.
+
+#### Orientaciones Comunes
+
+| Valor             | Comportamiento                                                                                               |
+|-------------------|--------------------------------------------------------------------------------------------------------------|
+| `sensorLandscape` | (Predeterminado) Solo horizontal, rota automáticamente entre horizontal izquierdo y derecho según el sensor. |
+| `sensorPortrait`  | Solo vertical, rota automáticamente entre vertical normal e invertido según el sensor.                       |
+| `landscape`       | Orientación horizontal fija (ignorando el sensor).                                                           |
+| `portrait`        | Orientación vertical fija (ignorando el sensor).                                                             |
+| `fullSensor`      | Permite la rotación a cualquiera de las 4 orientaciones.                                                     |
+
+### Referencia de Propiedades
+
+Configura estas propiedades usando el prefijo `ludens.android.manifest.*`:
+
+| Propiedad              | Tipo     | Mapeo                          | Descripción                                                           |
+|------------------------|----------|--------------------------------|-----------------------------------------------------------------------|
+| `allowBackup`          | Booleano | `android:allowBackup`          | Indica si Android puede realizar copias de seguridad en Google Drive. |
+| `largeHeap`            | Booleano | `android:largeHeap`            | Solicita un montón más grande para juegos pesados.                    |
+| `hardwareAccelerated`  | Booleano | `android:hardwareAccelerated`  | Activa la aceleración por GPU para la interfaz.                       |
+| `screenOrientation`    | String   | `android:screenOrientation`    | Define la orientación de pantalla (ver tabla arriba).                 |
+| `usesCleartextTraffic` | Booleano | `android:usesCleartextTraffic` | Permite tráfico HTTP en claro (No recomendado).                       |
+| `resizeableActivity`   | Booleano | `android:resizeableActivity`   | Permite que el sistema cambie el tamaño de la actividad.              |
+
+## Permisos
+
+Si tus plugins de RPG Maker requieren acceso al hardware del dispositivo o servicios de red, debes
+declarar esos
+permisos. Ludens facilita esto con interruptores integrados.
+
+Por ejemplo, si tu juego obtiene puntuaciones de una tabla de clasificación en línea, necesitarás el
+permiso `internet`.
+Si tu juego debe evitar que la pantalla se apague durante escenas largas, usa el permiso `wakeLock`.
+
+```properties
+# ----- Android Permissions -----
+ludens.android.permissions.internet=false
+ludens.android.permissions.networkState=false
+ludens.android.permissions.wakeLock=false
+ludens.android.permissions.accessWifiState=false
+ludens.android.permissions.changeWifiState=false
+```
+
+Declara estos permisos bajo el prefijo `ludens.android.permissions.*`:
+
+| Propiedad         | Tipo     | Mapeo                  | Descripción                                           |
+|-------------------|----------|------------------------|-------------------------------------------------------|
+| `internet`        | Booleano | `INTERNET`             | Otorga acceso a la red para funciones online.         |
+| `networkState`    | Booleano | `ACCESS_NETWORK_STATE` | Acceso al estado y tipo de red.                       |
+| `wakeLock`        | Booleano | `WAKE_LOCK`            | Mantiene la CPU activa mientras se renderiza o juega. |
+| `accessWifiState` | Booleano | `ACCESS_WIFI_STATE`    | Acceso al estado de la conexión Wi-Fi.                |
+| `changeWifiState` | Booleano | `CHANGE_WIFI_STATE`    | Permiso para cambiar la conectividad Wi-Fi.           |
+
+## Avanzado: Personalización Manual del Manifest
+
+Para configuraciones no cubiertas por `ludens.properties`, puedes editar el manifest directamente en
+`composeApp/src/androidMain/AndroidManifest.xml`.
+
+:::caution
+Modificar el manifest incorrectamente puede causar que tu aplicación se cierre al iniciar. Los
+cambios manuales pueden
+entrar en conflicto con el generador automático.
+:::
+
+### Añadir Permisos Personalizados
+
+Si tus plugins requieren acceso al hardware como la Cámara o el Micrófono, añade la etiqueta
+`<uses-permission>` como
+hijo directo del elemento `<manifest>`.
+
+Ejemplo: Añadir permiso de Micrófono:
+
+```xml
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Añadir nuevos permisos aquí -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application>...</application>
+</manifest>
+```
+
+:::caution[Permisos en Tiempo de Ejecución]
+Para los permisos "peligrosos" (Cámara, Ubicación, etc.) en Android 6.0+, también debes solicitar el
+permiso en tiempo
+de ejecución mediante un puente personalizado. Actualmente, Ludens no incluye un puente nativo para
+esto.
+:::
 
 ## Configuración de Firma
 
-Para compilaciones release, necesitas un keystore de firma. Crea un archivo `keystore.properties` en la raíz del proyecto usando la plantilla proporcionada:
+Para compilaciones de producción, necesitas un almacén de llaves. Crea un archivo
+`keystore.properties` en la raíz del
+proyecto basado en el archivo `keystore.properties.template`:
 
 ```properties
 storePassword=tu_store_password
@@ -69,84 +193,6 @@ keyAlias=tu_alias
 storeFile=C:/Ruta/A/Tu/llave.jks
 ```
 
-Un archivo `keystore.properties.template` está incluido en el repositorio como referencia.
-
 :::caution[Seguridad]
-Nunca hagas commit de tu archivo `keystore.properties` o del keystore `.jks` al control de versiones.
+Nunca subas tu archivo `keystore.properties` o el almacén de llaves `.jks` al control de versiones.
 :::
-
-## Configuración del Manifest
-
-Para una configuración más avanzada más allá de lo que ofrece `gradle.properties`, puedes editar directamente el archivo `AndroidManifest.xml`.
-
-El archivo manifest se encuentra en:
-`composeApp/src/androidMain/AndroidManifest.xml`
-
-:::caution
-Modificar el manifest incorrectamente puede causar que tu aplicación se cierre al inicio o no compile. Asegúrate de entender los cambios que estás haciendo.
-:::
-
-### Orientación del Juego
-
-Por defecto, Ludens fuerza la aplicación al modo horizontal usando `sensorLandscape`. Esto asegura que el juego gire de acuerdo al sensor del dispositivo pero se mantenga en orientación horizontal.
-
-Para cambiar esto, localiza la etiqueta `<activity>` en tu manifest y modifica el atributo `android:screenOrientation`.
-
-### Orientaciones Comunes
-
-| Valor | Comportamiento |
-|-------|----------------|
-| `sensorLandscape` | (Por defecto) Solo horizontal, gira automáticamente entre horizontal izquierdo y derecho según el sensor. |
-| `sensorPortrait` | Solo vertical, gira automáticamente entre vertical normal e invertido según el sensor. |
-| `landscape` | Orientación horizontal fija (ignora el sensor). |
-| `portrait` | Orientación vertical fija (ignora el sensor). |
-| `fullSensor` | Permite la rotación a cualquiera de las 4 orientaciones. |
-
-**Ejemplo para un juego en vertical (portrait):**
-```xml
-<activity
-    android:exported="true"
-    android:screenOrientation="sensorPortrait"
-    android:configChanges="orientation|screenSize"
-    android:name=".MainActivity"
-    android:label="@string/app_launcher_name">
-    ...
-</activity>
-```
-
-### Añadir Permisos
-
-Si tus plugins de RPG Maker requieren acceso al hardware del dispositivo (como la cámara, el micrófono o acceso a internet), debes declarar esos permisos en el manifest. Ludens no impone el uso de ningún permiso por defecto para mantener la aplicación lo más respetuosa posible con la privacidad.
-
-Por ejemplo, si tu juego cuenta con un plugin para un mini-juego de AR (Realidad Aumentada), necesitarás el permiso `CAMERA`. O si tu juego obtiene las puntuaciones más altas de una tabla de clasificación en línea, necesitarás `INTERNET`.
-
-Añade la etiqueta `<uses-permission>` como hijo directo del elemento `<manifest>` (fuera de la etiqueta `<application>`).
-
-:::caution[Permisos en Tiempo de Ejecución (Runtime)]
-Declarar el permiso en el manifest es el primer paso. Sin embargo, para los permisos "peligrosos" (como Cámara, Ubicación o Almacenamiento) en las versiones modernas de Android (6.0+), también debes solicitar el permiso al usuario en tiempo de ejecución. Actualmente, Ludens no incluye un flujo nativo para solicitar permisos por defecto, por lo que podrías necesitar implementar un puente de JavaScript a Kotlin para activar el diálogo del sistema Android, o usar un plugin de terceros estilo Cordova/Capacitor si adaptas el núcleo.
-:::
-
-**Ejemplo: Añadir permiso de Micrófono:**
-```xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    
-    <!-- Añade nuevos permisos aquí -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <application>
-        ...
-    </application>
-</manifest>
-```
-
-### Configuración de Copia de Seguridad (Backup)
-
-Por defecto, el manifest incluye `android:allowBackup="true"`. Esto permite que el servicio de copia de seguridad integrado de Android pueda hacer un backup de los datos de tu app en el Google Drive del usuario.
-
-Si tu juego contiene datos sensibles o quieres excluirte del sistema de auto-backup, puedes cambiar esto a `false`.
-
-```xml
-<application
-    android:allowBackup="false"
-    ... >
-```

@@ -12,11 +12,15 @@ head:
 
 ### ¿Qué es Ludens?
 
-Ludens es un wrapper de Compose Multiplatform que te permite portar juegos de RPG Maker MV/MZ a dispositivos móviles (Android e iOS). Envuelve tu exportación de juego HTML5 en una aplicación nativa con controles en pantalla, ajustes y soporte adecuado para distribución móvil.
+Ludens es un wrapper de Compose Multiplatform que te permite portar juegos de RPG Maker MV/MZ a
+dispositivos móviles (Android e iOS). Envuelve tu exportación de juego HTML5 en una aplicación
+nativa con controles en pantalla, ajustes y soporte adecuado para distribución móvil.
 
 ### ¿Necesito saber Kotlin para usar Ludens?
 
-No. Para el uso básico — exportar tu juego, personalizar la identidad de la app y compilar un APK — solo necesitas editar `gradle.properties` y seguir la guía de compilación. No se requieren cambios de código.
+No. Para el uso básico — exportar tu juego, personalizar la identidad de la app y compilar un APK —
+solo necesitas editar `ludens.properties` y seguir la guía de compilación. No se requieren cambios
+de código.
 
 ### ¿Ludens es gratuito?
 
@@ -28,19 +32,28 @@ Sí. Ludens está licenciado bajo la Licencia Apache 2.0.
 
 ### ¿Qué versiones de RPG Maker son compatibles?
 
-Ludens soporta juegos hechos con **RPG Maker MV** y **RPG Maker MZ**. Ambos exportan juegos HTML5 que pueden cargarse en el WebView.
+Ludens soporta juegos hechos con **RPG Maker MV** y **RPG Maker MZ**. Ambos exportan juegos HTML5
+que pueden cargarse en el WebView.
 
 ### ¿Mis plugins funcionarán en móvil?
 
-No todos. Muchos plugins de RPG Maker están diseñados específicamente para entornos de escritorio (PC/Mac). Los plugins que dependen de **APIs de Node.js** (como `fs` para el acceso al sistema de archivos, común en sistemas de guardado personalizados o integraciones de escritorio) bloquearán inmediatamente el juego en dispositivos móviles. Además, los plugins que esperan entradas de teclado físico sin proporcionar alternativas en pantalla podrían resultar injugables. Debes probar tu juego exhaustivamente en un dispositivo Android físico o en un emulador para verificar la compatibilidad.
+No todos. Muchos plugins de RPG Maker están diseñados específicamente para entornos de escritorio (
+PC/Mac). Los plugins que dependen de **APIs de Node.js** (como `fs` para el acceso al sistema de
+archivos, común en sistemas de guardado personalizados o integraciones de escritorio) bloquearán
+inmediatamente el juego en dispositivos móviles. Además, los plugins que esperan entradas de teclado
+físico sin proporcionar alternativas en pantalla podrían resultar injugables. Debes probar tu juego
+exhaustivamente en un dispositivo Android físico o en un emulador para verificar la compatibilidad.
 
 ### ¿Qué versiones de Android son compatibles?
 
-Ludens apunta a **Android API 21** (Android 5.0 Lollipop) como SDK mínimo, con un SDK objetivo de **36**. Esto cubre la gran mayoría de dispositivos Android en uso activo.
+Ludens apunta a **Android API 21** (Android 5.0 Lollipop) como SDK mínimo, con un SDK objetivo de *
+*36**. Esto cubre la gran mayoría de dispositivos Android en uso activo.
 
 ### ¿Se soporta iOS?
 
-El soporte para iOS está planeado pero aún no está completamente configurado. El proyecto actual incluye la plantilla iOS por defecto de Compose Multiplatform, pero el proceso de compilación y las configuraciones no están finalizados.
+El soporte para iOS está planeado pero aún no está completamente configurado. El proyecto actual
+incluye la plantilla iOS por defecto de Compose Multiplatform, pero el proceso de compilación y las
+configuraciones no están finalizados.
 
 ---
 
@@ -48,18 +61,25 @@ El soporte para iOS está planeado pero aún no está completamente configurado.
 
 ### ¿Puedo tener múltiples juegos instalados en el mismo dispositivo?
 
-Sí. Para tener varios juegos instalados simultáneamente sin que se sobreescriban entre sí, cada juego debe tener un `ludens.applicationId` único configurado en su archivo `gradle.properties` (por ejemplo, `com.miestudio.juego1` y `com.miestudio.juego2`).
+Sí. Para tener varios juegos instalados simultáneamente sin que se sobreescriban entre sí, cada
+juego debe tener un `ludens.android.id` único configurado en su archivo `ludens.properties` (por
+ejemplo, `com.miestudio.juego1` y `com.miestudio.juego2`).
 
 ### ¿Cómo cambio el nombre y el icono de la app?
 
-- **Nombre de la app**: Edita `ludens.applicationName` y `ludens.applicationLauncherName` en `gradle.properties`.
-- **Icono de la app**: Reemplaza las imágenes en los directorios `composeApp/src/androidMain/res/mipmap-*` o usa el **Image Asset Studio** de Android Studio (clic derecho en `res` > **New > Image Asset**).
+- **Nombre de la app**: Edita `ludens.android.name` y `ludens.android.launcherName` en
+  `ludens.properties`.
+- **Icono de la app**: Reemplaza las imágenes en los directorios
+  `composeApp/src/androidMain/res/mipmap-*` o usa el **Image Asset Studio** de Android Studio (clic
+  derecho en `res` > **New > Image Asset**).
 
 Consulta la página de [Configuración](/es/configuration/android/) para más detalles.
 
 ### ¿Qué es `keystore.properties`?
 
-Es un archivo que almacena tus credenciales de firma para compilaciones release. Contiene la ruta a tu archivo keystore `.jks` y las contraseñas asociadas. Una plantilla (`keystore.properties.template`) está incluida en el repositorio.
+Es un archivo que almacena tus credenciales de firma para compilaciones release. Contiene la ruta a
+tu archivo keystore `.jks` y las contraseñas asociadas. Una plantilla (
+`keystore.properties.template`) está incluida en el repositorio.
 
 ### ¿Puedo generar un AAB (Android App Bundle) en vez de un APK?
 
@@ -77,19 +97,26 @@ El AAB se generará en `composeApp/build/outputs/bundle/release/`.
 
 ### ¿Dónde se almacenan los archivos de guardado?
 
-Los archivos de guardado son gestionados íntegramamente por el motor de RPG Maker dentro del WebView usando las APIs de Almacenamiento Web de HTML5 (**LocalStorage** o **IndexedDB**). Ludens no proporciona un sistema de guardado nativo separado. Estas bases de datos web están fuertemente aisladas (sandboxed) por el sistema operativo móvil por razones de seguridad.
+Los archivos de guardado son gestionados íntegramamente por el motor de RPG Maker dentro del WebView
+usando las APIs de Almacenamiento Web de HTML5 (**LocalStorage** o **IndexedDB**). Ludens no
+proporciona un sistema de guardado nativo separado. Estas bases de datos web están fuertemente
+aisladas (sandboxed) por el sistema operativo móvil por razones de seguridad.
 
 :::caution[Advertencia de Pérdida de Datos]
-Borrar los datos de la aplicación en los ajustes del dispositivo, o desinstalar la app por completo, eliminará de forma inmediata y permanente los archivos de guardado del juego.
+Borrar los datos de la aplicación en los ajustes del dispositivo, o desinstalar la app por completo,
+eliminará de forma inmediata y permanente los archivos de guardado del juego.
 :::
 
 ### ¿Puedo usar WebGL?
 
-Sí. WebGL está habilitado por defecto y puede alternarse en los ajustes de la aplicación. Cambiar a WebGL requiere un reinicio de la aplicación, y solo está disponible para MV, dado que MZ requiere WebGL por defecto.
+Sí. WebGL está habilitado por defecto y puede alternarse en los ajustes de la aplicación. Cambiar a
+WebGL requiere un reinicio de la aplicación, y solo está disponible para MV, dado que MZ requiere
+WebGL por defecto.
 
 ### ¿Qué es el plugin YDP_Ludens.js?
 
 Es un plugin opcional de RPG Maker que:
+
 - Corrige errores de verificación de carga de fuentes en versiones antiguas de WebView.
 - Habilita funcionalidades adicionales del lado del cliente soportadas por la capa nativa de Ludens.
 - Debe colocarse como el **primer plugin** en tu gestor de plugins.
@@ -97,7 +124,8 @@ Es un plugin opcional de RPG Maker que:
 
 ### ¿Puedo usar audio en el juego?
 
-Sí. El WebView soporta reproducción de audio. Los ajustes de la aplicación incluyen un toggle de **Silenciar Audio** que silencia el audio usando el API del motor (MV/MZ) en lugar del WebView.
+Sí. El WebView soporta reproducción de audio. Los ajustes de la aplicación incluyen un toggle de *
+*Silenciar Audio** que silencia el audio usando el API del motor (MV/MZ) en lugar del WebView.
 
 ---
 
@@ -108,10 +136,11 @@ Sí. El WebView soporta reproducción de audio. Los ajustes de la aplicación in
 Este es el placeholder que aparece si no se han colocado los assets correctamente.
 
 Causas comunes:
+
 1. La carpeta `www` no está en la ubicación correcta (`composeResources/files/www/`).
 2. El archivo `index.html` falta en la raíz de la carpeta `www`.
-3. Un plugin está causando un error. Verifica los logs de la consola del WebView del dispositivo usando la depuración remota de **Chrome DevTools**.
-
+3. Un plugin está causando un error. Verifica los logs de la consola del WebView del dispositivo
+   usando la depuración remota de **Chrome DevTools**.
 
 ### La compilación falla con un error de Gradle
 
@@ -124,4 +153,5 @@ Causas comunes:
 
 1. Verifica que los controles estén habilitados en los ajustes de la aplicación.
 2. Verifica que los mapeos de teclas de los botones coincidan con las teclas que tu juego espera.
-3. Algunos plugins pueden sobreescribir el manejo de input — prueba sin plugins de terceros para aislar el problema.
+3. Algunos plugins pueden sobreescribir el manejo de input — prueba sin plugins de terceros para
+   aislar el problema.

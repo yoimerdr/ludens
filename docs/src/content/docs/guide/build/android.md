@@ -3,7 +3,23 @@ title: Android Build
 description: How to build debug and release APKs for your Ludens project.
 ---
 
-This guide covers building both debug (testing) and release (production) builds for your RPG Maker game wrapped with Ludens.
+This guide covers building both debug (testing) and release (production) builds for your RPG Maker
+game wrapped with Ludens.
+
+## App Setup
+
+Before building your APK, ensure you have configured your application identity in
+`ludens.properties`. This file at the project root controls how your app is identified by Android.
+
+```properties title="ludens.properties"
+ludens.android.id=com.yourdomain.game
+ludens.android.name=My RPG Game
+ludens.android.launcherName=RPG Game
+ludens.android.version=1.0.0
+```
+
+For a full list of available properties, including permissions and hardware acceleration, see
+the [Android Configuration](/configuration/android/) guide.
 
 ## Debug Build
 
@@ -46,13 +62,16 @@ composeApp/build/outputs/apk/debug/composeApp-debug.apk
 ![Successful build result.](../../../../assets/images/guide/ludens-build-debug.png)
 
 :::note[Debug Application ID]
-The debug build automatically appends `.debug` to your `applicationId`. This allows you to install both the debug version and the production version on the same device without them conflicting.
+The debug build automatically appends `.debug` to your `applicationId`. This allows you to install
+both the debug version and the production version on the same device without them conflicting.
 :::
 
 :::tip[Testing & Troubleshooting]
-Install this APK on an emulator or real device to verify that the game loads and plugins work correctly before proceeding to a release build.
+Install this APK on an emulator or real device to verify that the game loads and plugins work
+correctly before proceeding to a release build.
 
-If you encounter strange build errors or your assets aren't updating, you can clear the Gradle cache by running:
+If you encounter strange build errors or your assets aren't updating, you can clear the Gradle cache
+by running:
 
 ```bash
 ./gradlew clean
@@ -96,7 +115,8 @@ This option guides you step-by-step through signing your application.
 
 Ideal for automating the build, but requires prior manual configuration.
 
-1. Ensure you have your `.jks` file (Keystore) generated. You can use Step 3 of Option A to create it.
+1. Ensure you have your `.jks` file (Keystore) generated. You can use Step 3 of Option A to create
+   it.
 
 2. Create or edit the `keystore.properties` file in the project root with the path and credentials:
 
@@ -120,10 +140,11 @@ Ideal for automating the build, but requires prior manual configuration.
 ### Output Location
 
 | Method                | APK Location                                                         |
-| --------------------- | -------------------------------------------------------------------- |
+|-----------------------|----------------------------------------------------------------------|
 | **Wizard (Option A)** | `composeApp/release/` (or the folder you selected during the wizard) |
 | **Gradle (Option B)** | `composeApp/build/outputs/apk/release/composeApp-release.apk`        |
 
 :::caution[Keystore Security]
-Keep your `.jks` file and passwords secure. If you lose them, you will not be able to update your application on the Play Store.
+Keep your `.jks` file and passwords secure. If you lose them, you will not be able to update your
+application on the Play Store.
 :::

@@ -5,38 +5,91 @@ description: Guía de referencia para las teclas de teclado usadas para operacio
 
 Esta referencia detalla los códigos numéricos de teclas utilizados en Ludens para mapear acciones físicas o en pantalla al motor de RPG Maker MV/MZ.
 
-Cuando configuras la propiedad **Input Key** de un botón en pantalla (A, B, X, Y) en el menú de Ajustes, estás asignando uno de estos códigos. 
+Cuando configuras la propiedad **Input Key** de un botón en pantalla (A, B, X, Y) en el menú de Ajustes, estás asignando uno de estos códigos.
 
 ### Cómo funciona internamente
 
 Debido a que los dispositivos móviles carecen de teclados físicos, Ludens sirve como puente entre sus botones nativos de interfaz y el entorno web del juego. Cuando presionas un botón en pantalla, la aplicación envía un fragmento de JavaScript al WebView a través de `evaluateJavascript`. Este script construye y despacha eventos sintéticos de `keydown` y `keyup` al documento, engañando efectivamente al motor de RPG Maker (`Input.js`) para que crea que se presionó una tecla física.
 
+
+:::note
+Si usas plugins de entrada personalizados en tu proyecto de RPG Maker para mapear teclas específicas, debes asegurarte de que el `código` asignado a tu botón en pantalla coincida con el código de tecla de JavaScript que tu plugin espera.
+
+**Ejemplo Práctico:**
+Si tu juego usa un plugin de Diario de Misiones que se abre cuando el jugador presiona la tecla "Q" en un teclado (Código JavaScript `81`), puedes configurar el botón "Y" en la pantalla de Ludens para que tenga un Input Key de `81`. Ahora, tocar "Y" en la pantalla del móvil abrirá instantáneamente tu Diario de Misiones.
+:::
+
 ## Teclas de Movimiento y Control
 
 La siguiente tabla enumera las teclas principales utilizadas para el movimiento de personajes y la interacción en el juego.
 
-| Nombre de la Tecla | Código | Acción Típica por Defecto (MV)      | Acción Típica por Defecto (MZ)      |
-|--------------------|--------|-------------------------------------|-------------------------------------|
-| `Enter`            | 13     | OK / Acción                         | OK / Acción                         |
-| `Escape`           | 27     | Cancelar / Menú                     | Cancelar / Menú                     |
-| `Up` (Arriba)      | 38     | Mover Arriba                        | Mover Arriba                        |
-| `Down` (Abajo)     | 40     | Mover Abajo                         | Mover Abajo                         |
-| `Left` (Izquierda) | 37     | Mover Izquierda                     | Mover Izquierda                     |
-| `Right` (Derecha)  | 39     | Mover Derecha                       | Mover Derecha                       |
-| `Shift`            | 16     | Correr (Dash)                       | Correr (Dash)                       |
-| `Control`          | 17     | Control Especial                    | Control Especial                    |
-| `Alt`              | 18     | Control Especial                    | Control Especial                    |
-
+| Nombre de la Tecla | Código | Acción Típica por Defecto (MV) | Acción Típica por Defecto (MZ) |
+| ------------------ | ------ | ------------------------------ | ------------------------------ |
+| `Enter`            | 13     | OK / Acción                    | OK / Acción                    |
+| `Escape`           | 27     | Cancelar / Menú                | Cancelar / Menú                |
+| `Up` (Arriba)      | 38     | Mover Arriba                   | Mover Arriba                   |
+| `Down` (Abajo)     | 40     | Mover Abajo                    | Mover Abajo                    |
+| `Left` (Izquierda) | 37     | Mover Izquierda                | Mover Izquierda                |
+| `Right` (Derecha)  | 39     | Mover Derecha                  | Mover Derecha                  |
+| `Shift`            | 16     | Correr (Dash)                  | Correr (Dash)                  |
+| `Control`          | 17     | Control Especial               | Control Especial               |
+| `Alt`              | 18     | Control Especial               | Control Especial               |
 
 ## Teclas Gráficas
 
 Estas teclas se utilizan principalmente para comandos del sistema y relacionados con gráficos dentro del motor.
 
-| Nombre de la Tecla | Código | Función en RPG Maker            |
-|--------------------|--------|---------------------------------|
-| `F2`               | 113    | Mostrar/Ocultar Contador FPS    |
-| `F3`               | 114    | Alternar Modo de Estiramiento   |
-| `F4`               | 115    | Pantalla Completa (Solo PC)     |
+| Nombre de la Tecla | Código | Función en RPG Maker          |
+| ------------------ | ------ | ----------------------------- |
+| `F2`               | 113    | Mostrar/Ocultar Contador FPS  |
+| `F3`               | 114    | Alternar Modo de Estiramiento |
+| `F4`               | 115    | Pantalla Completa (Solo PC)   |
+
+## Teclas de Navegación y Sistema
+
+Ludens soporta teclas de navegación estándar del teclado que pueden ser útiles para plugins de menús complejos.
+
+| Nombre de la Tecla | Código |
+| ------------------ | ------ |
+| `Tab`              | 9      |
+| `Backspace`        | 8      |
+| `Space`            | 32     |
+| `Page Up`          | 33     |
+| `Page Down`        | 34     |
+| `Home`             | 36     |
+| `End`              | 35     |
+| `Insert`           | 45     |
+| `Delete`           | 46     |
+
+## Teclas Alfanuméricas
+
+Soporte completo para letras y dígitos estándar.
+
+| Rango de Teclas | Códigos |
+| --------------- | ------- |
+| `A` - `Z`       | 65 - 90 |
+| `0` - `9`       | 48 - 57 |
+
+## Teclado Numérico (Numpad)
+
+| Nombre de la Tecla | Código |
+| ------------------ | ------ |
+| `Numpad 0`         | 96     |
+| `Numpad 1`         | 97     |
+| `Numpad 2`         | 98     |
+| `Numpad 3`         | 99     |
+| `Numpad 4`         | 100    |
+| `Numpad 5`         | 101    |
+| `Numpad 6`         | 102    |
+| `Numpad 7`         | 103    |
+| `Numpad 8`         | 104    |
+| `Numpad 9`         | 105    |
+
+## Teclas de Función Extra
+
+| Nombre de la Tecla | Código | Función en RPG Maker       |
+| ------------------ | ------ | -------------------------- |
+| `F9`               | 120    | Menú de Depuración (Juego) |
 
 :::tip
 Aunque `F4` se usa históricamente para pantalla completa en escritorio, normalmente no tiene efecto o se comporta de manera diferente dentro del contexto de un WebView móvil.

@@ -8,7 +8,7 @@ head:
       content: rpg maker mv android port, rpg maker mz android, rpg maker mv ios, rpg maker mz ios, compose multiplatform rpg maker
 ---
 
-import { FileTree } from '@astrojs/starlight/components';
+import { FileTree } from "@astrojs/starlight/components";
 
 This guide walks you through the prerequisites and initial setup required to build your **RPG Maker MV and MZ** games as native applications using Ludens.
 
@@ -70,8 +70,8 @@ Many RPG Maker plugins are designed for PC (desktop) only. Verify that all plugi
 ## Get the Project
 
 1. Clone the repository or download it as a ZIP and extract it:
-   ```bash
-   git clone https://github.com/yoimerdr/ludens.git
+```bash
+git clone https://github.com/yoimerdr/ludens.git
    ```
 2. Open **Android Studio**.
 3. Select **Open** and navigate to the `ludens` project folder.
@@ -79,7 +79,7 @@ Many RPG Maker plugins are designed for PC (desktop) only. Verify that all plugi
 
 ### Game Orientation
 
-By default, the Ludens application is configured to run in Landscape mode (`sensorLandscape`). If your game is designed for Portrait mode, you will need to change this configuration in the Android Manifest. See the [Android Configuration](/configuration/android/#game-orientation) guide for details.
+By default, the Ludens application is configured to run in Landscape mode (`sensorLandscape`). If your game is designed for Portrait mode, you will need to change this configuration in `ludens.properties`. See the [Android Configuration](/configuration/android/#manifest-configuration) guide for details.
 
 ![View of the project in Android Studio once Gradle sync is complete.](../../../assets/images/guide/ludens-android-studio-project.png)
 
@@ -93,8 +93,10 @@ Once the project is open, familiarize yourself with these key locations:
     - src/
       - commonMain/
         - composeResources/
-          - files/ Your game goes here
-  - gradle.properties App configuration
+          - files/
+            - www/ Your game assets
+  - ludens.properties Main Ludens configuration
+  - gradle.properties Gradle build settings
   - keystore.properties.template Signing template
 </FileTree>
 

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generated settings preset source and typed compose resource accessors.
 - Platform-specific WebView helpers and memory-management utilities for Android and iOS.
 - New keyboard control model and related UI state for game input mapping.
+- The range of keys supported by the control buttons has been expanded to include a full set of standard keys, including specific graphic keys
 - Responsive layout primitives and reusable design tokens for spacing, radius, strokes, and breakpoints.
 - Searchable dropdown component for control selection flows.
 - Boot resource handling, including `www/index.html` and memory-cleaner boot script support.

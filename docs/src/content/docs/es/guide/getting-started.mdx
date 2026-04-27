@@ -8,7 +8,7 @@ head:
       content: rpg maker mv android port, rpg maker mz android, rpg maker mv ios, rpg maker mz ios, compose multiplatform rpg maker, configurar rpg maker móvil
 ---
 
-import { FileTree } from '@astrojs/starlight/components';
+import { FileTree } from "@astrojs/starlight/components";
 
 Esta guía te lleva a través de los prerrequisitos y la configuración inicial necesaria para construir tus juegos de **RPG Maker MV y MZ** como aplicaciones nativas usando Ludens.
 
@@ -70,8 +70,8 @@ Muchos plugins de RPG Maker están diseñados solo para PC (escritorio). Verific
 ## Obtener el Proyecto
 
 1. Clona el repositorio o descárgalo como ZIP y extráelo:
-   ```bash
-   git clone https://github.com/yoimerdr/ludens.git
+```bash
+git clone https://github.com/yoimerdr/ludens.git
    ```
 2. Abre **Android Studio**.
 3. Selecciona **Open** y navega hasta la carpeta del proyecto `ludens`.
@@ -79,7 +79,7 @@ Muchos plugins de RPG Maker están diseñados solo para PC (escritorio). Verific
 
 ### Orientación del Juego
 
-Por defecto, la aplicación Ludens está configurada para ejecutarse en modo Horizontal (`sensorLandscape`). Si tu juego está diseñado para modo Vertical (Portrait), necesitarás cambiar esta configuración en el Android Manifest. Consulta la guía de [Configuración Android](/es/configuration/android/#orientación-del-juego) para más detalles.
+Por defecto, la aplicación Ludens está configurada para ejecutarse en modo Horizontal (`sensorLandscape`). Si tu juego está diseñado para modo Vertical (Portrait), necesitarás cambiar esta configuración en `ludens.properties`. Consulta la guía de [Configuración Android](/es/configuration/android/#configuración-del-manifest) para más detalles.
 
 ![Vista del proyecto en Android Studio una vez finalizada la sincronización de Gradle.](../../../../assets/images/guide/ludens-android-studio-project.png)
 
@@ -93,8 +93,10 @@ Una vez abierto el proyecto, familiarízate con estas ubicaciones clave:
     - src/
       - commonMain/
         - composeResources/
-          - files/ Tu juego va aquí
-  - gradle.properties Configuración de la app
+          - files/
+            - www/ Los assets de tu juego
+  - ludens.properties Configuración principal de Ludens
+  - gradle.properties Configuración de Gradle
   - keystore.properties.template Plantilla de firma
 </FileTree>
 

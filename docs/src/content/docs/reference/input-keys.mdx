@@ -11,32 +11,85 @@ When you configure the **Input Key** property of an on-screen button (A, B, X, Y
 
 Because mobile devices lack physical keyboards, Ludens bridges its native Compose UI buttons to the game's web environment. When you press an on-screen button, the app dispatches a JavaScript snippet via `evaluateJavascript` to the WebView. This snippet constructs and dispatches synthetic `keydown` and `keyup` events to the document, effectively tricking the RPG Maker engine (`Input.js`) into believing a physical key was pressed.
 
+
+:::note
+If you use custom input plugins in your RPG Maker project to map specific keys, you must make sure that the `code` assigned to your on-screen button matches the JavaScript key code your plugin expects.
+
+**Practical Example:**
+If your game uses a Quest Journal plugin that opens when the player presses the "Q" key on a keyboard (JavaScript KeyCode `81`), you can configure the on-screen "Y" button in Ludens to have an Input Key of `81`. Now, tapping "Y" on the mobile screen will instantly open your Quest Journal.
+:::
+
 ## Movement & Control Keys
 
 The following table lists the primary keys used for character movement and game interaction.
 
-| Key Name | Code | Typical RPG Maker MV Default Action | Typical RPG Maker MZ Default Action |
-|----------|------|-------------------------------------|-------------------------------------|
-| `Enter`  | 13   | OK / Action                         | OK / Action                         |
-| `Escape` | 27   | Cancel / Menu                       | Cancel / Menu                       |
-| `Up`     | 38   | Move Up                             | Move Up                             |
-| `Down`   | 40   | Move Down                           | Move Down                           |
-| `Left`   | 37   | Move Left                           | Move Left                           |
-| `Right`  | 39   | Move Right                          | Move Right                          |
-| `Shift`  | 16   | Dash / Run                          | Dash / Run                          |
-| `Control`| 17   | Special Control                     | Special Control                     |
-| `Alt`    | 18   | Special Control                     | Special Control                     |
-
+| Key Name  | Code | Typical RPG Maker MV Default Action | Typical RPG Maker MZ Default Action |
+| --------- | ---- | ----------------------------------- | ----------------------------------- |
+| `Enter`   | 13   | OK / Action                         | OK / Action                         |
+| `Escape`  | 27   | Cancel / Menu                       | Cancel / Menu                       |
+| `Up`      | 38   | Move Up                             | Move Up                             |
+| `Down`    | 40   | Move Down                           | Move Down                           |
+| `Left`    | 37   | Move Left                           | Move Left                           |
+| `Right`   | 39   | Move Right                          | Move Right                          |
+| `Shift`   | 16   | Dash / Run                          | Dash / Run                          |
+| `Control` | 17   | Special Control                     | Special Control                     |
+| `Alt`     | 18   | Special Control                     | Special Control                     |
 
 ## Graphics Keys
 
 These keys are primarily used for system and graphics-related commands within the engine.
 
-| Key Name | Code | RPG Maker Function           |
-|----------|------|------------------------------|
-| `F2`     | 113  | Show/Hide FPS Counter        |
-| `F3`     | 114  | Toggle Stretch Mode          |
-| `F4`     | 115  | Toggle Fullscreen (PC only)  |
+| Key Name | Code | RPG Maker Function          |
+| -------- | ---- | --------------------------- |
+| `F2`     | 113  | Show/Hide FPS Counter       |
+| `F3`     | 114  | Toggle Stretch Mode         |
+| `F4`     | 115  | Toggle Fullscreen (PC only) |
+
+## Navigation & System Keys
+
+Ludens supports standard keyboard navigation keys which can be useful for complex menu plugins.
+
+| Key Name    | Code |
+| ----------- | ---- |
+| `Tab`       | 9    |
+| `Backspace` | 8    |
+| `Space`     | 32   |
+| `Page Up`   | 33   |
+| `Page Down` | 34   |
+| `Home`      | 36   |
+| `End`       | 35   |
+| `Insert`    | 45   |
+| `Delete`    | 46   |
+
+## Alphanumeric Keys
+
+Full support for standard letters and digits.
+
+| Key Range | Codes   |
+| --------- | ------- |
+| `A` - `Z` | 65 - 90 |
+| `0` - `9` | 48 - 57 |
+
+## Numpad Keys
+
+| Key Name   | Code |
+| ---------- | ---- |
+| `Numpad 0` | 96   |
+| `Numpad 1` | 97   |
+| `Numpad 2` | 98   |
+| `Numpad 3` | 99   |
+| `Numpad 4` | 100  |
+| `Numpad 5` | 101  |
+| `Numpad 6` | 102  |
+| `Numpad 7` | 103  |
+| `Numpad 8` | 104  |
+| `Numpad 9` | 105  |
+
+## Extra Function Keys
+
+| Key Name | Code | RPG Maker Function   |
+| -------- | ---- | -------------------- |
+| `F9`     | 120  | Debug Menu (In-game) |
 
 :::tip
 While `F4` is historically used for fullscreen on desktop, it usually has no effect or behaves differently inside a mobile WebView context.

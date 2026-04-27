@@ -18,12 +18,13 @@ La configuración más simple posible — exporta tu juego y compila con ajustes
    ```text
    composeApp/src/commonMain/composeResources/files/www/
    ```
-3. Edita `gradle.properties`:
+3. Edita `ludens.properties`:
    ```properties
-   ludens.applicationId=com.ejemplo.mijuego
-   ludens.applicationVersion=1.0
-   ludens.applicationName=Mi Juego
-   ludens.applicationLauncherName=Mi Juego
+   ludens.android.id=com.ejemplo.mijuego
+   ludens.android.version=1.0.0
+   ludens.android.versionCode=1
+   ludens.android.name=Mi Juego
+   ludens.android.launcherName=Mi Juego
    ```
 4. Ejecuta:
    ```bash
@@ -131,7 +132,8 @@ Una vista completa de la estructura del proyecto después de la configuración:
         - apk/
           - debug/ Salida APK debug
           - release/ Salida APK release
-  - gradle.properties Configuración de la app
+  - ludens.properties Configuración principal de Ludens
+  - gradle.properties Configuración de Gradle
   - keystore.properties Credenciales de firma
   - keystore.properties.template Referencia de plantilla
 </FileTree>

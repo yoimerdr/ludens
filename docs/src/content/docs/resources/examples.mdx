@@ -18,12 +18,13 @@ The simplest possible setup — export your game and build with default settings
    ```text
    composeApp/src/commonMain/composeResources/files/www/
    ```
-3. Edit `gradle.properties`:
+3. Edit `ludens.properties`:
    ```properties
-   ludens.applicationId=com.example.mygame
-   ludens.applicationVersion=1.0
-   ludens.applicationName=My Game
-   ludens.applicationLauncherName=My Game
+   ludens.android.id=com.example.mygame
+   ludens.android.version=1.0.0
+   ludens.android.versionCode=1
+   ludens.android.name=My Game
+   ludens.android.launcherName=My Game
    ```
 4. Run:
    ```bash
@@ -131,7 +132,8 @@ A complete view of the project structure after setup:
         - apk/
           - debug/ Debug APK output
           - release/ Release APK output
-  - gradle.properties App configuration
+  - ludens.properties Main Ludens configuration
+  - gradle.properties Gradle build settings
   - keystore.properties Signing credentials
   - keystore.properties.template Template reference
 </FileTree>
