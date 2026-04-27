@@ -1,0 +1,147 @@
+---
+title: Settings Reference
+description: Complete reference for all in-app settings available in Ludens.
+---
+
+Ludens includes a built-in settings screen accessible from the quick actions menu during gameplay. This page documents every available setting, its behavior, and its default values.
+
+## Settings Structure
+
+The settings system is organized into four sections:
+
+| Category | Settings | Description |
+|----------|----------|-------------|
+| **System** | Theme, Language | Global preferences for the application's appearance and language. |
+| **Tools** | Mute Audio, Show FPS, Use WebGL, Positions | Utilities for the game WebView and rendering. |
+| **Controls** | Enabled, Opacity, Input Key | Configuration for the on-screen virtual joystick and buttons. |
+| **Actions** | Enabled, Items | Customization of the quick actions menu overlay. |
+
+## System Settings
+
+### Theme
+
+Controls the application's color scheme.
+
+| Value    | Behavior                                   |
+|----------|-------------------------------------------|
+| `Light`  | Forces light theme.                        |
+| `Dark`   | Forces dark theme.                         |
+| `System` | Follows the device's system theme setting. |
+
+### Language
+
+Controls the application's UI language (settings screen, labels).
+
+| Value     | Behavior                                     |
+|-----------|---------------------------------------------|
+| `System`  | Follows the device's system language.        |
+| `English` | Forces English UI.                           |
+| `Spanish` | Forces Spanish UI.                           |
+
+:::note
+Changing the theme or language applies instantly. Neither requires an application restart.
+:::
+
+## Tool Settings
+
+### Mute Audio
+
+| Property  | Type    | Default |
+|-----------|---------|---------|
+| `isMuted` | Boolean | `false` |
+
+Mutes all game audio output when enabled. From a technical standpoint, this is handled by injecting JavaScript to toggle the engine's internal `AudioManager` (or equivalent in MV/MZ) rather than muting the WebView itself. 
+
+This approach ensures that background music and sound effects pause their execution logic, preventing desynchronization issues and saving CPU cycles, which is especially beneficial on mobile devices.
+
+### Show FPS
+
+| Property  | Type    | Default |
+|-----------|---------|---------|
+| `showFPS` | Boolean | `false` |
+
+Displays a frames-per-second counter overlay when enabled.
+
+### Use WebGL
+
+| Property   | Type    | Default |
+|------------|---------|---------|
+| `useWebGL` | Boolean | `true`  |
+
+Controls whether the WebView uses WebGL for hardware-accelerated rendering. 
+
+- **When enabled (WebGL)**: The game leverages the device's GPU, resulting in significantly better performance, smoother frame rates, and support for advanced visual shaders (like PIXI.js filters).
+- **When disabled (Canvas 2D)**: The game falls back to CPU-based Canvas rendering. This is generally slower but can be useful as a compatibility fallback for older Android devices that struggle with WebGL drivers or experience visual artifacts.
+
+This setting is only available for **RPG Maker MV**. RPG Maker MZ dropped Canvas 2D support entirely and strictly requires WebGL to function.
+
+:::caution
+Toggling WebGL requires the WebView to completely reload the rendering context, meaning it requires an application restart to take effect.
+:::
+
+### Positions
+
+Each positionable element (joystick and individual buttons) stores its position as screen coordinates. These can be adjusted through the dedicated positions screen in settings.
+
+For more details on how the position system works, see the [Positionable Elements](/reference/positions/) reference.
+
+## Control Settings
+
+### Enabled
+
+| Property  | Type    | Default |
+|-----------|---------|---------|
+| `enabled` | Boolean | `true`  |
+
+Master toggle for all on-screen controls (joystick and buttons).
+
+### Opacity
+
+| Property | Type          | Default |
+|----------|---------------|---------|
+| `alpha`  | Float         | —       |
+
+Controls the transparency of on-screen elements to prevent them from blocking the player's view of the game. The allowed range depends on the type of element, designed specifically to prevent users from accidentally making controls permanently invisible:
+
+- **Joystick and Buttons (A, B, X, Y)**: `0.15` (minimum) to `1.0` (fully opaque). A minimum of 0.15 ensures the buttons remain faintly visible so the player can still locate them by sight.
+- **Quick Actions Menu**: `0.35` (minimum) to `1.0` (fully opaque). The quick actions button has a higher minimum opacity because it is the only gateway to access the Settings screen. If it were fully transparent, users could be permanently locked out of their configuration.
+
+### Input Key
+
+| Property  | Type    | Default |
+|-----------|---------|---------|
+| `code`    | Int     | —       |
+
+The key code mapped to the button. This property only applies to the on-screen action buttons (A, B, X, Y).
+
+:::note
+On-screen buttons do not fire real keyboard events. Instead, they send a basic pseudo-event to the WebView that RPG Maker MV/MZ can understand to apply the behavior for that event.
+:::
+
+## Quick Action Settings
+
+### Enabled
+
+| Property  | Type    | Default |
+|-----------|---------|---------|
+| `enabled` | Boolean | `true`  |
+
+Master toggle for the quick actions menu.
+
+### Action Types
+
+The following quick actions are available:
+
+| Action            | Description                                    | Can be Disabled |
+|-------------------|------------------------------------------------|-----------------|
+| `Settings`        | Opens the full settings screen.                | No              |
+| `ToggleControls`  | Toggles on-screen controls visibility.         | Yes             |
+| `ToggleMute`      | Toggles audio mute.                            | Yes             |
+| `ToggleFPS`       | Toggles FPS counter display.                   | Yes             |
+| `ToggleWebGL`     | Toggles WebGL rendering.                       | Yes             |
+
+The order and visibility of actions in the quick actions menu can be customized through the settings screen. The `Settings` action cannot be disabled — it is always available to ensure the user can access the full settings screen.
+
+## Data Persistence
+
+All settings are persisted using **DataStore** (protocol buffers). Changes take effect immediately except where a restart is noted. Settings persist across app restarts and updates.
