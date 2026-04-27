@@ -1,0 +1,147 @@
+---
+title: Referencia de Ajustes
+description: Referencia completa de todos los ajustes disponibles en la aplicación Ludens.
+---
+
+Ludens incluye una pantalla de ajustes integrada accesible desde el menú de acciones rápidas durante el juego. Esta página documenta cada ajuste disponible, su comportamiento y sus valores por defecto.
+
+## Estructura de Ajustes
+
+El sistema de ajustes se organiza en cuatro secciones:
+
+| Categoría | Ajustes | Descripción |
+|-----------|---------|-------------|
+| **Sistema** | Tema, Idioma | Preferencias globales para la apariencia y el idioma de la aplicación. |
+| **Herramientas** | Silenciar Audio, Mostrar FPS, Usar WebGL, Posiciones | Utilidades para el WebView del juego y el renderizado. |
+| **Controles** | Habilitados, Opacidad, Input Key | Configuración para el joystick virtual y los botones en pantalla. |
+| **Acciones** | Habilitadas, Items | Personalización del menú superpuesto de acciones rápidas. |
+
+## Ajustes del Sistema
+
+### Tema
+
+Controla el esquema de colores de la aplicación.
+
+| Valor     | Comportamiento                              |
+|-----------|---------------------------------------------|
+| `Claro`   | Fuerza el tema claro.                       |
+| `Oscuro`  | Fuerza el tema oscuro.                      |
+| `Sistema` | Sigue la configuración de tema del dispositivo. |
+
+### Idioma
+
+Controla el idioma de la interfaz de la aplicación (pantalla de ajustes, etiquetas).
+
+| Valor     | Comportamiento                                |
+|-----------|-----------------------------------------------|
+| `Sistema` | Sigue el idioma del sistema del dispositivo.  |
+| `Inglés`  | Fuerza la interfaz en inglés.                 |
+| `Español` | Fuerza la interfaz en español.                |
+
+:::note
+Cambiar el tema o el idioma se aplica instantáneamente. Ninguno requiere reiniciar el juego.
+:::
+
+## Ajustes de Herramientas
+
+### Silenciar Audio
+
+| Propiedad | Tipo    | Por Defecto |
+|-----------|---------|-------------|
+| `isMuted` | Boolean | `false`     |
+
+Silencia toda la salida de audio del juego cuando está habilitado. Desde un punto de vista técnico, el muteo no se maneja silenciando el WebView de Android, sino inyectando JavaScript para alterar el `AudioManager` interno del motor (o su equivalente en MV/MZ).
+
+Este enfoque asegura que la música de fondo y los efectos de sonido pausen su lógica de ejecución, previniendo problemas de desincronización y ahorrando ciclos de CPU, lo cual es especialmente beneficioso en dispositivos móviles.
+
+### Mostrar FPS
+
+| Propiedad | Tipo    | Por Defecto |
+|-----------|---------|-------------|
+| `showFPS` | Boolean | `false`     |
+
+Muestra un contador de fotogramas por segundo como overlay cuando está habilitado.
+
+### Usar WebGL
+
+| Propiedad  | Tipo    | Por Defecto |
+|------------|---------|-------------|
+| `useWebGL` | Boolean | `true`      |
+
+Controla si el WebView usa WebGL para el renderizado acelerado por hardware.
+
+- **Cuando está habilitado (WebGL)**: El juego aprovecha la GPU del dispositivo, resultando en un rendimiento significativamente mejor, una tasa de fotogramas más fluida y soporte para shaders visuales avanzados (como los filtros de PIXI.js).
+- **Cuando está deshabilitado (Canvas 2D)**: El juego recurre al renderizado basado en CPU. Esto es generalmente más lento, pero puede ser útil como alternativa de compatibilidad para dispositivos Android más antiguos que tienen problemas con los controladores WebGL o experimentan artefactos visuales.
+
+Este ajuste solo está disponible para **RPG Maker MV**. RPG Maker MZ eliminó por completo el soporte de Canvas 2D y requiere estrictamente WebGL para funcionar.
+
+:::caution
+Alternar WebGL requiere que el WebView recargue por completo el contexto de renderizado, lo que significa que requiere un reinicio de la aplicación para surtir efecto.
+:::
+
+### Posiciones
+
+Cada elemento posicionable (joystick y botones individuales) almacena su posición como coordenadas de pantalla. Estas pueden ajustarse a través de la pantalla dedicada de posiciones en ajustes.
+
+Para más detalles sobre cómo funciona el sistema de posicionamiento, consulta la referencia de [Elementos Posicionables](/docs/es/reference/positions/).
+
+## Ajustes de Controles
+
+### Habilitados
+
+| Propiedad | Tipo    | Por Defecto |
+|-----------|---------|-------------|
+| `enabled` | Boolean | `true`      |
+
+Toggle maestro para todos los controles en pantalla (joystick y botones).
+
+### Opacidad
+
+| Propiedad | Tipo           | Por Defecto |
+|-----------|----------------|-------------|
+| `alpha`   | Float          | —           |
+
+Controla la transparencia de los elementos en pantalla para evitar que bloqueen la vista del juego al jugador. El rango permitido depende del tipo de elemento y está diseñado específicamente para evitar que los usuarios hagan los controles permanentemente invisibles por accidente:
+
+- **Joystick y Botones (A, B, X, Y)**: `0.15` (mínimo) a `1.0` (completamente opaco). Un mínimo de 0.15 asegura que los botones permanezcan ligeramente visibles para que el jugador aún pueda localizarlos visualmente.
+- **Menú de Acciones Rápidas**: `0.35` (mínimo) a `1.0` (completamente opaco). El botón de acciones rápidas tiene una opacidad mínima mayor porque es la única vía de acceso a la pantalla de Ajustes. Si fuera completamente transparente, los usuarios podrían quedarse bloqueados sin poder acceder a su configuración.
+
+### Input Key
+
+| Propiedad | Tipo    | Por Defecto |
+|-----------|---------|-------------|
+| `code`    | Int     | —           |
+
+El código de tecla asociado al botón. Esta propiedad solo aplica a los botones de acción en pantalla (A, B, X, Y).
+
+:::note
+Los botones en pantalla no disparan eventos reales de teclado. En su lugar, se envía un pseudo evento básico al WebView que MV/MZ pueden entender para aplicar el comportamiento para dicho evento.
+:::
+
+## Ajustes de Acciones Rápidas
+
+### Habilitadas
+
+| Propiedad | Tipo    | Por Defecto |
+|-----------|---------|-------------|
+| `enabled` | Boolean | `true`      |
+
+Toggle maestro para el menú de acciones rápidas.
+
+### Tipos de Acción
+
+Las siguientes acciones rápidas están disponibles:
+
+| Acción             | Descripción                                    | Puede Deshabilitarse |
+|--------------------|------------------------------------------------|----------------------|
+| `Settings`         | Abre la pantalla completa de ajustes.          | No                   |
+| `ToggleControls`   | Alterna la visibilidad de controles en pantalla. | Sí                 |
+| `ToggleMute`       | Alterna silencio de audio.                     | Sí                   |
+| `ToggleFPS`        | Alterna la visualización del contador FPS.     | Sí                   |
+| `ToggleWebGL`      | Alterna el renderizado WebGL.                  | Sí                   |
+
+El orden y la visibilidad de las acciones en el menú de acciones rápidas pueden personalizarse a través de la pantalla de ajustes. La acción `Settings` no puede deshabilitarse — siempre está disponible para asegurar que el usuario pueda acceder a la pantalla completa de ajustes.
+
+## Persistencia de Datos
+
+Todos los ajustes se persisten usando **DataStore** (protocol buffers). Los cambios toman efecto inmediatamente excepto donde se indica un reinicio. Los ajustes persisten entre reinicios y actualizaciones de la aplicación.

@@ -1,0 +1,70 @@
+---
+title: Ludens
+description: Port your RPG Maker MV/MZ games to Android and iOS with Compose Multiplatform.
+template: splash
+hero:
+  title: Ludens
+  tagline: A Compose Multiplatform wrapper for porting RPG Maker MV/MZ games to mobile devices.
+  image:
+    alt: Ludens Demo
+    file: ../../assets/samples/ludens-0.2.0-sample.gif
+  actions:
+    - text: Get Started
+      link: /guide/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/yoimerdr/ludens
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+## Why Ludens?
+
+Ludens lets you take your existing RPG Maker MV/MZ game and wrap it in a native mobile application powered by Kotlin and Compose Multiplatform. No need to rewrite your game — just export, configure, and build.
+
+<CardGrid>
+  <Card title="Optimized WebView" icon="laptop">
+    Seamlessly integrates your HTML5 RPG Maker game into a native mobile shell
+    with full WebView support.
+  </Card>
+  <Card title="On-Screen Controls" icon="setting">
+    Built-in virtual joystick and configurable buttons (A, B, X, Y) with
+    adjustable opacity and positions.
+  </Card>
+  <Card title="Settings Screen" icon="list-format">
+    Complete settings UI: theme, language, audio mute, FPS display, WebGL
+    toggle, control layout, and quick actions.
+  </Card>
+  <Card title="Easy Configuration" icon="document">
+    Customize your app's ID, version, name, and icon directly from
+    `gradle.properties` — no Kotlin code changes needed.
+  </Card>
+</CardGrid>
+
+## Quick Links
+
+<CardGrid>
+  <LinkCard
+    title="Overview"
+    href="/overview/"
+    description="Learn what Ludens is and what it offers."
+  />
+  <LinkCard
+    title="Getting Started"
+    href="/guide/getting-started/"
+    description="Set up your environment and prerequisites."
+  />
+  <LinkCard
+    title="Configuration"
+    href="/docs/configuration/android/"
+    description="Customize your application properties."
+  />
+  <LinkCard
+    title="FAQ"
+    href="/docs/faq/"
+    description="Common questions and troubleshooting."
+  />
+</CardGrid>

@@ -1,0 +1,78 @@
+---
+title: Game Export
+description: How to export your RPG Maker MV/MZ game and import assets into Ludens.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+This section covers exporting your game from RPG Maker and placing the assets in the correct location for Ludens to build.
+
+## Export from RPG Maker
+
+1. Open your project in **RPG Maker MV** or **MZ**.
+2. Go to **File** > **Deployment**.
+3. Select the **Android / iOS** platform (recommended). If unavailable, select **Web Browsers**.
+4. Export the game.
+
+![Select the Android / iOS option when deploying your game.](../../../assets/images/guide/ludens-rpgmmv-deployment.png)
+
+### MV vs. MZ Differences
+
+Depending on the engine version (MV or MZ), the deployment result varies:
+
+- **RPG Maker MV**: The deployment typically generates a `www` subfolder containing all your decrypted assets and the `index.html` file.
+- **RPG Maker MZ**: It might generate the `www` folder directly or just the root files.
+
+The important thing is to locate the directory where the `index.html` file and the game assets reside.
+
+## Import Assets into Ludens
+
+This is the most critical step.
+
+1. Navigate to the project folder in your file explorer:
+   ```text
+   composeApp/src/commonMain/composeResources/files
+   ```
+
+2. Copy the entire `www` folder from your export and paste it inside `files`.
+
+   If you only have the game assets without the `www` wrapper, create a `www` folder inside `files` and paste the assets there.
+
+:::danger[Required Structure]
+The application expects to find `index.html` inside `www`. If this structure is not correct, the game will not load.
+:::
+
+### Expected Structure
+
+<FileTree>
+- files/
+  - www/
+    - audio/
+    - data/
+    - fonts/
+    - img/
+    - js/
+    - ...
+    - index.html
+</FileTree>
+
+![Android Studio view showing the www folder and index.html file inside composeResources/files.](../../../assets/images/guide/ludens-android-studio-files.png)
+
+## Verification
+
+After placing the files, verify in Android Studio that:
+
+1. The `files/www/` folder appears in the project explorer.
+2. The `index.html` file is present at the root of the `www` folder.
+3. All game subdirectories (`audio/`, `img/`, `js/`, etc.) are intact.
+
+## Common Pitfalls
+
+When importing assets, keep these common issues in mind:
+
+- **Large File Sizes**: Mobile APKs have size limits, and large assets will consume the user's phone storage quickly. Before deploying, aggressively compress your `.png` files (using tools like TinyPNG) and `.ogg`/`.m4a` audio files.
+- **Missing Audio Formats (RPG Maker MV)**: RPG Maker MV generally requires `.m4a` (AAC) audio files for mobile compatibility, as older WebViews might struggle with `.ogg`. Ensure your MV project contains both formats in the `audio` folder. RPG Maker MZ, on the other hand, natively supports and uses `.ogg` without issues.
+
+## Next Steps
+
+With your assets in place, proceed to [configure and build](/docs/guide/build/android/) your application.

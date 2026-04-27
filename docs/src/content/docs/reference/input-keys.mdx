@@ -1,0 +1,43 @@
+---
+title: Input Keys
+description: Reference guide for keyboard keys used for input operations.
+---
+
+This reference details the keyboard key codes used in Ludens to map physical or on-screen actions to the RPG Maker MV/MZ engine.
+
+When you configure the **Input Key** property of an on-screen button (A, B, X, Y) in the Settings menu, you are assigning one of these numeric codes.
+
+### How it Works Under the Hood
+
+Because mobile devices lack physical keyboards, Ludens bridges its native Compose UI buttons to the game's web environment. When you press an on-screen button, the app dispatches a JavaScript snippet via `evaluateJavascript` to the WebView. This snippet constructs and dispatches synthetic `keydown` and `keyup` events to the document, effectively tricking the RPG Maker engine (`Input.js`) into believing a physical key was pressed.
+
+## Movement & Control Keys
+
+The following table lists the primary keys used for character movement and game interaction.
+
+| Key Name | Code | Typical RPG Maker MV Default Action | Typical RPG Maker MZ Default Action |
+|----------|------|-------------------------------------|-------------------------------------|
+| `Enter`  | 13   | OK / Action                         | OK / Action                         |
+| `Escape` | 27   | Cancel / Menu                       | Cancel / Menu                       |
+| `Up`     | 38   | Move Up                             | Move Up                             |
+| `Down`   | 40   | Move Down                           | Move Down                           |
+| `Left`   | 37   | Move Left                           | Move Left                           |
+| `Right`  | 39   | Move Right                          | Move Right                          |
+| `Shift`  | 16   | Dash / Run                          | Dash / Run                          |
+| `Control`| 17   | Special Control                     | Special Control                     |
+| `Alt`    | 18   | Special Control                     | Special Control                     |
+
+
+## Graphics Keys
+
+These keys are primarily used for system and graphics-related commands within the engine.
+
+| Key Name | Code | RPG Maker Function           |
+|----------|------|------------------------------|
+| `F2`     | 113  | Show/Hide FPS Counter        |
+| `F3`     | 114  | Toggle Stretch Mode          |
+| `F4`     | 115  | Toggle Fullscreen (PC only)  |
+
+:::tip
+While `F4` is historically used for fullscreen on desktop, it usually has no effect or behaves differently inside a mobile WebView context.
+:::
