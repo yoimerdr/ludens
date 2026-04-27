@@ -13,7 +13,7 @@ Download and install Android Studio. For this project, **Otter 2 Feature Drop | 
 *   [Official Configuration Guide](https://developer.android.com/courses/pathways/android-basics-compose-unit-1-pathway-2)
 
 <p align="center">
-  <img src="resources/images/guide/android-studio-setup.png" alt="Android Studio Setup" height="320">
+  <img src="docs/src/assets/images/guide/android-studio-setup.png" alt="Android Studio Setup" height="320">
   <br>
   <em>Figure 1: Android Studio welcome screen where you can verify the installed version.</em>
 </p>
@@ -39,7 +39,7 @@ Before exporting your game, consider the following:
     *   **Important**: Place it as the **first plugin** in your list.
 
 <p align="center">
-  <img src="resources/images/guide/plugin-manager-ydp_ludens.png" alt="Plugin Manager with YDP_Ludens.js" height="320">
+  <img src="docs/src/assets/images/guide/plugin-manager-ydp_ludens.png" alt="Plugin Manager with YDP_Ludens.js" height="320">
   <br>
   <em>Figure 2: The YDP_Ludens.js plugin must be placed at the top of the list to ensure correct loading.</em>
 </p>
@@ -53,7 +53,7 @@ Before exporting your game, consider the following:
 4.  Wait for Gradle to finish syncing (Download/Sync).
 
 <p align="center">
-  <img src="resources/images/guide/ludens-android-studio-project.png" alt="Ludens Project in Android Studio" height="320">
+  <img src="docs/src/assets/images/guide/ludens-android-studio-project.png" alt="Ludens Project in Android Studio" height="320">
   <br>
   <em>Figure 3: View of the project in Android Studio once Gradle sync is complete.</em>
 </p>
@@ -72,7 +72,7 @@ Familiarize yourself with the location of key files:
 4.  Export the game.
 
 <p align="center">
-  <img src="resources/images/guide/ludens-rpgmmv-deployment.png" alt="Deployment Option in RPG Maker" height="320">
+  <img src="docs/src/assets/images/guide/ludens-rpgmmv-deployment.png" alt="Deployment Option in RPG Maker" height="320">
   <br>
   <em>Figure 4: Select the Android / iOS option when deploying your game.</em>
 </p>
@@ -93,7 +93,7 @@ This is the most critical step.
 **Mandatory Structure:**
 The application expects to find `index.html` inside `www`.
 <p align="center">
-  <img src="resources/images/guide/ludens-android-studio-files.png" alt="File structure in Android Studio" height="320">
+  <img src="docs/src/assets/images/guide/ludens-android-studio-files.png" alt="File structure in Android Studio" height="320">
   <br>
   <em>Figure 5: Android Studio view showing the www folder and index.html file inside composeResources/files</em>
 </p>
@@ -124,7 +124,7 @@ ludens.android.launcherName=My RPG
 > Ludens now reads [`ludens.properties`](ludens.properties) first. If missing, it can read the same `ludens.*` keys from [`gradle.properties`](gradle.properties); legacy keys like `ludens.applicationId` are not supported.
 
 <p align="center">
-  <img src="resources/images/guide/ludens-project-properties.png" alt="Configuration in ludens.properties" height="320">
+  <img src="docs/src/assets/images/guide/ludens-project-properties.png" alt="Configuration in ludens.properties" height="320">
   <br>
   <em>Figure 6: Modifying project properties to customize ID, version, and name.</em>
 </p>
@@ -165,7 +165,7 @@ Replace the images in `composeApp/src/androidMain/res/mipmap-*` or use the **Ima
 2.  New > Image Asset.
 
 <p align="center">
-  <img src="resources/images/guide/ludens-application-icon.png" alt="Configuring the Icon" height="320">
+  <img src="docs/src/assets/images/guide/ludens-application-icon.png" alt="Configuring the Icon" height="320">
   <br>
   <em>Figure 7: Using Image Asset Studio to update the application icon.</em>
 </p>
@@ -179,21 +179,21 @@ If you prefer using the Android Studio interface:
 
 1.  Open the configurations menu and select **Edit Configurations...**.
 <p align="center">
-  <img src="resources/images/guide/ludens-build-configurations.png" alt="Edit Configurations" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-configurations.png" alt="Edit Configurations" height="320">
   <br>
   <em>Figure 8: Accessing the configurations menu.</em>
 </p>
 
 2.  Add a new **Gradle** task.
 <p align="center">
-  <img src="resources/images/guide/ludens-build-configurations-gradle-task.png" alt="New Gradle Task" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-configurations-gradle-task.png" alt="New Gradle Task" height="320">
   <br>
   <em>Figure 9: Creating a new Gradle task.</em>
 </p>
 
 3.  Name the task (e.g., `assembleDebug`) and in the **Arguments** field type: `assembleDebug`.
 <p align="center">
-  <img src="resources/images/guide/ludens-build-configurations-gradle-task-assembleDebug.png" alt="Configuring assembleDebug" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-configurations-gradle-task-assembleDebug.png" alt="Configuring assembleDebug" height="320">
   <br>
   <em>Figure 10: Configuring the task arguments.</em>
 </p>
@@ -212,7 +212,7 @@ Regardless of the method, the APK will appear in: `composeApp/build/outputs/apk/
 > Install this APK on an emulator or real device to verify that the game loads and plugins work correctly.
 
 <p align="center">
-  <img src="resources/images/guide/ludens-build-debug.png" alt="Build Result" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-debug.png" alt="Build Result" height="320">
   <br>
   <em>Figure 11: Successful build result.</em>
 </p>
@@ -226,7 +226,7 @@ This option guides you step-by-step to sign your application.
 
 1.  Go to **Build > Generate Signed Bundle / APK**.
 <p align="center">
-  <img src="resources/images/guide/ludens-build-configurations-sign.png" alt="Build Menu" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-configurations-sign.png" alt="Build Menu" height="320">
   <br>
   <em>Figure 12: Starting the signing wizard.</em>
 </p>
@@ -237,28 +237,28 @@ This option guides you step-by-step to sign your application.
 
     *   **Create New**: If you don't have one, click **Create new...**.
         <p align="center">
-          <img src="resources/images/guide/ludens-build-configurations-sign-creation.png" alt="Create Keystore" height="320">
+          <img src="docs/src/assets/images/guide/ludens-build-configurations-sign-creation.png" alt="Create Keystore" height="320">
           <br>
           <em>Figure 13: Creating a new Keystore. Keep your password and the .jks file safe.</em>
         </p>
 
     *   **Use Existing**: If you already have one, load it and enter credentials.
         <p align="center">
-          <img src="resources/images/guide/ludens-build-configurations-sign-use.png" alt="Use Keystore" height="320">
+          <img src="docs/src/assets/images/guide/ludens-build-configurations-sign-use.png" alt="Use Keystore" height="320">
           <br>
           <em>Figure 14: Keystore credentials.</em>
         </p>
 
 4.  Select the **release** build flavor and click **Create**.
 <p align="center">
-  <img src="resources/images/guide/ludens-build-configurations-sign-release.png" alt="Release Selection" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-configurations-sign-release.png" alt="Release Selection" height="320">
   <br>
   <em>Figure 15: Output variant selection.</em>
 </p>
 
 5.  **Result**:
 <p align="center">
-  <img src="resources/images/guide/ludens-build-release.png" alt="Wizard Build Result" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-release.png" alt="Wizard Build Result" height="320">
   <br>
   <em>Figure 16: Notification of successfully generated APK.</em>
 </p>
@@ -285,7 +285,7 @@ Similar to the Debug process, this option is ideal for automating the build but 
 
 4.  **Result**:
 <p align="center">
-  <img src="resources/images/guide/ludens-build-release-gradle.png" alt="Gradle Build Result" height="320">
+  <img src="docs/src/assets/images/guide/ludens-build-release-gradle.png" alt="Gradle Build Result" height="320">
   <br>
   <em>Figure 17: Build result from Gradle.</em>
 </p>
