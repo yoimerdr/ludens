@@ -30,7 +30,7 @@
 Ludens es un wrapper de Compose Multiplatform desarrollado en Kotlin para portar juegos RPG Maker MV/MZ a dispositivos moviles. Integra tu exportacion HTML5 en una app nativa y agrega controles y ajustes moviles configurables.
 
 <p align="center">
-  <img src="docs/src/assets/samples/ludens-0.2.0-sample.gif" alt="Ludens Demo" width="450">
+  <img src="docs/src/assets/samples/ludens-0.3.0-sample.gif" alt="Ludens Demo" width="480">
 </p>
 
 <p align="center">
