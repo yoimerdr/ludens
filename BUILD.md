@@ -1,5 +1,5 @@
 # Step-by-Step Build Guide
-[Leer en Español](BUILD.es.md)
+[Leer en Español](BUILD.es.md) | [Web Docs](https://tryludens.vercel.app/)
 
 This guide details the complete process to configure, customize, and generate an APK/AAB file for your RPG Maker MV/MZ game using **Ludens**.
 
