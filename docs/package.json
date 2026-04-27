@@ -8,9 +8,10 @@
     "check": "astro check"
   },
   "dependencies": {
-    "astro": "6.1.6",
-    "@astrojs/starlight": "0.38.4",
-    "starlight-versions": "0.8.2"
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^6.1.6",
+    "@astrojs/starlight": "^0.38.4",
+    "starlight-versions": "^0.8.2"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

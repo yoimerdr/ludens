@@ -1,15 +1,18 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
 import starlightVersions from 'starlight-versions';
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://ludens-project.vercel.app",
+  site: process.env.SITE_URL || "https://tryludens.vercel.app",
   base: '/',
   integrations: [
+    sitemap(),
     starlight({
       title: 'Ludens',
+      description: 'Documentation for porting RPG Maker MV/MZ games to Android and iOS with Compose Multiplatform.',
       logo: {
         alt: 'Ludens',
         dark: 'public/icon.svg',
