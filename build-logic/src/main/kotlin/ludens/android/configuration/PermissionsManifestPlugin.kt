@@ -1,6 +1,6 @@
 package ludens.build.android.configuration
 
-import com.android.build.gradle.AppExtension
+import com.android.build.api.variant.AndroidComponentsExtension
 import ludens.build.compose.configuration.ludensConfiguration
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,20 +37,13 @@ class PermissionsManifestPlugin : Plugin<Project> {
                 })
             }
 
-        project.afterEvaluate {
-            val androidExtension = project.extensions.findByType(AppExtension::class.java)
+        val androidComponents = project.extensions.findByType(AndroidComponentsExtension::class.java)
 
-            if (androidExtension != null) {
-                androidExtension.sourceSets.getByName("main") {
-                    manifest.srcFile(generatedManifestFile)
-                }
-
-                project.tasks.matching { task ->
-                    task.name.startsWith("process") && task.name.endsWith("MainManifest")
-                }.configureEach {
-                    dependsOn(generateManifestTask)
-                }
-            }
+        androidComponents?.onVariants { variant ->
+            variant.sources.manifests.addGeneratedManifestFile(
+                generateManifestTask,
+                GeneratePermissionsManifestTask::manifest
+            )
         }
     }
 }
