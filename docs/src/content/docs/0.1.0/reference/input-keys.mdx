@@ -10,7 +10,7 @@ When you configure the **Input Key** property of an on-screen button (A, B, X, Y
 
 ### How it Works Under the Hood
 
-Because mobile devices lack physical keyboards, Ludens bridges its native Compose UI buttons to the game's web environment. When you press an on-screen button, the app dispatches a JavaScript snippet via `evaluateJavascript` to the WebView. This snippet constructs and dispatches synthetic `keydown` and `keyup` events to the document, effectively tricking the RPG Maker engine (`Input.js`) into believing a physical key was pressed.
+Because mobile devices lack physical keyboards, Ludens bridges its native Compose UI buttons to the game's web environment. When you press an on-screen button, the app dispatches a JavaScript snippet via `evaluateJavascript` to the WebView. This snippet directly calls the engine's input handler (`Input.js`) for the specific event type (e.g., `keydown`, `keyup`) and passes a pseudo event, avoiding the need to dispatch synthetic DOM events.
 
 ## Movement & Control Keys
 

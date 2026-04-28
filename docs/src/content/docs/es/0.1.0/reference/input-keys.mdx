@@ -11,7 +11,7 @@ Cuando configuras la propiedad **Input Key** de un botón en pantalla (A, B, X, 
 
 ### Cómo funciona internamente
 
-Debido a que los dispositivos móviles carecen de teclados físicos, Ludens sirve como puente entre sus botones nativos de interfaz y el entorno web del juego. Cuando presionas un botón en pantalla, la aplicación envía un fragmento de JavaScript al WebView a través de `evaluateJavascript`. Este script construye y despacha eventos sintéticos de `keydown` y `keyup` al documento, engañando efectivamente al motor de RPG Maker (`Input.js`) para que crea que se presionó una tecla física.
+Debido a que los dispositivos móviles carecen de teclados físicos, Ludens sirve como puente entre sus botones nativos de interfaz y el entorno web del juego. Cuando presionas un botón en pantalla, la aplicación envía un fragmento de JavaScript al WebView a través de `evaluateJavascript`. Este script llama directamente al manejador de entrada del motor (`Input.js`) para un tipo de evento específico (ej. `keydown`, `keyup`) y le pasa un pseudo evento, evitando la necesidad de despachar eventos DOM sintéticos.
 
 ## Teclas de Movimiento y Control
 
