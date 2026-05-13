@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeGestures
 import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -201,9 +200,10 @@ private fun ExpandedSettingsContent(
         verticalAlignment = Alignment.Top,
     ) {
         SideTabOptions(
-            modifier = Modifier.width(railWidth)
+            modifier = Modifier
                 .fillMaxHeight(),
             section = viewModel.section,
+            railWidth = railWidth,
             vertical = true,
             onEvent = viewModel::handle,
             onBack = onClose,

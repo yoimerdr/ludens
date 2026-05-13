@@ -3,9 +3,11 @@ package com.yoimerdr.compose.ludens.features.settings.presentation.section
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -19,9 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.yoimerdr.compose.ludens.features.settings.presentation.components.OptionsContainer
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.SettingsSection
 import com.yoimerdr.compose.ludens.features.settings.presentation.state.events.SettingsEvent
 import com.yoimerdr.compose.ludens.ui.components.buttons.SideTab
@@ -79,9 +81,13 @@ private fun SettingsTabOption(
         onClick = onClick,
         modifier = modifier,
         expanded = true,
-        selected = selected
+        selected = selected,
     ) {
-        Text(text = text)
+        Text(
+            text = text,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -103,6 +109,7 @@ fun SideTabOptions(
     state: LazyListState = rememberLazyListState(),
     vertical: Boolean = true,
     color: Color? = null,
+    railWidth: Dp = 192f.dp,
     onBack: () -> Unit,
     onEvent: (SettingsEvent.OnSelectSection) -> Unit,
 ) {
@@ -110,10 +117,7 @@ fun SideTabOptions(
     val containerColor = color ?: MaterialTheme.colorScheme.surfaceContainerLowest
 
     Surface(
-        modifier = modifier
-            .sizeIn(
-                maxWidth = if (vertical) 192.dp else Dp.Unspecified
-            ),
+        modifier = modifier,
         color = containerColor,
         shape = MaterialTheme.shapes.large,
         shadowElevation = 0.dp,
@@ -135,19 +139,18 @@ fun SideTabOptions(
             }
 
             if (vertical) {
-                OptionsContainer(
-                    state = state,
+                Column(
+                    modifier = Modifier.width(IntrinsicSize.Max),
                     verticalArrangement = Arrangement.spacedBy(spacing.small),
-                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    items(SettingsSection.entries) {
+                    SettingsSection.entries.forEach { entry ->
                         SettingsTabOption(
-                            modifier = Modifier.fillMaxWidth(),
-                            selected = section == it,
-                            option = it,
+                            modifier = Modifier.fillMaxWidth().sizeIn(minWidth = railWidth),
+                            selected = section == entry,
+                            option = entry,
                             onClick = {
-                                onEvent(SettingsEvent.OnSelectSection(it))
-                            }
+                                onEvent(SettingsEvent.OnSelectSection(entry))
+                            },
                         )
                     }
                 }
@@ -165,7 +168,7 @@ fun SideTabOptions(
                             option = it,
                             onClick = {
                                 onEvent(SettingsEvent.OnSelectSection(it))
-                            }
+                            },
                         )
                     }
                 }
