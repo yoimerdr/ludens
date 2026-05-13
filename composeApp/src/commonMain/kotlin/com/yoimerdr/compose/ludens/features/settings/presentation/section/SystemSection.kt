@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -184,8 +185,8 @@ private fun LanguageAction(
     items: Set<SystemLanguage>,
     onEvent: (OnChangeLanguage) -> Unit,
 ) {
-    var language by remember(language) { mutableStateOf(language) }
-    var expanded by remember { mutableStateOf(false) }
+    var currentLanguage by remember(language) { mutableStateOf(language) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
     OptionCard(
         modifier = Modifier.fillMaxWidth(),
@@ -216,10 +217,10 @@ private fun LanguageAction(
                         text = { Text(it.label) },
                         onClick = {
                             expanded = false
-                            language = it
+                            currentLanguage = it
                             onEvent(OnChangeLanguage(it))
                         },
-                        enabled = language != it
+                        enabled = currentLanguage != it
                     )
                 }
             }

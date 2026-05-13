@@ -18,14 +18,14 @@ import com.yoimerdr.compose.ludens.core.domain.model.settings.SystemLanguage
 import com.yoimerdr.compose.ludens.core.presentation.extension.settings.isDarkTheme
 import com.yoimerdr.compose.ludens.features.settings.presentation.viewmodel.SystemSettingsViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.dsl.KoinAppDeclaration
 
 @Composable
 fun LudensClient(
     language: SystemLanguage? = null,
     nav: NavHostController = rememberNavController(),
-    systemViewModel: SystemSettingsViewModel = koinInject(),
+    systemViewModel: SystemSettingsViewModel = koinViewModel(),
 ) {
     BackPopup(nav)
 
@@ -45,7 +45,7 @@ fun LudensClient(
 @Preview
 fun App(configuration: KoinAppDeclaration? = null) {
     KoinInjection(configuration) {
-        val settingsViewModel: SystemSettingsViewModel = koinInject()
+        val settingsViewModel: SystemSettingsViewModel = koinViewModel()
 
         val state by settingsViewModel.state.collectAsStateWithLifecycle()
 
