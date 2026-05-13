@@ -27,6 +27,10 @@ gradlePlugin {
             id = "ludens.build.compose.settings.preset"
             implementationClass = "ludens.build.compose.settings.SettingsPresetPlugin"
         }
+        register("ludensLanguageMetadata") {
+            id = "ludens.build.compose.language.metadata"
+            implementationClass = "ludens.build.compose.language.LanguageMetadataPlugin"
+        }
         register("ludensPermissionsManifest") {
             id = "ludens.build.android.permissions.manifest"
             implementationClass = "ludens.build.android.configuration.PermissionsManifestPlugin"

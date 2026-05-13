@@ -21,6 +21,10 @@
     <string name="system_language">Sistema</string>
     <string name="en">English</string>
     <string name="es">Español</string>
+    <string name="zh">中文</string>
+    <string name="ja">日本語</string>
+    <string name="pt_br">Português (Brasil)</string>
+    <string name="ru">Русский</string>
     <!--Controls-->
     <string name="key_joystick">Joystick</string>
     <string name="key_button">Botón %1$s (%2$s)</string> <!--(keySimpleName, inputKeyName) 'Boton X (Enter)'-->

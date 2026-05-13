@@ -23,8 +23,6 @@ import ludens.composeapp.generated.resources.actions_toggle_fps
 import ludens.composeapp.generated.resources.actions_toggle_mute
 import ludens.composeapp.generated.resources.actions_toggle_webgl
 import ludens.composeapp.generated.resources.dark
-import ludens.composeapp.generated.resources.en
-import ludens.composeapp.generated.resources.es
 import ludens.composeapp.generated.resources.key_button
 import ludens.composeapp.generated.resources.key_joystick
 import ludens.composeapp.generated.resources.key_settings
@@ -212,10 +210,10 @@ val SystemTheme.label: String
  * @return A localized string representing the language setting.
  */
 val SystemLanguage.label: String
-    @Composable get() = when (this) {
-        SystemLanguage.English -> stringResource(Res.string.en)
-        SystemLanguage.Spanish -> stringResource(Res.string.es)
-        else -> stringResource(Res.string.system_language)
+    @Composable get() = if (this == SystemLanguage.System) {
+        stringResource(Res.string.system_language)
+    } else {
+        com.yoimerdr.compose.ludens.generated.language.LanguageMetadata.languageLabel(tag)
     }
 
 /**

@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.google.ksp)
     id("ludens.build.compose.resources.files")
     id("ludens.build.compose.settings.preset")
+    id("ludens.build.compose.language.metadata")
     id("ludens.build.android.permissions.manifest")
     alias(libs.plugins.buildKonfig)
 }

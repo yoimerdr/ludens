@@ -32,6 +32,7 @@ message ProtoToolSettings {
 message ProtoSystemSettings {
   int32 theme = 1;
   int32 language = 2;
+  string language_tag = 3;
 }
 
 message ProtoActionItem {

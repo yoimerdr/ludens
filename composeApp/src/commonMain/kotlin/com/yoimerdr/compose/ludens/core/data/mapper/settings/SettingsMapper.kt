@@ -44,7 +44,8 @@ fun ControlSettings.toProto(): ProtoControlSettings = ProtoControlSettings(
 
 fun SystemSettings.toProto(): ProtoSystemSettings = ProtoSystemSettings(
     theme = theme.value,
-    language = language.value
+    language = language.value,
+    language_tag = language.tag
 )
 
 fun ActionSettings.toProto(): ProtoActionSettings = ProtoActionSettings(
@@ -79,8 +80,21 @@ fun ProtoToolSettings.toDomain(): ToolSettings = ToolSettings(
 
 fun ProtoSystemSettings.toDomain(): SystemSettings = SystemSettings(
     theme = SystemTheme.from(theme),
-    language = SystemLanguage.from(language)
+    language = if (language_tag.isNotEmpty()) {
+        SystemLanguage.from(language_tag) ?: SystemLanguage.System
+    } else {
+        legacySystemLanguageFrom(language)
+    }
 )
+
+private fun legacySystemLanguageFrom(value: Int): SystemLanguage {
+    return when (value) {
+        0 -> SystemLanguage.System
+        1 -> SystemLanguage.from("es") ?: SystemLanguage.System
+        2 -> SystemLanguage.from("zh") ?: SystemLanguage.System
+        else -> SystemLanguage.from(value)
+    }
+}
 
 fun ProtoActionSettings.toDomain(): ActionSettings = ActionSettings(
     items = items.map { it.toDomain() },

@@ -23,6 +23,7 @@ import ludens.composeapp.generated.resources.plusjakartasans_light
 import ludens.composeapp.generated.resources.plusjakartasans_medium
 import ludens.composeapp.generated.resources.plusjakartasans_regular
 import ludens.composeapp.generated.resources.plusjakartasans_semibold
+import ludens.composeapp.generated.resources.notosans_sc
 import org.jetbrains.compose.resources.Font
 
 @Suppress("ObjectPropertyName")
@@ -99,6 +100,30 @@ val Inter: FontFamily
                 Font(
                     Res.font.inter_italic,
                     weight = FontWeight.Normal
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Light
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Normal
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Medium
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.SemiBold
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Bold
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Black
                 )
             )
         }
@@ -135,6 +160,30 @@ val PlusJakartaSans: FontFamily
                 Font(
                     Res.font.plusjakartasans_italic,
                     weight = FontWeight.Normal
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Light
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Normal
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Medium
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.SemiBold
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Bold
+                ),
+                Font(
+                    Res.font.notosans_sc,
+                    weight = FontWeight.Black
                 )
             )
         }
