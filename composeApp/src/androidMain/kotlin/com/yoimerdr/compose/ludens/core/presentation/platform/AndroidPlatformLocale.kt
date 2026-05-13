@@ -67,7 +67,7 @@ object AndroidPlatformLocale : PlatformLocale {
 
         val locale = validateLocale(language)
 
-        return remember(locale) {
+        return remember(locale, configuration.orientation) {
             val config = Configuration(configuration)
             Locale.setDefault(locale)
             config.setLocale(locale)
