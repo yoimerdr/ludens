@@ -67,7 +67,6 @@ class LanguageMetadataPlugin : Plugin<Project> {
 
             generateTask.configure {
                 dependsOn("ludensLanguageStringsSync")
-                dependsOn("ludensFontSync")
             }
 
             tasks.withType(KotlinCompile::class.java)
