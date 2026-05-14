@@ -43,5 +43,9 @@ gradlePlugin {
             id = "ludens.build.compose.fonts.sync"
             implementationClass = "ludens.build.compose.fonts.FontSyncPlugin"
         }
+        register("ludensWebAssetsSync") {
+            id = "ludens.build.compose.resources.sync"
+            implementationClass = "ludens.build.compose.resources.WebAssetsSyncPlugin"
+        }
     }
 }

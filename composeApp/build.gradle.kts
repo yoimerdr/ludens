@@ -19,6 +19,7 @@ plugins {
     id("ludens.build.compose.language.metadata")
     id("ludens.build.compose.language.strings.sync")
     id("ludens.build.compose.fonts.sync")
+    id("ludens.build.compose.resources.sync")
     id("ludens.build.android.permissions.manifest")
     alias(libs.plugins.buildKonfig)
 }

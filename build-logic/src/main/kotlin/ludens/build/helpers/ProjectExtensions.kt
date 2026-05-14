@@ -17,6 +17,14 @@ val Project.assetsStoreDir: File
     get() = rootProject.projectDir.resolve("project/assets")
 
 /**
+ * Project root www directory.
+ *
+ * This points to `project/www` from the repository root.
+ */
+val Project.projectWwwDir: File
+    get() = rootProject.projectDir.resolve("project/www")
+
+/**
  * Compose resource directory for the current module.
  *
  * This points to `src/commonMain/composeResources` under the current project directory.
