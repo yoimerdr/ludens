@@ -35,5 +35,13 @@ gradlePlugin {
             id = "ludens.build.android.permissions.manifest"
             implementationClass = "ludens.build.android.configuration.PermissionsManifestPlugin"
         }
+        register("ludensLanguageStringsSync") {
+            id = "ludens.build.compose.language.strings.sync"
+            implementationClass = "ludens.build.compose.language.LanguageStringsSyncPlugin"
+        }
+        register("ludensFontSync") {
+            id = "ludens.build.compose.fonts.sync"
+            implementationClass = "ludens.build.compose.fonts.FontSyncPlugin"
+        }
     }
 }

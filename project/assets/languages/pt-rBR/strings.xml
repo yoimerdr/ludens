@@ -1,0 +1,66 @@
+<resources>
+    <!--Common strings-->
+    <string name="are_sure">Tem certeza?</string>
+    <string name="accept">Aceitar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="loading">Carregando</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="unknown">Desconhecido</string>
+    <string name="light">Claro</string>
+    <string name="dark">Escuro</string>
+    <string name="system_default">Sistema</string>
+    <string name="change">Alterar</string>
+    <string name="reset">Restaurar</string>
+    <string name="search">Pesquisar</string>
+    <string name="no_results">Sem resultados</string>
+    <!--Exit application-->
+    <string name="exit_app">Tem certeza de que deseja sair do aplicativo? Todas as alterações não salvas no jogo serão perdidas.</string>
+    <!--languages-->
+    <string name="unknown_language">Desconhecido</string>
+    <string name="system_language">Sistema</string>
+    <string name="en">English</string>
+    <string name="es">Español</string>
+    <string name="zh">中文</string>
+    <string name="ja">日本語</string>
+    <string name="pt_br">Português (Brasil)</string>
+    <string name="ru">Русский</string>
+    <!--Controls-->
+    <string name="key_joystick">Joystick</string>
+    <string name="key_button">Botão %1$s (%2$s)</string>
+    <string name="key_settings">Configurações</string>
+    <!--Settings-->
+    <string name="stc_text_all_controls">Todos os controles</string>
+    <string name="stc_text_restarting_confirmation">Esta ação reiniciará o jogo ao sair das configurações. Deseja continuar?</string>
+    <!--Settings - About-->
+    <string name="stc_about_issues">Reportar problemas</string>
+    <string name="stc_about_website">Site</string>
+    <string name="stc_about_description">Projetado para executar jogos RPG Maker</string>
+    <string name="stc_about_version">Versão %1$s</string>
+    <string name="stc_about_copyright">© 2026 Projeto Ludens.</string>
+    <!--Settings - Tab options-->
+    <string name="stc_tabs_controls">Controles</string>
+    <string name="stc_tabs_actions">Ações</string>
+    <string name="stc_tabs_tools">Ferramentas</string>
+    <string name="stc_tabs_system">Sistema</string>
+    <string name="stc_tabs_about">Sobre</string>
+    <!--Settings - Tools-->
+    <string name="stc_tools_move_controls">Mover os controles</string>
+    <string name="stc_tools_mute_audio">Silenciar o áudio</string>
+    <string name="stc_tools_show_fps">Mostrar os FPS</string>
+    <string name="stc_tools_use_webgl">Usar WebGL</string>
+    <!--Settings - System-->
+    <string name="stc_system_language">Idioma</string>
+    <string name="stc_system_appearance">Aparência</string>
+    <string name="stc_system_reset_default">Restaurar configurações padrão</string>
+    <!--Settings - Actions-->
+    <string name="stc_actions_show_quick">Mostrar como ações rápidas</string>
+    <!--quick actions-->
+    <string name="actions_settings">Ir para configurações</string>
+    <string name="actions_toggle_controls">Mostrar ou ocultar controles</string>
+    <string name="actions_toggle_fps">Mostrar ou ocultar o contador de FPS</string>
+    <string name="actions_toggle_mute">Silenciar ou ativar o áudio</string>
+    <string name="actions_toggle_webgl">Habilitar ou desabilitar a renderização WebGL</string>
+    <!--Home-->
+    <string name="hmc_text_restarting_confirmation">Esta ação reiniciará o jogo. Deseja continuar?</string>
+</resources>
