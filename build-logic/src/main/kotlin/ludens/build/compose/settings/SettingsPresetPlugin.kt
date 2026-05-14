@@ -29,7 +29,7 @@ class SettingsPresetPlugin : Plugin<Project> {
                     outputFile.set(
                         composeGenerationDir
                             .resolve("settings")
-                            .resolve("SettingsPreset.kt")
+                            .resolve("LudensSettingsPreset.kt")
                     )
                 }
 

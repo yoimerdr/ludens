@@ -1,5 +1,7 @@
 package ludens.build.compose.configuration
 
+import java.io.Serializable
+
 /**
  * Settings configuration loaded from `ludens.properties`.
  *
@@ -20,7 +22,7 @@ data class LudensSettingsConfiguration(
      * [resolvedSettingsPreset] before the generated Kotlin source is written.
      */
     val preset: LudensSettingsPresetConfiguration = LudensSettingsPresetConfiguration(),
-)
+) : Serializable
 
 /**
  * Raw settings preset values loaded from `ludens.settings.preset.*`.
@@ -83,7 +85,7 @@ data class LudensSettingsPresetConfiguration(
      * Maps from `ludens.settings.preset.systemLanguage`.
      */
     val systemLanguage: String? = null,
-)
+) : Serializable
 
 /**
  * Resolved settings preset after parsing and defaults have been applied.
@@ -111,4 +113,4 @@ data class LudensResolvedSettingsPresetConfiguration(
     val systemTheme: String,
     /** Default system language value. */
     val systemLanguage: String,
-)
+) : Serializable
