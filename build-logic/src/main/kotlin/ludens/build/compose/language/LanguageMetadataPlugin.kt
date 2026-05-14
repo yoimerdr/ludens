@@ -1,9 +1,17 @@
+/*
+ * Created by: https://github.com/rainbowtrash2333.
+ *
+ * Edited by: https://github.com/yoimerdr.
+ */
+
 package ludens.build.compose.language
 
+import ludens.build.helpers.composeGenerationDir
+import ludens.build.helpers.composeKotlinSourceSet
+import ludens.build.helpers.composeResourcesDir
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.register
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
@@ -33,21 +41,18 @@ class LanguageMetadataPlugin : Plugin<Project> {
                     objectName.set("LanguageMetadata")
 
                     resourceDir.set(
-                        layout.projectDirectory.dir("src/commonMain/composeResources")
+                        composeResourcesDir,
                     )
 
                     outputFile.set(
-                        layout.buildDirectory.file(
-                            "generated/ludens/compose/language/LanguageMetadata.kt"
-                        )
+                        composeGenerationDir
+                            .resolve("language")
+                            .resolve("LanguageMetadata.kt")
                     )
                 }
 
             afterEvaluate {
-                extensions.findByType(KotlinMultiplatformExtension::class.java)
-                    ?.sourceSets
-                    ?.findByName("commonMain")
-                    ?.kotlin
+                composeKotlinSourceSet?.kotlin
                     ?.srcDir(generateTask.map { it.outputFile.get().asFile.parentFile })
             }
 
