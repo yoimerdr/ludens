@@ -32,6 +32,18 @@ data class LudensConfiguration(
      * Loaded from the `ludens.settings.*` namespace.
      */
     val settings: LudensSettingsConfiguration = LudensSettingsConfiguration(),
+    /**
+     * Language selection rules used by generated resources.
+     *
+     * Loaded from the `ludens.languages.*` namespace.
+     */
+    val languages: LudensLanguageConfiguration = LudensLanguageConfiguration(),
+    /**
+     * Compose font defaults and per-language fallbacks.
+     *
+     * Loaded from the `ludens.fonts.*` namespace.
+     */
+    val fonts: LudensFontConfiguration = LudensFontConfiguration(),
 ) : Serializable
 
 /**
