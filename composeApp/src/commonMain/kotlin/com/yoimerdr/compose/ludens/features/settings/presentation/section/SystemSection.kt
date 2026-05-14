@@ -68,8 +68,7 @@ private fun ResetAction(
             OptionName(
                 text = stringResource(Res.string.stc_system_reset_default)
             )
-        },
-        modifier = Modifier.fillMaxWidth()
+        }, modifier = Modifier.fillMaxWidth()
     ) {
         FilledTonalToggleButton(
             onClick = {
@@ -157,16 +156,10 @@ private fun AppearanceAction(
         ) {
             SystemTheme.entries.forEach {
                 ThemeOption(
-                    modifier = Modifier
-                        .padding(spacing.extraSmall)
-                        .sizeIn(minWidth = 120.dp)
-                        .weight(1f),
-                    theme = it,
-                    selected = it == theme,
-                    onClick = {
+                    modifier = Modifier.padding(spacing.extraSmall).sizeIn(minWidth = 120.dp)
+                        .weight(1f), theme = it, selected = it == theme, onClick = {
                         onEvent(OnChangeTheme(it))
-                    }
-                )
+                    })
             }
         }
     }
@@ -189,19 +182,16 @@ private fun LanguageAction(
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     OptionCard(
-        modifier = Modifier.fillMaxWidth(),
-        prefix = {
+        modifier = Modifier.fillMaxWidth(), prefix = {
             OptionName(
                 text = stringResource(Res.string.stc_system_language)
             )
-        }
-    ) {
+        }) {
         Box {
             FilledTonalToggleButton(
                 onClick = {
                     expanded = true
-                }
-            ) {
+                }) {
                 Text(
                     text = stringResource(Res.string.change)
                 )
@@ -214,13 +204,11 @@ private fun LanguageAction(
             ) {
                 items.forEach {
                     DropdownMenuItem(
-                        text = { Text(it.label) },
-                        onClick = {
-                            expanded = false
-                            currentLanguage = it
-                            onEvent(OnChangeLanguage(it))
-                        },
-                        enabled = currentLanguage != it
+                        text = { Text(it.label) }, onClick = {
+                        expanded = false
+                        currentLanguage = it
+                        onEvent(OnChangeLanguage(it))
+                    }, enabled = currentLanguage != it
                     )
                 }
             }
@@ -250,16 +238,23 @@ fun SystemSettingsSection(
         item {
             AppearanceAction(
                 theme = settings.theme,
-                onEvent = onEvent
+                onEvent = onEvent,
             )
         }
 
         item {
-            LanguageAction(
-                language = settings.language,
-                items = SystemLanguage.entries.toSet(),
-                onEvent = onEvent
-            )
+            val languages = remember { SystemLanguage.entries.toSet() }
+            val selectableLanguages = remember(languages) {
+                languages.filterNot { it == SystemLanguage.System }
+            }
+
+            if (selectableLanguages.size > 1) {
+                LanguageAction(
+                    language = settings.language,
+                    items = languages,
+                    onEvent = onEvent,
+                )
+            }
         }
 
         item {
@@ -286,25 +281,18 @@ fun SystemSettingsSection(
 
     CollectInteractionResult(
         onReject = {
-            if (it.request is SettingsRequest)
-                viewModel.reject(it.request)
-        }
-    ) {
-        if (it.request is SettingsRequest)
-            viewModel.resolve(it.request)
+            if (it.request is SettingsRequest) viewModel.reject(it.request)
+        }) {
+        if (it.request is SettingsRequest) viewModel.resolve(it.request)
     }
 
     LaunchedEffect(Unit) {
         viewModel.requests.collect {
-            if (it is SettingsRequest.Interaction)
-                interactionManager.request(it)
+            if (it is SettingsRequest.Interaction) interactionManager.request(it)
         }
     }
 
     SystemSettingsSection(
-        modifier = modifier,
-        settings = system,
-        state = state,
-        onEvent = viewModel::handle
+        modifier = modifier, settings = system, state = state, onEvent = viewModel::handle
     )
 }
