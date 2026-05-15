@@ -1,5 +1,13 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+import ludens.build.android.configuration.permissions
 import ludens.build.compose.configuration.ludensConfiguration
+import ludens.build.compose.fonts.fontsSync
+import ludens.build.compose.language.languageMetadata
+import ludens.build.compose.language.languageStringsSync
+import ludens.build.compose.resources.filesRes
+import ludens.build.compose.resources.resourcesSync
+import ludens.build.compose.settings.settingsPreset
+import ludens.build.helpers.PluginActivationMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
@@ -14,14 +22,30 @@ plugins {
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.squareup.wire)
     alias(libs.plugins.google.ksp)
-    id("ludens.build.compose.resources.files")
-    id("ludens.build.compose.settings.preset")
-    id("ludens.build.compose.language.metadata")
-    id("ludens.build.compose.language.strings.sync")
-    id("ludens.build.compose.fonts.sync")
-    id("ludens.build.compose.resources.sync")
-    id("ludens.build.android.permissions.manifest")
+    id("ludens.build")
     alias(libs.plugins.buildKonfig)
+}
+
+ludens {
+    compose {
+        filesRes()
+
+        settingsPreset()
+
+
+        languageStringsSync {
+            mode.set(PluginActivationMode.ReleaseOnly)
+        }
+
+        languageMetadata()
+
+        fontsSync()
+
+        resourcesSync()
+    }
+    android {
+        permissions()
+    }
 }
 
 // Using the full extension type to bypass the "unresolved reference" accessor issue
