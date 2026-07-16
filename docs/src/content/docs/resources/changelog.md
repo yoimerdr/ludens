@@ -8,7 +8,44 @@ This page documents the release history and major changes for the Ludens project
 For a complete list of commits and minor fixes, please refer to
 the [GitHub Releases](https://github.com/yoimerdr/ludens/releases) page.
 
+## v0.4.0 - 2026-07-16
+
+### Added
+
+- Rich WebView Game Runtime Error Interception & Diagnostic Traceback Dialog supporting JavaScript exception capturing, native WebView loading failure interception, variable formatting, and localized translations across KMP.
+- Automated App Icon Generator Gradle plugin and task that compiles Android launcher icons (legacy and adaptive SVG/PNG), iOS app icons (all resolutions and JSON manifest), and Google Play Store listing icons from a single source image in `project/assets/icons/`.
+- New language support: Chinese (`zh`), Japanese (`ja`), Portuguese - Brazil (`pt-rBR`), and Russian (`ru`) for UI.
+- Automatic synchronization of web assets from the `project/www/` root directory to Compose resources.
+- Font and language strings sync plugins for resource management within the `build-logic` to strip out unused languages and fonts.
+- Language and font configuration support for resource generation, including base language metadata support.
+- Project extension utilities for asset management and resource name parsing.
+- Multilingual support with optimized i18n loading, and language alias parsing from presets configuration.
+- Conditional rendering of `LanguageAction` based on available languages.
+- `CODE_OF_CONDUCT.md` and updated issue templates.
+
+### Changed
+
+- Enhanced `SideTabOptions` layout, improving text overflow handling.
+- Optimized view model injection and enhanced state management using `rememberSaveable`.
+- Removed specific fonts to use variable font types.
+- Reduced manual resource handling by leveraging new helper utilities.
+- Moved configuration files and enhanced internal documentation for clarity.
+- Changed how plugins are applied: now there is only a single `ludens.build` plugin, and the others must be activated/applied using the DSL in gradle.
+- Updated project documentation (`README`, `BUILD`, `CONTRIBUTING`) to detail the new root folder asset synchronization method.
+- Replace 404 page with game setup placeholder for default index.html pages.
+- Optimized WebView key event simulation script by batching events by type with a single guard per group.
+
+### Fixed
+
+- Fixed unexpected error has been fixed in the generation of icon resources during compilation, which was causing the files to be placed inside the "generated" folder.
+- Fixed locale handling by including configuration orientation in `remember`.
+- Fixed movement key event script operator precedence issue by wrapping the assignment in parentheses.
+- Fixed potential null pointer exceptions in WebView scripts by adding null guards for global `Input` and `Graphics` objects.
+- Fixed error logger double-registration when `YDP_Ludens` is loaded.
+- Fixed missing accessibility descriptions by adding content descriptions to FloatingDock buttons.
+
 ## v0.3.0 - 2026-04-25
+
 
 ### Added
 
