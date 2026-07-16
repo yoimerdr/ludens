@@ -1,6 +1,8 @@
 # Guía de Construcción Paso a Paso
 
-[Read in English](BUILD.md) | [Docs Web](https://tryludens.vercel.app/)
+<p align="center">
+  <a href="BUILD.md">Read in English</a> | <a href="https://tryludens.vercel.app/">Docs Web</a>
+</p>
 
 Esta guía detalla el proceso completo para configurar, personalizar y generar un archivo APK/AAB de tu juego RPG Maker MV/MZ utilizando **Ludens**.
 
@@ -53,8 +55,17 @@ Antes de exportar tu juego, considera lo siguiente:
 
 ### Obtener el Proyecto
 
-1.  Clona este repositorio o descárgalo como ZIP y extráelo.
-2.  Abre Android Studio.
+1. Clona el repositorio.
+   - Para usar la última versión de lanzamiento (reemplaza `<latest_tag>` por la última etiqueta de versión disponible, ej. `0.4.0`):
+     ```bash
+     git clone --branch <latest_tag> https://github.com/yoimerdr/ludens.git
+     ```
+   - Si prefieres usar la última versión en desarrollo, clona la rama `develop`:
+     ```bash
+     git clone --branch develop https://github.com/yoimerdr/ludens.git
+     ```
+   - Alternativamente, puedes descargarlo como archivo ZIP desde la página de [GitHub Releases](https://github.com/yoimerdr/ludens/releases) y extraerlo.
+2. Abre Android Studio.
 3.  Selecciona **Open** y navega hasta la carpeta del proyecto `ludens`.
 4.  Espera a que Gradle termine de sincronizar (Download/Sync).
 
@@ -120,6 +131,43 @@ Después de usar cualquiera de las opciones, la aplicación espera encontrar `in
   <br>
   <em>Figura 5: Vista de Android Studio mostrando la carpeta www y el archivo index.html dentro de composeResources/files</em>
 </p>
+
+## Localización y Traducciones
+
+Ludens admite múltiples idiomas para la interfaz de usuario del cliente/wrapper.
+
+> [!IMPORTANT]
+> Este sistema de localización traduce **únicamente** la interfaz nativa del cliente/wrapper (como las opciones de la pantalla de Ajustes, la superposición de controles y los diálogos nativos). **No** traduce el contenido, textos o diálogos del juego de RPG Maker dentro del WebView. Los diálogos y recursos del juego deben ser traducidos usando los propios plugins o archivos de traducción de RPG Maker dentro de la carpeta exportada `www/`.
+
+El sistema de traducciones funciona con dos componentes principales:
+
+### 1. Restringir Idiomas Disponibles
+Por defecto, la compilación incluye todos los idiomas encontrados en el proyecto. Si tu juego está destinado a un solo idioma o a un conjunto específico de idiomas, puedes restringir las opciones mostradas en el menú de ajustes del wrapper modificando [`ludens.properties`](ludens.properties):
+
+```properties
+# Limitar el menú de ajustes para mostrar solo inglés y español
+ludens.languages.available=en,es
+```
+
+### 2. Añadir un Nuevo Idioma
+Para añadir claves de traducción para un idioma que no esté incluido por defecto:
+
+1. Crea un directorio con el nombre de la etiqueta de idioma ISO (por ejemplo, `fr` para francés, `ja` para japonés) dentro de `project/assets/languages/`:
+   `project/assets/languages/fr/`
+2. Crea un archivo llamado `strings.xml` dentro de ese directorio.
+3. Copia el contenido del archivo [strings.xml](project/assets/languages/en/strings.xml) en inglés como base y traduce los valores de las cadenas. Por ejemplo:
+   ```xml
+   <resources>
+       <string name="settings_title">Paramètres</string>
+       <string name="tab_system">Système</string>
+       ...
+   </resources>
+   ```
+4. Si estás usando la propiedad `ludens.languages.available` para restringir los idiomas, asegúrate de añadir la nueva etiqueta de idioma a la lista.
+5. Vuelve a compilar el proyecto. El sistema de compilación procesará automáticamente los recursos y generará los directorios de traducción correspondientes durante la compilación.
+
+> [!WARNING]
+> **NO** edites ni agregues archivos `strings.xml` directamente dentro de `composeApp/src/commonMain/composeResources/values*`. Durante la compilación, una tarea personalizada de Gradle limpia estas carpetas y las regenera a partir de la fuente de verdad (`project/assets/languages/`). Cualquier cambio manual dentro de `composeResources` se **perderá permanentemente**.
 
 ## Android
 
@@ -192,34 +240,28 @@ Ludens incluye un plugin de **Generación de Iconos Automatizado** que crea todo
 1. Coloca tu imagen de origen del icono dentro del directorio `project/assets/icons/`.
    - Para obtener mejores resultados, usa una imagen vectorial llamada `icon.svg` o una imagen rasterizada de alta resolución llamada `icon.png` (de al menos 512x512 píxeles).
    - Si deseas usar capas adaptativas separadas para Android, puedes colocar `icon_foreground.svg`/`icon_foreground.png` e `icon_background.svg`/`icon_background.png` en el mismo directorio.
-2. Configura el generador de iconos en `composeApp/build.gradle.kts` utilizando el bloque DSL `appIconGenerator`:
+2. Configura el generador de iconos en [`ludens.properties`](ludens.properties) bajo la sección `# ----- App Icon Generator -----`. Los valores son leídos automáticamente por el sistema de compilación:
 
-```kotlin
-ludens {
-    compose {
-        // ... otras configuraciones
-        appIconGenerator {
-            // Formato/tipo para Android: AndroidIconFormat.Png o AndroidIconFormat.Webp
-            androidIconFormat = AndroidIconFormat.Webp
-            
-            // Tratamiento del fondo: puede ser una cadena de color hexadecimal (ej. "#FDFDFD") o 
-            // el nombre de un archivo de imagen origen en project/assets/icons/ sin extensión
-            background = "#FDFDFD"
-            
-            // Activar/desactivar la generación de iconos para plataformas o tiendas específicas
-            enableAndroid = true
-            enableIos = true
-            enablePlaystore = true
-            
-            // Factor de escala para la capa frontal del icono dentro de la zona segura (0.0 a 1.0)
-            iconScale = 0.62
-            
-            // Nombres base personalizados (opcional, por defecto "icon", "icon_foreground" e "icon_background")
-            // name = "icon"
-            // foreground = "icon_foreground"
-        }
-    }
-}
+```properties
+# Nombre del icono maestro origen en project/assets/icons/
+ludens.icons.name=icon
+
+# Nombre de la capa frontal adaptativa en project/assets/icons/
+ludens.icons.foreground=icon_foreground
+
+# Color de fondo hexagonal sólido o referencia a recurso
+ludens.icons.background=#FDFDFD
+
+# Configuración específica de Android
+ludens.icons.android.enable=true
+ludens.icons.android.format=webp
+ludens.icons.android.playstore=true
+
+# Configuración específica de iOS
+ludens.icons.ios.enable=true
+
+# Escala del recurso frontal dentro del visor de icono adaptativo
+ludens.icons.scale=0.62
 ```
 
 3. Compila el proyecto. El sistema de compilación generará automáticamente:
@@ -232,13 +274,10 @@ ludens {
 Si prefieres generar tus recursos manualmente o usar las herramientas estándar de desarrollo de Android:
 
 > [!WARNING]
-> **Desactivar la Generación Automática**: Para evitar que la tarea del generador automático sobrescriba tus archivos manuales personalizados en cada compilación, **DEBES** desactivar las plataformas automáticas dentro del bloque DSL `appIconGenerator` en tu archivo `composeApp/build.gradle.kts`:
-> ```kotlin
-> appIconGenerator {
->     enableAndroid = false
->     enableIos = false
->     enablePlaystore = false
-> }
+> **Desactivar la Generación Automática**: Para evitar que la tarea del generador automático sobrescriba tus archivos manuales personalizados en cada compilación, **DEBES** desactivar el generador automático en [`ludens.properties`](ludens.properties):
+> ```properties
+> ludens.icons.android.enable=false
+> ludens.icons.ios.enable=false
 > ```
 
 1. Haz clic derecho en el directorio `composeApp/src/androidMain/res` en Android Studio.
