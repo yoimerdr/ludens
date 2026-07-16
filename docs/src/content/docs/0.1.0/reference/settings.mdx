@@ -67,7 +67,7 @@ Displays a frames-per-second counter overlay when enabled.
 
 | Property   | Type    | Default |
 |------------|---------|---------|
-| `useWebGL` | Boolean | `true`  |
+| `useWebGL` | Boolean | `false` |
 
 Controls whether the WebView uses WebGL for hardware-accelerated rendering.
 
@@ -75,6 +75,10 @@ Controls whether the WebView uses WebGL for hardware-accelerated rendering.
 * **When disabled (Canvas 2D)**: The game falls back to CPU-based Canvas rendering. This is generally slower but can be useful as a compatibility fallback for older Android devices that struggle with WebGL drivers or experience visual artifacts.
 
 This setting is only available for **RPG Maker MV**. RPG Maker MZ dropped Canvas 2D support entirely and strictly requires WebGL to function.
+
+:::note
+While the default value in the configuration presets is `false` (for maximum compatibility on older Android devices running RPG Maker MV), it is highly recommended to enable it for better performance if the target devices support WebGL.
+:::
 
 :::caution
 Toggling WebGL requires the WebView to completely reload the rendering context, meaning it requires an application restart to take effect.
