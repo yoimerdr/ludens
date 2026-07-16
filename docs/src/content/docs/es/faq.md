@@ -67,11 +67,8 @@ ejemplo, `com.miestudio.juego1` y `com.miestudio.juego2`).
 
 ### ¿Cómo cambio el nombre y el icono de la app?
 
-- **Nombre de la app**: Edita `ludens.android.name` y `ludens.android.launcherName` en
-  `ludens.properties`.
-- **Icono de la app**: Reemplaza las imágenes en los directorios
-  `composeApp/src/androidMain/res/mipmap-*` o usa el **Image Asset Studio** de Android Studio (clic
-  derecho en `res` > **New > Image Asset**).
+- **Nombre de la app**: Edita `ludens.android.name` y `ludens.android.launcherName` en `ludens.properties`.
+- **Icono de la app**: Coloca tu imagen de origen (SVG o PNG) en `project/assets/icons/` y permite que el **Generador Automático de Iconos** compile los iconos para Android e iOS automáticamente. Configura colores y formatos en `ludens.properties`. Alternativamente, puedes desactivar esto y usar **Image Asset Studio** de Android Studio.
 
 Consulta la página de [Configuración](/es/configuration/android/) para más detalles.
 
@@ -153,5 +150,11 @@ Causas comunes:
 
 1. Verifica que los controles estén habilitados en los ajustes de la aplicación.
 2. Verifica que los mapeos de teclas de los botones coincidan con las teclas que tu juego espera.
-3. Algunos plugins pueden sobreescribir el manejo de input — prueba sin plugins de terceros para
-   aislar el problema.
+3. Algunos plugins pueden sobreescribir el manejo de input — prueba sin plugins de terceros para aislar el problema.
+
+### Mi juego se cerró inesperadamente o muestra un diálogo de traceback de error
+
+Ludens captura las excepciones de JavaScript en tiempo de ejecución y los fallos de carga del WebView, mostrando un diálogo de diagnóstico superpuesto cuando `ludens.debug.errors=true` está configurado en `ludens.properties`.
+- **Copiar logs**: Haz clic en la acción de copiar dentro del diálogo para copiar el stack trace técnico al portapapeles.
+- **Recomenzar**: Recarga instantáneamente el cliente WebView para reiniciar el juego.
+- **Solucionar problemas**: Si es un fallo de JS, verifica los scripts de tu juego y asegúrate de que `YDP_Ludens.js` esté cargado como el primer plugin. Si es un error del cargador del WebView, verifica que todas las carpetas de assets y el `index.html` principal estén correctamente colocados.
