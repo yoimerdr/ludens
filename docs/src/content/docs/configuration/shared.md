@@ -70,4 +70,66 @@ These properties use the `ludens.settings.preset.*` prefix:
 | `actionEnabled`  | Boolean | `false`    | Default visibility for the quick actions panel.                        |
 | `actionItems`    | List    | `settings` | Comma-separated items: `settings`, `controls`, `mute`, `fps`, `webgl`. |
 | `systemTheme`    | String  | `system`   | Default theme: `system`, `light`, `dark`.                              |
-| `systemLanguage` | String  | `system`   | Default language: `system`, `en`, `es`.                                |
+| `systemLanguage` | String  | `system`   | Default language fallback: `system`, `en`, `es`, `zh`, `ja`, `pt-rBR`, `ru`. |
+
+---
+
+## Localization & Languages
+
+Ludens supports multiple languages for its wrapper client UI.
+
+:::caution[Important]
+This localization system translates **only** the native client/wrapper UI (such as the Settings screen, control overlays, and native dialogs). It **does not** translate the actual RPG Maker game content or dialogues.
+:::
+
+By default, the compilation includes all languages found in the project's assets. If your game is only intended for a single language or a specific set of languages, you can restrict the options shown in the wrapper's settings menu by modifying `ludens.properties`:
+
+```properties
+# ----- Languages -----
+# Which languages to include in the build.
+# "*" means all discovered from project/assets/languages/ (Default).
+# List only the tags you need to limit the build (e.g. en,es).
+ludens.languages.available=en,es
+```
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `ludens.languages.available` | List/String | `*` | Comma-separated list of ISO language tags to include in the build (e.g., `en,es,zh,ja`). |
+
+To add translation keys for a language not provided by default, see the [Localization guide in the BUILD docs](/guide/build/android/#localization--translations).
+
+---
+
+## Custom Fonts & Typography
+
+Ludens uses Compose Multiplatform's resource system to manage typography.
+
+- **Source Folder**: Place your custom `.ttf` or `.otf` font files in `project/assets/fonts/`.
+- **System Fonts**: The default display font is `Plus Jakarta Sans` and the body font is `Inter`.
+
+You can configure global default fonts or specify language-specific font fallbacks in `ludens.properties`:
+
+```properties
+# ----- Fonts -----
+# Base fonts (always included, change only if you customize the .ttf files)
+# ludens.fonts.display=plusjakartasans.ttf
+# ludens.fonts.body=inter.ttf
+
+# Language-specific font fallbacks
+ludens.fonts.language.ja.body=notosans_sc.ttf
+ludens.fonts.language.ja.display=notosans_sc.ttf
+ludens.fonts.language.zh.body=notosans_sc.ttf
+ludens.fonts.language.zh.display=notosans_sc.ttf
+```
+
+### Property Details
+
+These properties use the `ludens.fonts.*` prefix:
+
+| Property | Type | Description |
+|---|---|---|
+| `display` | String | Default font for heading elements (titles, buttons). |
+| `body` | String | Default font for body/paragraph elements. |
+| `language.<lang_tag>.display` | String | Heading font fallback specifically for `<lang_tag>` locale. |
+| `language.<lang_tag>.body` | String | Body font fallback specifically for `<lang_tag>` locale. |
+

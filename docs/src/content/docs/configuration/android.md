@@ -14,7 +14,7 @@ These properties define the package name, version, and names shown by the Androi
 ```properties
 # ----- Android Identity -----
 ludens.android.id=com.ludens.compose.ludens
-ludens.android.version=0.3.0
+ludens.android.version=0.4.0
 ludens.android.versionCode=1
 ludens.android.name=Ludens
 ludens.android.launcherName=Ludens
@@ -28,7 +28,7 @@ Configure these properties using the `ludens.android.*` prefix:
 | Property       | Type    | Default                     | Description                                        |
 |----------------|---------|-----------------------------|----------------------------------------------------|
 | `id`           | String  | `com.ludens.compose.ludens` | Unique application identifier (package name).      |
-| `version`      | String  | `0.3.0`                     | Visible version name shown to the user.            |
+| `version`      | String  | `0.4.0`                     | Visible version name shown to the user.            |
 | `versionCode`  | Integer | `1`                         | Internal version code used for Play Store updates. |
 | `name`         | String  | `Ludens`                    | Full application name in system settings.          |
 | `launcherName` | String  | `Ludens`                    | Name displayed under the home screen icon.         |
@@ -43,24 +43,59 @@ Google Play Store. Changing it after publication creates a new listing.
 
 ## Application Icon
 
-Replace the default icon by updating the images in `composeApp/src/androidMain/res/mipmap-*`
-directories, or use the **Image Asset Studio** tool in Android Studio:
+Ludens includes an automated **App Icon Generator** plugin that creates launcher icons for all target platforms from a single source image (SVG or PNG).
 
-1. Right-click on `composeApp/src/androidMain/res`.
+### Automated Generation (Recommended)
+
+1. Place your source icon image inside the `project/assets/icons/` directory.
+   - For best results, use a vector image named `icon.svg` or a high-resolution raster image named `icon.png` (at least 512x512 pixels).
+   - If you want to use separate adaptive layers for Android, you can place `icon_foreground.svg`/`icon_foreground.png` and `icon_background.svg`/`icon_background.png` in that same directory.
+2. Configure the icon generator in `ludens.properties`:
+
+```properties
+# Name of the source master icon in project/assets/icons/
+ludens.icons.name=icon
+
+# Name of the foreground adaptive layer in project/assets/icons/
+ludens.icons.foreground=icon_foreground
+
+# Solid hex color background or resource reference
+ludens.icons.background=#FDFDFD
+
+# Android-specific configuration
+ludens.icons.android.enable=true
+ludens.icons.android.format=webp
+ludens.icons.android.playstore=true
+
+# iOS-specific configuration
+ludens.icons.ios.enable=true
+
+# Scale of the foreground asset inside the adaptive icon viewport
+ludens.icons.scale=0.62
+```
+
+3. Build the project. The build system will automatically generate:
+   - **Android**: Legacy round and square mipmap icons, XML adaptive icon sheets under `mipmap-anydpi-v26`, and vector/raster layers (`ic_launcher_foreground`, `ic_launcher_background`) placed in `androidMain/res/`.
+   - **iOS**: All required AppIcon sizes (iPhone, iPad, App Store) along with the corresponding `Contents.json` asset catalog manifest under `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
+   - **Google Play Store**: A high-resolution `ic_launcher-playstore.png` (512x512) listing icon.
+
+### Manual Configuration (Alternative)
+
+If you prefer to generate your assets manually or use the standard Android developer tools:
+
+:::caution[Disable Automatic Generation]
+To prevent the automated generator task from overwriting your custom manual files on every build, you **MUST** disable the automatic generator in `ludens.properties`:
+```properties
+ludens.icons.android.enable=false
+ludens.icons.ios.enable=false
+```
+:::
+
+1. Right-click on the `composeApp/src/androidMain/res` directory in Android Studio.
 2. Select **New > Image Asset**.
-3. Configure the icon using your game's artwork.
+3. Use the Asset Studio wizard to configure your layers and scale.
 
 ![Using Image Asset Studio to update the application icon.](../../../assets/images/guide/ludens-application-icon.png)
-
-The `mipmap-*` directories contain icons at different resolutions:
-
-| Directory        | Resolution |
-|------------------|------------|
-| `mipmap-mdpi`    | 48×48 px   |
-| `mipmap-hdpi`    | 72×72 px   |
-| `mipmap-xhdpi`   | 96×96 px   |
-| `mipmap-xxhdpi`  | 144×144 px |
-| `mipmap-xxxhdpi` | 192×192 px |
 
 ## Manifest Configuration
 
@@ -186,3 +221,33 @@ storeFile=C:/Path/To/Your/key.jks
 :::caution[Security]
 Never commit your `keystore.properties` file or `.jks` keystore to version control.
 :::
+
+## Error & Debug Diagnostics
+
+Ludens provides a built-in hybrid error interception system to help you diagnose game crashes and WebView load failures.
+
+```properties
+# ----- WebView Debug & Error Reporting -----
+# Enable rich error interception and show a detailed traceback Dialog for game runtime errors.
+ludens.debug.errors=true
+```
+
+Configure this property using the `ludens.debug.*` prefix:
+
+| Property | Type    | Default | Description |
+|----------|---------|---------|-------------|
+| `errors` | Boolean | `true`  | Enables WebView runtime error interception and traceback dialog. |
+
+### How It Works
+
+When `ludens.debug.errors` is set to `true`:
+1. **JavaScript Exceptions**: Ludens injects an error listener into the game WebView to capture unhandled JavaScript runtime exceptions and unhandled promise rejections.
+2. **Native Load Failures**: The native WebView client intercepts resource loading failures (e.g., missing files, incorrect paths, 404 errors).
+3. **Traceback Dialog**: Instead of silently failing or showing a black screen, Ludens renders a native Compose Multiplatform dialog with the detailed exception message and stack trace.
+   - **Copy to Clipboard**: Copy the complete technical traceback for debugging.
+   - **Restart**: Instantly reload the WebView and restart the game.
+
+:::note[Plugin Support]
+JavaScript stack trace capture is only fully supported if you have the [`YDP_Ludens.js` (v1.2.0+)](https://github.com/yoimerdr/rpgm-plugins) plugin loaded as the first plugin in your RPG Maker project.
+:::
+

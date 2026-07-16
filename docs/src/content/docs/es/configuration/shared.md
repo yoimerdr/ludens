@@ -74,4 +74,66 @@ Estas propiedades se configuran bajo el prefijo `ludens.settings.preset.*`:
 | `actionEnabled`  | Booleano | `false`     | Visibilidad inicial del panel de acciones rápidas.                        |
 | `actionItems`    | Lista    | `settings`  | Ítems separados por coma: `settings`, `controls`, `mute`, `fps`, `webgl`. |
 | `systemTheme`    | String   | `system`    | Tema: `system`, `light`, `dark`.                                          |
-| `systemLanguage` | String   | `system`    | Idioma: `system`, `en`, `es`.                                             |
+| `systemLanguage` | String   | `system`    | Idioma por defecto: `system`, `en`, `es`, `zh`, `ja`, `pt-rBR`, `ru`.      |
+
+---
+
+## Localización e Idiomas
+
+Ludens admite varios idiomas para la interfaz de usuario de su cliente/wrapper.
+
+:::caution[Importante]
+Este sistema de localización traduce **únicamente** la interfaz nativa del cliente/wrapper (como la pantalla de Ajustes, las superposiciones de control y los diálogos nativos). **No** traduce el contenido ni los diálogos propios del juego de RPG Maker.
+:::
+
+Por defecto, la compilación incluye todos los idiomas encontrados en los assets del proyecto. Si tu juego solo está destinado a un único idioma o a un conjunto específico de idiomas, puedes restringir las opciones mostradas en el menú de ajustes del wrapper modificando `ludens.properties`:
+
+```properties
+# ----- Idiomas -----
+# Qué idiomas incluir en la compilación.
+# "*" significa todos los descubiertos en project/assets/languages/ (Por defecto).
+# Lista solo los tags que necesitas para limitar la compilación (ej. en,es).
+ludens.languages.available=en,es
+```
+
+| Propiedad | Tipo | Por defecto | Descripción |
+|---|---|---|---|
+| `ludens.languages.available` | Lista/String | `*` | Lista de códigos de idioma ISO separados por coma a incluir en la compilación (por ejemplo, `en,es,zh,ja`). |
+
+Para añadir claves de traducción de un idioma no proporcionado por defecto, consulta la [guía de Localización en los documentos de COMPILACIÓN](/es/guide/build/android/#localización-y-traducciones).
+
+---
+
+## Fuentes Personalizadas y Tipografía
+
+Ludens utiliza el sistema de recursos de Compose Multiplatform para gestionar la tipografía.
+
+- **Carpeta de Origen**: Coloca tus archivos de fuentes personalizados `.ttf` o `.otf` en `project/assets/fonts/`.
+- **Fuentes del Sistema**: La fuente de título predeterminada es `Plus Jakarta Sans` y la fuente de cuerpo es `Inter`.
+
+Puedes configurar fuentes globales por defecto o especificar fuentes fallback para idiomas específicos en `ludens.properties`:
+
+```properties
+# ----- Fuentes -----
+# Fuentes base (siempre incluidas, cámbialas solo si personalizas los archivos .ttf)
+# ludens.fonts.display=plusjakartasans.ttf
+# ludens.fonts.body=inter.ttf
+
+# Fuentes fallback específicas de idioma
+ludens.fonts.language.ja.body=notosans_sc.ttf
+ludens.fonts.language.ja.display=notosans_sc.ttf
+ludens.fonts.language.zh.body=notosans_sc.ttf
+ludens.fonts.language.zh.display=notosans_sc.ttf
+```
+
+### Detalles de Propiedades
+
+Estas propiedades utilizan el prefijo `ludens.fonts.*`:
+
+| Propiedad | Tipo | Descripción |
+|---|---|---|
+| `display` | String | Fuente por defecto para elementos de título (títulos, botones). |
+| `body` | String | Fuente por defecto para elementos de cuerpo/párrafo. |
+| `language.<tag_idioma>.display` | String | Fuente de título fallback específicamente para el locale `<tag_idioma>`. |
+| `language.<tag_idioma>.body` | String | Fuente de cuerpo fallback específicamente para el locale `<tag_idioma>`. |
+
