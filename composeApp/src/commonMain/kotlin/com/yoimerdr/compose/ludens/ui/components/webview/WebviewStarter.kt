@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import com.multiplatform.webview.web.LoadingState
@@ -51,7 +51,7 @@ fun EvaluateScriptOnStart(
     state: WebViewState,
     onStart: suspend CoroutineScope.(String) -> Unit,
 ) {
-    var script by rememberSaveable(filepath) { mutableStateOf<String?>(null) }
+    var script by remember(filepath) { mutableStateOf<String?>(null) }
 
     LaunchedEffect(filepath) {
         script = Res.readBytes(filepath).decodeToString()
