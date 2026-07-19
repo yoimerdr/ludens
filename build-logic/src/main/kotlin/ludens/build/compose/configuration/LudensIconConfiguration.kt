@@ -13,13 +13,13 @@ data class LudensIconConfiguration(
      * Base icon file name (without extension) used as the fallback when dedicated foreground
      * or background files are not provided.
      *
-     * Maps from `ludens.icon.name`.
+     * Maps from `ludens.icons.name`.
      */
     val name: String = "icon",
     /**
      * Foreground layer file name (without extension) composited over the background layer.
      *
-     * Maps from `ludens.icon.foreground`.
+     * Maps from `ludens.icons.foreground`.
      */
     val foreground: String = "icon_foreground",
     /**
@@ -28,25 +28,25 @@ data class LudensIconConfiguration(
      * When it starts with `#`, it is treated as a solid colour; otherwise it must correspond
      * to a valid image file in the icon assets directory.
      *
-     * Maps from `ludens.icon.background`.
+     * Maps from `ludens.icons.background`.
      */
     val background: String = "icon_background",
     /**
      * Android-specific icon configuration.
      *
-     * Maps from `ludens.icon.android.*`.
+     * Maps from `ludens.icons.android.*`.
      */
     val android: LudensIconAndroidConfiguration = LudensIconAndroidConfiguration(),
     /**
      * iOS-specific icon configuration.
      *
-     * Maps from `ludens.icon.ios.*`.
+     * Maps from `ludens.icons.ios.*`.
      */
     val ios: LudensIconIosConfiguration = LudensIconIosConfiguration(),
     /**
      * Foreground scale factor inside the icon bounding-box (0.0–1.0).
      *
-     * Maps from `ludens.icon.scale`.
+     * Maps from `ludens.icons.scale`.
      */
     val scale: Double = 0.75,
 ) : Serializable
@@ -61,7 +61,7 @@ data class LudensIconAndroidConfiguration(
     /**
      * Whether to generate Android icon assets.
      *
-     * Maps from `ludens.icon.android.enable`.
+     * Maps from `ludens.icons.android.enable`.
      */
     val enable: Boolean = true,
     /**
@@ -70,13 +70,13 @@ data class LudensIconAndroidConfiguration(
      * Supported values: `png`, `webp`. Falls back to PNG when WebP is not supported by the
      * runtime ImageIO.
      *
-     * Maps from `ludens.icon.android.format`.
+     * Maps from `ludens.icons.android.format`.
      */
     val format: String = "png",
     /**
      * Whether to generate a 512×512 Play Store listing icon.
      *
-     * Maps from `ludens.icon.android.playstore`.
+     * Maps from `ludens.icons.android.playstore`.
      */
     val playstore: Boolean = true,
 ) : Serializable {
@@ -99,7 +99,7 @@ data class LudensIconIosConfiguration(
     /**
      * Whether to generate iOS app icon assets.
      *
-     * Maps from `ludens.icon.ios.enable`.
+     * Maps from `ludens.icons.ios.enable`.
      */
     val enable: Boolean = true,
 ) : Serializable
