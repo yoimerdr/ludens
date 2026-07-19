@@ -29,20 +29,35 @@ The important thing is to locate the directory where the `index.html` file and t
 
 This is the most critical step.
 
-1. Navigate to the project folder in your file explorer:
-   ```text
-   composeApp/src/commonMain/composeResources/files
-   ```
+:::caution[Case Sensitivity]
+Windows file system is **case-insensitive** (`/Path/Example` = `/path/example`), but Android and iOS use **case-sensitive** file systems. Ensure that all file references in your game's code (images, audio, data files) use **exact matching names**. If a file is named `MyImage.png`, you must reference it as `MyImage.png`, not `myimage.png`. This is a common source of silent failures on mobile.
 
-2. Copy the entire `www` folder from your export and paste it inside `files`.
-
-   If you only have the game assets without the `www` wrapper, create a `www` folder inside `files` and paste the assets there.
-
-:::danger[Required Structure]
-The application expects to find `index.html` inside `www`. If this structure is not correct, the game will not load.
+**Tip**: You can use the plugin **[YDP_CrossAssets](https://github.com/yoimerdr/rpgm-plugins)** to automatically normalize file paths and avoid this issue.
 :::
 
-### Expected Structure
+You have two valid options to integrate your assets:
+
+### Option A (Recommended): Root Folder Synchronization
+
+1. Navigate to the root of the Ludens project repository.
+2. Locate the `project/www/` folder.
+3. Copy the contents of your exported **`www`** folder into `project/www/`.
+
+:::note
+The build system automatically synchronizes assets from `project/www/` to the required internal folder (`composeResources/files/www`). This synchronization **only** happens if there are files in `project/www/` other than the default `index.html`.
+:::
+
+### Option B: Internal Folder Direct Placement
+
+1. Navigate to the internal resources folder:
+   `composeApp/src/commonMain/composeResources/files/`
+2. Copy the entire **`www`** folder from your export and paste it inside `files`.
+
+:::danger[Required Structure]
+The application expects to find `index.html` inside the `www` directory (e.g., `files/www/index.html` or `project/www/index.html`). If this structure is not correct, the game will not load.
+:::
+
+### Expected Structure (Internal)
 
 <FileTree>
 - files/
@@ -57,6 +72,7 @@ The application expects to find `index.html` inside `www`. If this structure is 
 </FileTree>
 
 ![Android Studio view showing the www folder and index.html file inside composeResources/files.](../../../assets/images/guide/ludens-android-studio-files.png)
+
 
 ## Verification
 

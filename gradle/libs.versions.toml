@@ -29,10 +29,13 @@ ksp = "2.3.3"
 buildKonfig = "0.17.1"
 reorderable = "3.0.0"
 kotlinx-collections-immutable = "0.4.0"
+svgSalamander = "1.1.2.2"
+webpImageio = "0.1.6"
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 jackson-dataformat-properties = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-properties", version.ref = "jacksonDataformatProperties" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jacksonModuleKotlin" }
+svg-salamander = { module = "com.weblookandfeel:svg-salamander", version.ref = "svgSalamander" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeMultiplatform" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
@@ -69,6 +72,7 @@ androidx-datastore-core-okio = { module = "androidx.datastore:datastore-core-oki
 sh-calvin-reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 # Collections
 kotlinx-collections-immutable = {module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref="kotlinx-collections-immutable"}
+webp-imageio = { module = "org.sejda.imageio:webp-imageio", version.ref = "webpImageio" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

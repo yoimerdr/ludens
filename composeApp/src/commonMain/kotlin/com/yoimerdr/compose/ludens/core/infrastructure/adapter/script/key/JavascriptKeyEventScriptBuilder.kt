@@ -35,68 +35,119 @@ fun KeyEvent.toEventProperties(): List<KeyEventProperty> {
  * @return A string representing the JavaScript object literal.
  */
 fun KeyEvent.toEventPropertiesString(): String {
-    return toEventProperties()
-        .joinToString(separator = ",", prefix = "{", postfix = "}") {
-            val (name, value, isStrict) = it
+    return toEventProperties().joinToString(separator = ",", prefix = "{", postfix = "}") {
+        val (name, value, isStrict) = it
 
-            "'$name': ${if (!isStrict && value is CharSequence) "'${value}'" else value}"
-        }
-}
-
-/**
- * Converts a [MovementKeyEvent] to a JavaScript script string.
- *
- * Generates JavaScript code that directly modifies the Input._currentState object
- * to set the movement direction state (up, down, left, right) as active or inactive.
- *
- * @return A JavaScript statement that updates the movement state.
- */
-fun MovementKeyEvent.toEventScript(): String {
-    val movement = InputKey.movements.first { it.code == code }
-    // edit directly for movement state
-    val isActive = type == KeyEventType.Down
-    val stateName = movement.name.lowercase()
-    return "Input._currentState['${stateName}']=$isActive"
-}
-
-/**
- * Converts an [InputKeyEvent] to a JavaScript script string.
- *
- * Generates JavaScript code that calls the appropriate Input callback method
- * (_onKeyDown or _onKeyUp) with the event properties.
- *
- * @return A JavaScript function call for the input event.
- */
-fun InputKeyEvent.toEventScript(): String {
-    // for other codes, whe use the Input callbacks
-    val properties = toEventPropertiesString()
-    return when (type) {
-        KeyEventType.Up -> "Input._onKeyUp($properties)"
-        else -> "Input._onKeyDown($properties)"
+        "'$name': ${if (!isStrict && value is CharSequence) "'${value}'" else value}"
     }
 }
 
 /**
- * Converts a [GraphicsKeyEvent] to a JavaScript script string.
+ * Converts a [MovementKeyEvent] into a raw JavaScript expression to update the game's movement state.
  *
- * Generates JavaScript code that calls the Graphics._onKeyDown method
- * with the event properties. Only key down events are used for graphics keys.
+ * This generates a direct property assignment to the global `Input._currentState` object
+ * (e.g., `Input._currentState['up'] = true`) corresponding to the movement direction.
+ * This expression does *not* include any safety guards verifying if `Input` exists in the JS environment.
  *
- * @return A JavaScript function call for the graphics key event.
+ * @return A JavaScript assignment expression updating the movement direction status.
  */
-fun GraphicsKeyEvent.toEventScript(): String {
-    // for graphics key, whe only use the onKeyDown event
+fun MovementKeyEvent.toEventRawScript(): String {
+    val movement = InputKey.movements.first { it.code == code }
+    val isActive = type == KeyEventType.Down
+    val stateName = movement.name.lowercase()
+    return "Input._currentState['$stateName'] = $isActive"
+}
+
+/**
+ * Converts an [InputKeyEvent] into a raw JavaScript function call to simulate keyboard interactions.
+ *
+ * This generates a direct invocation of either `Input._onKeyDown` or `Input._onKeyUp` passing
+ * the key event properties as an object literal argument.
+ * This expression does *not* include any safety guards verifying if `Input` exists in the JS environment.
+ *
+ * @return A JavaScript function call invoking the respective RPG Maker input listener.
+ */
+fun InputKeyEvent.toEventRawScript(): String {
+    val properties = toEventPropertiesString()
+    val method = if (type == KeyEventType.Up) "_onKeyUp" else "_onKeyDown"
+    return "Input.$method($properties)"
+}
+
+/**
+ * Converts a [GraphicsKeyEvent] into a raw JavaScript function call targeting the graphics system.
+ *
+ * This generates a direct invocation of `Graphics._onKeyDown` passing the event properties.
+ * In RPG Maker, only key down events are processed for graphics-related actions.
+ * This expression does *not* include any safety guards verifying if `Graphics` exists in the JS environment.
+ *
+ * @return A JavaScript function call invoking the RPG Maker graphics key down handler.
+ */
+fun GraphicsKeyEvent.toEventRawScript(): String {
     val properties = toEventPropertiesString()
     return "Graphics._onKeyDown($properties)"
 }
 
 /**
- * Converts a [KeyEvent] to its corresponding JavaScript event script.
+ * Resolves and converts this [KeyEvent] into its corresponding raw JavaScript event expression.
  *
- * Dispatches to the appropriate conversion method based on the concrete type
- * of the key event (InputKeyEvent, GraphicsKeyEvent, or MovementKeyEvent).
+ * Dynamically dispatches the conversion to the concrete type implementation:
+ * [InputKeyEvent], [GraphicsKeyEvent], or [MovementKeyEvent]. The returned script contains
+ * no safety guards verifying the existence of RPG Maker globals.
  *
- * @return A JavaScript script string for the specific key event type.
+ * @return The raw JavaScript statement corresponding to the specific key event.
+ */
+fun KeyEvent.toKeyEventRawScript(): String {
+    return when (this) {
+        is InputKeyEvent -> toEventRawScript()
+        is GraphicsKeyEvent -> toEventRawScript()
+        is MovementKeyEvent -> toEventRawScript()
+    }
+}
+
+/**
+ * Converts a [MovementKeyEvent] into a safe JavaScript statement by wrapping the raw assignment in safety guards.
+ *
+ * It checks that the `Input` global and its internal `_currentState` property are defined
+ * before applying the property update generated by [toEventRawScript].
+ *
+ * @return A safe JavaScript conditional statement updating the movement direction status.
+ */
+fun MovementKeyEvent.toEventScript(): String {
+    return "typeof Input !== 'undefined' && Input && Input._currentState && (${toEventRawScript()});"
+}
+
+/**
+ * Converts an [InputKeyEvent] into a safe JavaScript statement by wrapping the raw callback call in safety guards.
+ *
+ * It checks that the `Input` global and the respective handler method exist in the JS context
+ * before executing the invocation generated by [toEventRawScript].
+ *
+ * @return A safe JavaScript conditional statement simulating the input event.
+ */
+fun InputKeyEvent.toEventScript(): String {
+    val method = if (type == KeyEventType.Up) "_onKeyUp" else "_onKeyDown"
+    return "typeof Input !== 'undefined' && Input && Input.$method && ${toEventRawScript()};"
+}
+
+/**
+ * Converts a [GraphicsKeyEvent] into a safe JavaScript statement by wrapping the raw handler call in safety guards.
+ *
+ * It checks that the `Graphics` global and its key down listener exist in the JS context
+ * before executing the invocation generated by [toEventRawScript].
+ *
+ * @return A safe JavaScript conditional statement invoking the graphics event handler.
+ */
+fun GraphicsKeyEvent.toEventScript(): String {
+    return "typeof Graphics !== 'undefined' && Graphics && Graphics._onKeyDown && ${toEventRawScript()};"
+}
+
+/**
+ * Resolves and converts this [KeyEvent] into its corresponding safe JavaScript event statement.
+ *
+ * Dynamically dispatches the conversion to the concrete type implementation. Unlike [toKeyEventRawScript],
+ * the returned script includes environment safety checks to prevent runtime errors in the WebView.
+ *
+ * @return The safe JavaScript statement corresponding to the specific key event.
  */
 fun KeyEvent.toKeyEventScript(): String {
     return when (this) {
@@ -107,12 +158,12 @@ fun KeyEvent.toKeyEventScript(): String {
 }
 
 /**
- * Converts a [KeyEvent] to a complete JavaScript script string.
+ * Converts this [KeyEvent] into a fully executable JavaScript script, taking scheduling into account.
  *
- * If the event has a timeout, wraps the event script in a setTimeout call.
- * Otherwise, returns the event script directly.
+ * If the event specifies a [KeyEvent.timeout], the statement returned by [toKeyEventScript] is wrapped
+ * inside a JavaScript `setTimeout` block to delay execution. Otherwise, the safe statement is returned directly.
  *
- * @return A complete JavaScript statement for the key event.
+ * @return The complete, formatted JavaScript statement suitable for execution in a WebView.
  */
 fun KeyEvent.toScript(): String {
     val state = this.toKeyEventScript()
@@ -120,7 +171,6 @@ fun KeyEvent.toScript(): String {
         "setTimeout(function(){$state;}, $timeout);"
     } else state
 }
-
 
 /**
  * Builder implementation of [KeyEventScriptBuilder].
@@ -136,7 +186,7 @@ class JavascriptKeyEventScriptBuilder : KeyEventScriptBuilder {
     /**
      * Mutable list storing the key events to be converted to scripts.
      */
-    private val keys = mutableListOf<KeyEvent>();
+    private val keys = mutableListOf<KeyEvent>()
 
     override fun add(script: KeyEvent): KeyEventScriptBuilder {
         keys.add(script)
@@ -149,9 +199,79 @@ class JavascriptKeyEventScriptBuilder : KeyEventScriptBuilder {
         return this
     }
 
-
     override fun restart(): KeyEventScriptBuilder {
         keys.clear()
+        return this
+    }
+
+    private fun StringBuilder.appendMovementKeyEvents(events: List<MovementKeyEvent>): StringBuilder {
+        if (events.isEmpty()) return this
+
+        append("if (typeof Input !== 'undefined' && Input && Input._currentState) { ")
+        events.forEach { ev ->
+            append(ev.toEventRawScript()).append("; ")
+        }
+        append("} ")
+        return this
+    }
+
+    private fun StringBuilder.appendInputKeyEvents(events: List<InputKeyEvent>): StringBuilder {
+        if (events.isEmpty()) return this
+
+        append("if (typeof Input !== 'undefined' && Input) { ")
+        val ups = ArrayList<InputKeyEvent>(events.size)
+        val downs = ArrayList<InputKeyEvent>(events.size)
+        events.forEach { ev ->
+            if (ev.type == KeyEventType.Up) ups.add(ev) else downs.add(ev)
+        }
+
+        if (ups.isNotEmpty()) {
+            append("if (Input._onKeyUp) { ")
+            ups.forEach { ev ->
+                append(ev.toEventRawScript()).append("; ")
+            }
+            append("} ")
+        }
+
+        if (downs.isNotEmpty()) {
+            append("if (Input._onKeyDown) { ")
+            downs.forEach { ev ->
+                append(ev.toEventRawScript()).append("; ")
+            }
+            append("} ")
+        }
+        append("} ")
+        return this
+    }
+
+    private fun StringBuilder.appendGraphicsKeyEvents(events: List<GraphicsKeyEvent>): StringBuilder {
+        if (events.isEmpty()) return this
+
+        append("if (typeof Graphics !== 'undefined' && Graphics && Graphics._onKeyDown) { ")
+        events.forEach { ev ->
+            append(ev.toEventRawScript()).append("; ")
+        }
+        append("} ")
+        return this
+    }
+
+    private fun StringBuilder.appendKeyEvents(events: List<KeyEvent>): StringBuilder {
+        val movements = ArrayList<MovementKeyEvent>()
+        val inputs = ArrayList<InputKeyEvent>()
+        val graphics = ArrayList<GraphicsKeyEvent>()
+
+        events.forEach { event ->
+            when (event) {
+                is MovementKeyEvent -> movements.add(event)
+                is InputKeyEvent -> inputs.add(event)
+                is GraphicsKeyEvent -> graphics.add(event)
+            }
+        }
+
+        appendMovementKeyEvents(movements)
+        appendInputKeyEvents(inputs)
+        appendGraphicsKeyEvents(graphics)
+
         return this
     }
 
@@ -159,20 +279,17 @@ class JavascriptKeyEventScriptBuilder : KeyEventScriptBuilder {
         val (first, second) = keys.partition { it.timeout == null }
         val script = StringBuilder()
 
-        script.append(first.joinToString(separator = " ") { "${it.toKeyEventScript()};" })
-            .appendLine()
+        if (first.isNotEmpty()) {
+            script.appendKeyEvents(first).appendLine()
+        }
 
         val delayed = second.groupBy { it.timeout!! }
 
-        delayed.forEach {
-            val (timeout, events) = it
-
+        delayed.forEach { (timeout, events) ->
             script.append("setTimeout(function(){")
-                .append(events.joinToString(separator = " ") { key -> "${key.toKeyEventScript()};" })
-                .append("},$timeout);")
-                .appendLine()
+            script.appendKeyEvents(events)
+            script.append("},$timeout);").appendLine()
         }
-
 
         keys.clear()
         return script.toString()

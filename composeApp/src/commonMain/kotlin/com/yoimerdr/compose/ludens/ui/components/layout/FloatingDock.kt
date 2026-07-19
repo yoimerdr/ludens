@@ -131,7 +131,7 @@ fun FloatingDockOpenerButton(
 
             Icon(
                 imageVector = LudensIcons.Default.Dismiss,
-                contentDescription = null,
+                contentDescription = "Close Menu",
                 modifier = Modifier
                     .size(16.dp)
                     .rotate(rotation)
@@ -150,7 +150,7 @@ fun FloatingDockOpenerButton(
         ) {
             Icon(
                 imageVector = LudensIcons.Outlined.Circle,
-                contentDescription = null
+                contentDescription = "Open Menu"
             )
         }
     }

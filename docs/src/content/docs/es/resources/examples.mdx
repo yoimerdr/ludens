@@ -13,16 +13,20 @@ La configuración más simple posible — exporta tu juego y compila con ajustes
 
 ### Pasos
 
-1. Exporta tu juego de RPG Maker MV con la opción de despliegue **Android / iOS**.
-2. Copia la carpeta `www` a:
+1. Exporta tu juego de RPG Maker MV o MZ con la opción de despliegue **Android / iOS**. Si no está disponible, selecciona **Web Browsers** (Navegadores Web).
+2. Copia el contenido de la carpeta `www` exportada a:
    ```text
-   composeApp/src/commonMain/composeResources/files/www/
+   project/www/
    ```
+   *Nota: El sistema de compilación sincronizará automáticamente estos archivos en el directorio interno de recursos durante la compilación. Si prefieres la gestión manual sin sincronización automática, coloca tus archivos directamente en `composeApp/src/commonMain/composeResources/files/www/`.*
 3. Edita `ludens.properties`:
    ```properties
+   # ----- Identidad Android -----
    ludens.android.id=com.ejemplo.mijuego
    ludens.android.version=1.0.0
    ludens.android.versionCode=1
+   ludens.android.minSDK=21
+   ludens.android.targetSDK=36
    ludens.android.name=Mi Juego
    ludens.android.launcherName=Mi Juego
    ```
@@ -39,16 +43,38 @@ Un APK de debug en `composeApp/build/outputs/apk/debug/composeApp-debug.apk` lis
 
 ## Ejemplo 2: Icono Personalizado y Release Firmado
 
-Un flujo de trabajo completo de producción con branding personalizado.
+Un flujo de trabajo completo de producción con branding personalizado usando el Generador Automático de Iconos.
 
 ### Pasos
 
 1. Completa la [Configuración Mínima](#ejemplo-1-configuración-mínima) anterior.
 
-2. **Establece un icono personalizado** usando Image Asset Studio:
-   - Clic derecho en `composeApp/src/androidMain/res`
-   - Selecciona **New > Image Asset**
-   - Importa el icono de tu juego (recomendado: PNG de 512×512 px)
+2. **Configura tu icono personalizado**:
+   - Coloca tu imagen de icono origen (recomendado: vectorial `icon.svg`, o un `icon.png` de alta resolución de al menos 512×512 px) en la carpeta `project/assets/icons/`.
+   - Configura las propiedades del generador en `ludens.properties`:
+     ```properties
+     # Nombre del icono maestro origen en project/assets/icons/
+     ludens.icons.name=icon
+
+     # Nombre de la capa adaptativa de primer plano (opcional)
+     ludens.icons.foreground=icon_foreground
+
+     # Color de fondo hexadecimal sólido o referencia de recurso
+     ludens.icons.background=#FDFDFD
+
+     # Habilitar generación para Android e iOS
+     ludens.icons.android.enable=true
+     ludens.icons.android.format=webp
+     ludens.icons.android.playstore=true
+     ludens.icons.ios.enable=true
+
+     # Escala del elemento de primer plano dentro del viewport de icono adaptativo
+     ludens.icons.scale=0.62
+     ```
+
+   :::note[Alternativa: Configuración Manual]
+   Si prefieres configurar manualmente tus iconos usando **Image Asset Studio** de Android Studio (clic derecho en `composeApp/src/androidMain/res` > **New > Image Asset**), primero debes desactivar el generador automático configurando `ludens.icons.android.enable=false` y `ludens.icons.ios.enable=false` en `ludens.properties`.
+   :::
 
 3. **Crea un keystore de firma** (si no tienes uno):
    - En Android Studio: **Build > Generate Signed Bundle / APK**
@@ -77,11 +103,11 @@ Un APK release firmado en `composeApp/build/outputs/apk/release/composeApp-relea
 
 ## Ejemplo 3: Usando el Plugin YDP_Ludens
 
-Integra el plugin recomendado para mejor compatibilidad con WebView.
+Integra el plugin recomendado para una mejor compatibilidad con WebView y diálogos de diagnóstico de errores.
 
 ### Pasos
 
-1. Descarga [`YDP_Ludens.js`](https://github.com/yoimerdr/rpgm-plugins) del repositorio rpgm-plugins.
+1. Localiza el plugin `YDP_Ludens.js` dentro de la carpeta `resources/` de este proyecto (o descarga la última versión desde el [repositorio rpgm-plugins](https://github.com/yoimerdr/rpgm-plugins)).
 
 2. Colócalo en la carpeta `js/plugins/` de tu proyecto RPG Maker.
 
@@ -91,12 +117,12 @@ Integra el plugin recomendado para mejor compatibilidad con WebView.
 
 5. Guarda y vuelve a exportar el juego.
 
-6. Copia la carpeta `www` actualizada a Ludens y recompila.
+6. Copia el contenido de la carpeta `www` actualizada a `project/www/` y recompila.
 
 ### Beneficios
 
 - Corrige errores de verificación de carga de fuentes en versiones antiguas de WebView.
-- Habilita funcionalidades adicionales del lado del cliente soportadas por Ludens.
+- Habilita la intercepción nativa de stack traces de errores y diálogos de traceback si `ludens.debug.errors=true` está configurado.
 
 ---
 
@@ -110,28 +136,23 @@ Una vista completa de la estructura del proyecto después de la configuración:
     - src/
       - androidMain/
         - res/
-          - mipmap-mdpi/ Icono de app (48px)
-          - mipmap-hdpi/ Icono de app (72px)
-          - mipmap-xhdpi/ Icono de app (96px)
-          - mipmap-xxhdpi/ Icono de app (144px)
-          - mipmap-xxxhdpi/ Icono de app (192px)
+          - mipmap-* (Iconos de la app autogenerados)
       - commonMain/
         - composeResources/
           - files/
-            - www/ Tu juego
-              - audio/
-              - data/
-              - fonts/
-              - img/
-              - js/
-                - plugins/
-                  - YDP_Ludens.js
+            - www/ Tu juego (Ruta de la Opción B, o salida auto-sincronizada)
               - index.html
     - build/
       - outputs/
         - apk/
           - debug/ Salida APK debug
           - release/ Salida APK release
+  - project/ Carpeta origen principal de tus recursos
+    - assets/
+      - fonts/ Fuentes personalizadas (auto-sincronizadas)
+      - languages/ Origen de traducciones/localización (archivos xml)
+      - icons/ Assets de icono maestro de la app (SVG/PNG)
+    - www/ Archivos del juego de RPG Maker (Ruta de la Opción A, auto-sincronizada)
   - ludens.properties Configuración principal de Ludens
   - gradle.properties Configuración de Gradle
   - keystore.properties Credenciales de firma

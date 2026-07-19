@@ -51,7 +51,7 @@ La pantalla de ajustes integrada se organiza en cuatro secciones:
 
 | Sección          | Opciones                                                              |
 |------------------|-----------------------------------------------------------------------|
-| **Sistema**      | Tema (Claro / Oscuro / Sistema), Idioma (Sistema / Inglés / Español)  |
+| **Sistema**      | Tema (Claro / Oscuro / Sistema), Idioma (Sistema / English / Español / 中文 / 日本語 / Português (Brasil) / Русский)  |
 | **Herramientas** | Silenciar Audio, Mostrar FPS, Alternar WebGL, Posiciones de Botones   |
 | **Controles**    | Activar/Desactivar, Ajustar Opacidad, Mapeo de Teclas                 |
 | **Acciones**     | Menú de Acciones Rápidas Configurable (Orden, Habilitar/Deshabilitar) |
@@ -69,21 +69,34 @@ completa de ajustes:
 
 El orden y la visibilidad de estas acciones son completamente configurables.
 
+### Diagnósticos y Recopilación de Errores de WebView
+
+Cuando está activo, Ludens captura errores de ejecución de JavaScript y fallos nativos de carga de recursos en el WebView. En lugar de fallar silenciosamente o mostrar una pantalla negra, renderiza un diálogo nativo superpuesto con el traceback completo, permitiendo:
+- Copiar el stack trace técnico completo al portapapeles.
+- Recargar el WebView y reiniciar el juego instantáneamente.
+
+### Generador Automático de Iconos de la App
+
+Ludens incluye un plugin generador de iconos integrado que compila tus assets de icono de inicio para todas las plataformas a partir de una única imagen de origen (SVG o PNG) en `project/assets/icons/`:
+- **Android**: Iconos clásicos, cuadrados y capas adaptativas (primer plano y fondo) en carpetas res mipmap.
+- **iOS**: Todos los tamaños necesarios con su manifiesto de catálogo de assets JSON.
+- **Google Play**: Icono de la ficha de la tienda de alta resolución.
+
 ### Configuración Fácil
 
-Todas las propiedades de identidad de la aplicación se configuran a través de `ludens.properties`:
+Todas las propiedades de identidad, recursos y compilación de la aplicación se configuran a través de `ludens.properties`:
 
-- ID de aplicación (ej., `com.tuorganizacion.juego`)
-- Cadena de versión y código de versión
-- Nombre de la aplicación (mostrado en ajustes del sistema)
-- Nombre del launcher (mostrado bajo el icono de la pantalla de inicio)
-- Interruptor de modo inmersivo (pantalla completa)
+- ID de aplicación, versión y nombre (para ajustes de sistema y launcher)
+- Ajustes del Generador Automático de Iconos (formato, fondo, escala)
+- Banderas del manifest para modo inmersivo, aceleración por hardware y tráfico HTTP en claro
+- Selección de idiomas a incluir en la compilación (`ludens.languages.available`)
+- Fuentes de título y cuerpo personalizadas, más fallbacks por idioma
+- Interruptor para el diálogo de diagnóstico de errores en WebView
 
-### Compose Resources
+### Sincronización Automática de Recursos
 
-Los assets del juego se gestionan a través del sistema de recursos de Compose Multiplatform. Colocas
-tu carpeta `www` exportada en `composeResources/files`, y el sistema de construcción se encarga del
-resto.
+Los assets del juego (`project/www/`), fuentes personalizadas (`project/assets/fonts/`) y archivos de traducción localizados (`project/assets/languages/`) se sincronizan automáticamente a los recursos de Compose durante la compilación, manteniendo limpio tu espacio de trabajo.
+
 
 ## Soporte de Plataformas
 

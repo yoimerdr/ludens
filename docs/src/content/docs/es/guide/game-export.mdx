@@ -29,20 +29,34 @@ Lo importante es localizar el directorio donde residen el archivo `index.html` y
 
 Este es el paso más crítico.
 
-1. Navega a la carpeta del proyecto en tu explorador de archivos:
-   ```text
-   composeApp/src/commonMain/composeResources/files
-   ```
+:::caution[Sensibilidad a Mayúsculas y Minúsculas]
+El sistema de archivos de Windows **no distingue entre mayúsculas y minúsculas** (`/Ruta/Ejemplo` = `/ruta/ejemplo`), pero Android e iOS usan sistemas de archivos que **sí distinguen entre ellas**. Asegúrate de que todas las referencias a archivos en el código de tu juego (imágenes, audios, archivos de datos) utilicen **nombres exactamente idénticos**. Si un archivo se llama `MiImagen.png`, debes referenciarlo como `MiImagen.png`, no como `miimagen.png`. Esta es una causa muy común de fallos silenciosos en móviles.
 
-2. Copia la carpeta `www` completa de tu exportación y pégala dentro de `files`.
-
-   Si solo tienes los assets del juego sin la carpeta `www`, crea una carpeta `www` dentro de `files` y pega los assets ahí.
-
-:::danger[Estructura Requerida]
-La aplicación espera encontrar `index.html` dentro de `www`. Si esta estructura no es correcta, el juego no cargará.
+**Consejo**: Puedes utilizar el plugin **[YDP_CrossAssets](https://github.com/yoimerdr/rpgm-plugins)** para normalizar automáticamente las rutas de archivos y evitar este problema.
 :::
 
-### Estructura Esperada
+Tienes dos opciones válidas para integrar tus assets:
+
+### Opción A (Recomendada): Sincronización desde la Carpeta Raíz
+
+1. Navega a la raíz del repositorio del proyecto Ludens.
+2. Localiza la carpeta `project/www/`.
+3. Copia el contenido de tu carpeta exportada **`www`** dentro de `project/www/`.
+
+:::note
+El sistema de compilación sincroniza automáticamente los assets desde `project/www/` hacia la carpeta interna requerida (`composeResources/files/www`). Esta sincronización **solo** ocurre si hay archivos en `project/www/` adicionales al `index.html` predeterminado.
+:::
+
+### Opción B: Colocación Directa en la Carpeta Interna
+
+1. Navega a la carpeta de recursos interna:
+   `composeApp/src/commonMain/composeResources/files/`
+2. Copia la carpeta **`www`** completa de tu exportación y pégala dentro de `files`.
+
+**Estructura Interna Obligatoria:**
+Tras usar cualquiera de las opciones, la aplicación espera encontrar el archivo `index.html` directamente dentro del directorio `www` interno.
+
+### Estructura Esperada (Interna)
 
 <FileTree>
 - files/
@@ -57,6 +71,7 @@ La aplicación espera encontrar `index.html` dentro de `www`. Si esta estructura
 </FileTree>
 
 ![Vista de Android Studio mostrando la carpeta www y el archivo index.html dentro de composeResources/files.](../../../../assets/images/guide/ludens-android-studio-files.png)
+
 
 ## Verificación
 

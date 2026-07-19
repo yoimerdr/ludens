@@ -15,7 +15,7 @@ Android.
 ```properties
 # ----- Android Identity -----
 ludens.android.id=com.ludens.compose.ludens
-ludens.android.version=0.3.0
+ludens.android.version=0.4.0
 ludens.android.versionCode=1
 ludens.android.name=Ludens
 ludens.android.launcherName=Ludens
@@ -29,7 +29,7 @@ Configura estas propiedades usando el prefijo `ludens.android.*`:
 | Propiedad      | Tipo     | Por defecto                 | Descripción                                                      |
 |----------------|----------|-----------------------------|------------------------------------------------------------------|
 | `id`           | String   | `com.ludens.compose.ludens` | Identificador único de la aplicación (package name).             |
-| `version`      | String   | `0.3.0`                     | Nombre de la versión visible para el usuario.                    |
+| `version`      | String   | `0.4.0`                     | Nombre de la versión visible para el usuario.                    |
 | `versionCode`  | Entero   | `1`                         | Código de versión interno para actualizaciones en la Play Store. |
 | `name`         | String   | `Ludens`                    | Nombre completo de la aplicación en ajustes del sistema.         |
 | `launcherName` | String   | `Ludens`                    | Nombre mostrado bajo el icono en la pantalla de inicio.          |
@@ -45,25 +45,59 @@ Store. Cambiarlo después de la publicación crea una nueva ficha de aplicación
 
 ## Icono de la Aplicación
 
-Reemplaza el icono predeterminado actualizando las imágenes en los directorios
-`composeApp/src/androidMain/res/mipmap-*`, o usa la herramienta **Image Asset Studio** en Android
-Studio:
+Ludens incluye un plugin **Generador Automático de Iconos de la App** que crea los iconos de inicio para todas las plataformas de destino a partir de una sola imagen origen (SVG o PNG).
 
-1. Haz clic derecho en `composeApp/src/androidMain/res`.
+### Generación Automática (Recomendado)
+
+1. Coloca tu imagen de icono origen dentro del directorio `project/assets/icons/`.
+   - Para mejores resultados, usa una imagen vectorial llamada `icon.svg` o una imagen rasterizada de alta resolución llamada `icon.png` (de al menos 512x512 píxeles).
+   - Si deseas usar capas adaptativas separadas para Android, puedes colocar `icon_foreground.svg`/`icon_foreground.png` e `icon_background.svg`/`icon_background.png` en ese mismo directorio.
+2. Configura el generador de iconos en `ludens.properties`:
+
+```properties
+# Nombre del icono maestro origen en project/assets/icons/
+ludens.icons.name=icon
+
+# Nombre de la capa adaptativa de primer plano en project/assets/icons/
+ludens.icons.foreground=icon_foreground
+
+# Color de fondo hexadecimal sólido o referencia de recurso
+ludens.icons.background=#FDFDFD
+
+# Configuración específica de Android
+ludens.icons.android.enable=true
+ludens.icons.android.format=webp
+ludens.icons.android.playstore=true
+
+# Configuración específica de iOS
+ludens.icons.ios.enable=true
+
+# Escala del elemento de primer plano dentro del viewport del icono adaptativo
+ludens.icons.scale=0.62
+```
+
+3. Compila el proyecto. El sistema de compilación generará automáticamente:
+   - **Android**: Iconos mipmap redondos y cuadrados tradicionales, hojas de iconos adaptativos XML bajo `mipmap-anydpi-v26` y capas vectoriales/rasterizadas (`ic_launcher_foreground`, `ic_launcher_background`) colocadas en `androidMain/res/`.
+   - **iOS**: Todos los tamaños de AppIcon requeridos (iPhone, iPad, App Store) junto con el manifiesto del catálogo de assets `Contents.json` correspondiente bajo `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
+   - **Google Play Store**: Un icono de ficha en alta resolución `ic_launcher-playstore.png` (512x512).
+
+### Configuración Manual (Alternativa)
+
+Si prefieres generar tus recursos manualmente o usar las herramientas estándar de desarrollo de Android:
+
+:::caution[Desactivar Generación Automática]
+Para evitar que la tarea del generador automático sobrescriba tus archivos manuales personalizados en cada compilación, **DEBES** desactivar el generador automático en `ludens.properties`:
+```properties
+ludens.icons.android.enable=false
+ludens.icons.ios.enable=false
+```
+:::
+
+1. Haz clic derecho en el directorio `composeApp/src/androidMain/res` en Android Studio.
 2. Selecciona **New > Image Asset**.
-3. Configura el icono usando el arte de tu juego.
+3. Usa el asistente de Image Asset Studio para configurar tus capas y escala.
 
 ![Uso de Image Asset Studio para actualizar el icono de la aplicación.](../../../../assets/images/guide/ludens-application-icon.png)
-
-Los directorios `mipmap-*` contienen iconos en diferentes resoluciones:
-
-| Directorio       | Resolución |
-|------------------|------------|
-| `mipmap-mdpi`    | 48×48 px   |
-| `mipmap-hdpi`    | 72×72 px   |
-| `mipmap-xhdpi`   | 96×96 px   |
-| `mipmap-xxhdpi`  | 144×144 px |
-| `mipmap-xxxhdpi` | 192×192 px |
 
 ## Configuración del Manifest
 
@@ -194,3 +228,33 @@ storeFile=C:/Ruta/A/Tu/llave.jks
 :::caution[Seguridad]
 Nunca subas tu archivo `keystore.properties` o el almacén de llaves `.jks` al control de versiones.
 :::
+
+## Diagnósticos de Error y Depuración
+
+Ludens proporciona un sistema híbrido de intercepción de errores integrado para ayudarte a diagnosticar cierres inesperados del juego y fallos de carga del WebView.
+
+```properties
+# ----- WebView Debug & Error Reporting -----
+# Activa la intercepción detallada de errores y muestra un diálogo de traceback para errores del juego.
+ludens.debug.errors=true
+```
+
+Configura esta propiedad usando el prefijo `ludens.debug.*`:
+
+| Propiedad | Tipo     | Por defecto | Descripción |
+|-----------|----------|-------------|-------------|
+| `errors`  | Booleano | `true`      | Activa la intercepción de errores en tiempo de ejecución del WebView y el diálogo de traceback. |
+
+### Cómo Funciona
+
+Cuando `ludens.debug.errors` está configurado en `true`:
+1. **Excepciones de JavaScript**: Ludens inyecta un listener de errores en el WebView del juego para capturar excepciones de ejecución JavaScript no controladas y rechazos de promesas no manejados.
+2. **Fallos de Carga Nativos**: El cliente WebView nativo intercepta fallos al cargar recursos (por ejemplo, archivos perdidos, rutas incorrectas, errores 404).
+3. **Diálogo de Traceback**: En lugar de fallar silenciosamente o mostrar una pantalla negra, Ludens renderiza un diálogo nativo de Compose Multiplatform con el mensaje detallado de la excepción y el stack trace.
+   - **Copiar al Portapapeles**: Copia el traceback técnico completo para depuración.
+   - **Recomenzar**: Recarga instantáneamente el WebView y reinicia el juego.
+
+:::note[Soporte de Plugin]
+La captura del stack trace de JavaScript solo está completamente soportada si tienes cargado el plugin [`YDP_Ludens.js` (v1.2.0+)](https://github.com/yoimerdr/rpgm-plugins) como el primer plugin en tu proyecto de RPG Maker.
+:::
+

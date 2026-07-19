@@ -1,5 +1,7 @@
 package ludens.build.helpers
 
+import java.io.File
+
 /**
  * Set of Kotlin reserved words that cannot be used as raw identifiers in generated source code.
  *
@@ -82,4 +84,9 @@ fun parseResourceName(raw: String): String {
  */
 fun parseResourceNameFromFilename(filename: String): String {
     return parseResourceName(filename.substringBeforeLast("."))
+}
+
+
+fun File.deleteIfExists() {
+    if (exists()) delete()
 }

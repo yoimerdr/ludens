@@ -32,11 +32,15 @@ Controla el esquema de colores de la aplicación.
 
 Controla el idioma de la interfaz de la aplicación (pantalla de ajustes, etiquetas).
 
-| Valor     | Comportamiento                                |
-|-----------|-----------------------------------------------|
-| `Sistema` | Sigue el idioma del sistema del dispositivo.  |
-| `Inglés`  | Fuerza la interfaz en inglés.                 |
-| `Español` | Fuerza la interfaz en español.                |
+| Valor                  | Comportamiento                                |
+|------------------------|-----------------------------------------------|
+| `Sistema`              | Sigue el idioma del sistema del dispositivo.  |
+| `English`              | Fuerza la interfaz en inglés.                 |
+| `Español`              | Fuerza la interfaz en español.                |
+| `中文`                 | Fuerza la interfaz en chino (simplificado).   |
+| `日本語`               | Fuerza la interfaz en japonés.                |
+| `Português (Brasil)`   | Fuerza la interfaz en portugués brasileño.    |
+| `Русский`              | Fuerza la interfaz en ruso.                   |
 
 :::note
 Cambiar el tema o el idioma se aplica instantáneamente. Ninguno requiere reiniciar el juego.
@@ -66,7 +70,7 @@ Muestra un contador de fotogramas por segundo como overlay cuando está habilita
 
 | Propiedad  | Tipo    | Por Defecto |
 |------------|---------|-------------|
-| `useWebGL` | Boolean | `true`      |
+| `useWebGL` | Boolean | `false`     |
 
 Controla si el WebView usa WebGL para el renderizado acelerado por hardware.
 
@@ -74,6 +78,10 @@ Controla si el WebView usa WebGL para el renderizado acelerado por hardware.
 - **Cuando está deshabilitado (Canvas 2D)**: El juego recurre al renderizado basado en CPU. Esto es generalmente más lento, pero puede ser útil como alternativa de compatibilidad para dispositivos Android más antiguos que tienen problemas con los controladores WebGL o experimentan artefactos visuales.
 
 Este ajuste solo está disponible para **RPG Maker MV**. RPG Maker MZ eliminó por completo el soporte de Canvas 2D y requiere estrictamente WebGL para funcionar.
+
+:::note
+Aunque el valor por defecto en los presets de configuración es `false` (para máxima compatibilidad en dispositivos Android antiguos que ejecutan RPG Maker MV), se recomienda encarecidamente activarlo para un mejor rendimiento si los dispositivos de destino soportan WebGL.
+:::
 
 :::caution
 Alternar WebGL requiere que el WebView recargue por completo el contexto de renderizado, lo que significa que requiere un reinicio de la aplicación para surtir efecto.

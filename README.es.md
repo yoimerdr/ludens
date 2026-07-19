@@ -49,6 +49,7 @@ Ludens es un wrapper de Compose Multiplatform desarrollado en Kotlin para portar
   - Controles: Activar/Desactivar, Opacidad, Posiciones, Mapeo de teclas.
   - Acciones: Menu de acciones rapidas configurable (Orden, Habilitar/Deshabilitar).
 - Configuracion de app/build desde [`ludens.properties`](ludens.properties).
+- Generador de Iconos Automatizado: Compila iconos de launcher para Android (legacy + adaptativos), iOS y de la tienda Google Play Store de manera automática a partir de un único asset de origen.
 - Gestion eficiente de assets en `composeResources/files`.
 
 > [!NOTE]
@@ -58,6 +59,20 @@ Ludens es un wrapper de Compose Multiplatform desarrollado en Kotlin para portar
 
 > [!WARNING]
 > La construccion para iOS aun no esta completamente configurada (usa defaults de plantilla). Esta guia se centra en Android.
+
+### Clonar el Repositorio
+
+Para comenzar, clona el repositorio.
+
+- Para usar la última versión de lanzamiento (reemplaza `<latest_tag>` por la última etiqueta de versión disponible, ej. `0.3.0`):
+  ```bash
+  git clone --branch <latest_tag> https://github.com/yoimerdr/ludens.git
+  ```
+- Si prefieres usar la última versión en desarrollo, clona la rama `develop`:
+  ```bash
+  git clone --branch develop https://github.com/yoimerdr/ludens.git
+  ```
+- Alternativamente, puedes descargarlo como archivo ZIP desde la página de [GitHub Releases](https://github.com/yoimerdr/ludens/releases) y extraerlo.
 
 > [!TIP]
 > Valida siempre en emulador o dispositivo real. Algunos plugins de RPG Maker pueden comportarse distinto en WebView movil.
@@ -112,47 +127,45 @@ files/
        └── index.html
 ```
 
-### Localización y Traducciones
+### Configurar Aplicación
 
-Ludens admite múltiples idiomas, los cuales son completamente sincronizados mediante el sistema de compilación:
-
-- **Fuente de la Verdad**: Todos los archivos de traducción (`strings.xml`) DEBEN agregarse o editarse bajo la carpeta raíz `project/assets/languages/<language_tag>/` (por ejemplo, `project/assets/languages/es/strings.xml`).
-- **Sincronización Dinámica**: Durante el tiempo de compilación, una tarea de Gradle limpia las carpetas `values*` generadas dentro de `composeResources` y las actualiza automáticamente con las traducciones activas definidas en `project/assets/` y configuradas en `ludens.properties`.
-- > [!WARNING]
-  > **NO** edites ni agregues archivos `strings.xml` directamente dentro de `composeApp/src/commonMain/composeResources/values*`. Cualquier modificación manual aquí se **perderá permanentemente** en la siguiente compilación.
-
-### Configuracion Android
-
-Edita [`ludens.properties`](ludens.properties):
+Edita el archivo [`ludens.properties`](ludens.properties) para definir la identidad básica de tu aplicación:
 
 ```properties
-# Identificador unico de la aplicacion
+# Identificador único de la aplicación
 ludens.android.id=com.tuorganizacion.ejemplo
 
-# Version visible para el usuario
+# Versión visible para el usuario
 ludens.android.version=1.0.0
 
-# Version interna entera
+# Versión interna entera
 ludens.android.versionCode=1
 
-# Nombre de la aplicacion en el sistema
+# Nombre de la aplicación en el sistema
 ludens.android.name=Nombre del Juego
 
 # Nombre corto debajo del icono
 ludens.android.launcherName=Juego
 ```
 
-[`gradle.properties`](gradle.properties) se sigue usando para opciones de build de Gradle/Kotlin. La identidad y ajustes de Ludens se configuran en [`ludens.properties`](ludens.properties).
+[`gradle.properties`](gradle.properties) se sigue usando para opciones de compilación de Gradle/Kotlin. La identidad y los ajustes de Ludens se configuran en [`ludens.properties`](ludens.properties).
 
 ### Compilar
 
-Para flujo completo con capturas y firma release, revisa [BUILD.es.md](BUILD.es.md).
+Para el flujo de compilación completo con capturas y firma release, consulta [BUILD.es.md](BUILD.es.md).
 
 - Debug: `./gradlew assembleDebug`
-  - Salida: `composeApp/build/outputs/apk/debug/`
+  - Salida: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
 - Release: `./gradlew assembleRelease`
-  - Crea antes [`keystore.properties`](keystore.properties) (ver [`keystore.properties.template`](keystore.properties.template)).
-  - Salida: `composeApp/build/outputs/apk/release/`
+  - Crea antes el archivo [`keystore.properties`](keystore.properties) (ver [`keystore.properties.template`](keystore.properties.template)).
+  - Salida: `composeApp/build/outputs/apk/release/composeApp-release.apk`
+
+### Siguientes Pasos / Personalización
+
+Una vez que tu juego compile correctamente, puedes personalizarlo siguiendo la [Guía de Construcción Paso a Paso](BUILD.es.md):
+- [Generación de Icono de la App](BUILD.es.md#icono-de-la-app) — Genera automáticamente los iconos de lanzamiento para todas las plataformas desde una única imagen origen.
+- [Localización y Traducciones](BUILD.es.md#localizacion-y-traducciones) — Configura o añade archivos de idiomas para la interfaz de ajustes de la aplicación.
+- [Firma de Compilación de Producción](BUILD.es.md#crear-version-de-produccion-release) — Configura las credenciales de firma de lanzamiento para la publicación en tiendas.
 
 ### iOS
 

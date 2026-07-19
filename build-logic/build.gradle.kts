@@ -15,6 +15,8 @@ dependencies {
     compileOnly(libs.ksp.gradle.plugin)
     implementation(libs.jackson.dataformat.properties)
     implementation(libs.jackson.module.kotlin)
+    implementation(libs.svg.salamander)
+    implementation(libs.webp.imageio)
 }
 
 gradlePlugin {
@@ -50,6 +52,10 @@ gradlePlugin {
         register("ludensWebAssetsSync") {
             id = "ludens.build.compose.resources.sync"
             implementationClass = "ludens.build.compose.resources.WebAssetsSyncPlugin"
+        }
+        register("ludensAppIconGenerator") {
+            id = "ludens.build.compose.icons.generator"
+            implementationClass = "ludens.build.compose.resources.icons.AppIconGeneratorPlugin"
         }
     }
 }

@@ -4,10 +4,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -24,21 +23,30 @@ import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.WebViewState
 import com.yoimerdr.compose.ludens.app.ui.providers.LocalWebViewNavigator
+import com.yoimerdr.compose.ludens.features.home.presentation.sections.GameErrorHandler.onError
 import com.yoimerdr.compose.ludens.features.home.presentation.sections.LudensLoaderHandler.onLoad
 import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
 import com.yoimerdr.compose.ludens.generated.res.FileRes
+import com.yoimerdr.compose.ludens.konfig.generated.BuildKonfig
+import com.yoimerdr.compose.ludens.ui.components.webview.EvaluateScriptOnStart
 import com.yoimerdr.compose.ludens.ui.components.webview.WebViewMemoryManager
 import com.yoimerdr.compose.ludens.ui.components.webview.rememberPlatformsParameters
 import com.yoimerdr.compose.ludens.ui.components.webview.rememberWebViewJsBridge
 import com.yoimerdr.compose.ludens.ui.components.webview.setup
 import com.yoimerdr.compose.ludens.ui.state.PluginState
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import ludens.composeapp.generated.resources.Res
 
 /**
  * The path to the JavaScript plugin checker file that validates and reports plugin information.
  */
 const val PluginCheckerFile = FileRes.boot.js.plugin_checker
+
+/**
+ * The path to the JavaScript error logger file that intercepts global exceptions.
+ */
+const val ErrorLoggerFile = FileRes.boot.js.error_logger
 
 /**
  * JavaScript message handler that processes plugin loading events from the web view.
@@ -71,6 +79,46 @@ private object LudensLoaderHandler : IJsMessageHandler {
 }
 
 /**
+ * Represents the message and stack trace details of a runtime exception from the web game.
+ *
+ * @property message Brief description of the occurred runtime exception.
+ * @property source The origin source or script file of the error.
+ * @property line The line number where the exception occurred.
+ * @property column The column number where the exception occurred.
+ * @property stackTrace The detailed execution traceback/stack trace logs.
+ */
+@Serializable
+data class WebGameError(
+    val message: String,
+    val source: String,
+    val line: Int,
+    val column: Int,
+    val stackTrace: String,
+)
+
+/**
+ * JavaScript bridge message handler for intercepting game runtime exception callbacks.
+ *
+ * @param onError Callback invoked when a game error payload is parsed.
+ */
+private object GameErrorHandler : IJsMessageHandler {
+    var onError: ((WebGameError) -> Unit)? = null
+    override fun methodName(): String = "GameError"
+    override fun handle(
+        message: JsMessage,
+        navigator: WebViewNavigator?,
+        callback: (String) -> Unit,
+    ) {
+        val payload = try {
+            Json.decodeFromString<WebGameError>(message.params)
+        } catch (_: Exception) {
+            WebGameError(message.params, "bridge", 0, 0, "Failed to decode trace")
+        }
+        onError?.invoke(payload)
+    }
+}
+
+/**
  * Displays a web view for running HTML5 games with plugin detection.
  *
  * This composable creates a web view that loads an HTML file from resources and
@@ -82,12 +130,14 @@ private object LudensLoaderHandler : IJsMessageHandler {
  * @param modifier The modifier to be applied to the web view
  * @param fileUrl The URL/path of the HTML file to load from compose resources
  * @param onLoad Optional callback invoked when the game plugin is loaded, receiving the plugin state
+ * @param onError Optional callback invoked when a game exception or resource loading error occurs
  */
 @Composable
 fun WebGame(
     modifier: Modifier = Modifier,
     fileUrl: String,
     onLoad: ((PluginState) -> Unit)? = null,
+    onError: ((WebGameError) -> Unit)? = null,
 ) {
     val navigator = LocalWebViewNavigator.current
     val state = rememberSaveable(saver = WebStateSaver) {
@@ -123,6 +173,13 @@ fun WebGame(
         onLoad = onLoad,
     )
 
+    ErrorBridge(
+        navigator = navigator,
+        state = state,
+        bridge = bridge,
+        onError = onError,
+    )
+
     WebViewMemoryManager(state, navigator)
 
     WebView(
@@ -147,12 +204,14 @@ fun WebGame(
  * @param viewModel The view model for managing the entry state
  * @param modifier The modifier to be applied to the web view
  * @param onLoad Optional callback invoked when the game plugin is loaded, receiving the plugin state
+ * @param onError Optional callback invoked when a game exception or resource loading error occurs
  */
 @Composable
 fun WebGame(
     viewModel: HomeViewModel,
     modifier: Modifier = Modifier,
     onLoad: ((PluginState) -> Unit)? = null,
+    onError: ((WebGameError) -> Unit)? = null,
 ) {
     val entry by viewModel.entryState.collectAsStateWithLifecycle()
 
@@ -160,6 +219,7 @@ fun WebGame(
         modifier = modifier,
         fileUrl = entry.url,
         onLoad = onLoad,
+        onError = onError,
     )
 }
 
@@ -188,30 +248,57 @@ private fun StartBridge(
     onLoad: ((PluginState) -> Unit)?,
 ) {
     LudensLoaderHandler.onLoad = onLoad
-    var pluginChecker by rememberSaveable { mutableStateOf<String?>(null) }
-    var loaded by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        pluginChecker = Res.readBytes(PluginCheckerFile).decodeToString()
-    }
-
     LaunchedEffect(bridge) {
         bridge.register(LudensLoaderHandler)
     }
-    LaunchedEffect(state.loadingState) {
-        if (state.loadingState is LoadingState.Finished && state.lastLoadedUrl.isNullOrEmpty()
-                .not()
-        ) {
-            loaded = true
-        }
+
+    EvaluateScriptOnStart(
+        filepath = PluginCheckerFile,
+        state = state,
+        navigator = navigator,
+    )
+}
+
+@Composable
+private fun ErrorBridge(
+    navigator: WebViewNavigator,
+    state: WebViewState,
+    bridge: WebViewJsBridge,
+    onError: ((WebGameError) -> Unit)?,
+) {
+    if (!BuildKonfig.LUDENS_DEBUG_ERRORS) return
+
+    GameErrorHandler.onError = onError
+
+    LaunchedEffect(bridge) {
+        bridge.register(GameErrorHandler)
     }
 
-    LaunchedEffect(loaded, pluginChecker) {
-        if (loaded && pluginChecker != null) {
-            navigator.evaluateJavaScript(pluginChecker!!)
-        }
-    }
+    EvaluateScriptOnStart(
+        filepath = ErrorLoggerFile,
+        state = state,
+        navigator = navigator,
+    )
 
+    LaunchedEffect(state) {
+        snapshotFlow { state.errorsForCurrentRequest.lastOrNull { it.isFromMainFrame } }
+            .filterNotNull()
+            .collect { error ->
+                if (BuildKonfig.LUDENS_DEBUG_ERRORS) {
+                    onError?.invoke(
+                        WebGameError(
+                            message = "WebView Loading Failed",
+                            source = state.lastLoadedUrl ?: "unknown",
+                            line = 0,
+                            column = 0,
+                            stackTrace = "Failed to load page: ${state.lastLoadedUrl ?: "unknown URL"}\n" +
+                                    "Error Code: ${error.code}\n" +
+                                    "Description: ${error.description}"
+                        )
+                    )
+                }
+            }
+    }
 }
 
 /**

@@ -49,7 +49,7 @@ The built-in settings screen is organized into four sections:
 
 | Section      | Options                                                              |
 |--------------|----------------------------------------------------------------------|
-| **System**   | Theme (Light / Dark / System), Language (System / English / Spanish) |
+| **System**   | Theme (Light / Dark / System), Language (System / English / Español / 中文 / 日本語 / Português (Brasil) / Русский) |
 | **Tools**    | Mute Audio, Show FPS, Toggle WebGL, Button Positions                 |
 | **Controls** | Enable/Disable, Adjust Opacity, Key Mapping                          |
 | **Actions**  | Configurable Quick Actions Menu (Order, Enable/Disable)              |
@@ -67,20 +67,34 @@ screen:
 
 The order and visibility of these actions are fully configurable.
 
+### WebView Diagnostics & Error Interception
+
+When enabled, Ludens catches runtime JavaScript errors and native resource load failures in the WebView. Instead of failing silently or showing a black screen, it displays a native traceback dialog overlay containing complete debug logs, allowing developers or players to:
+- Copy the complete traceback to the clipboard.
+- Reload the WebView and restart the game instantly.
+
+### Automated App Icon Generator
+
+Ludens includes an integrated App Icon Generator that compiles your launcher icon assets for all target platforms from a single source image (SVG or PNG) in `project/assets/icons/`:
+- **Android**: Legacy icons, square icons, and adaptive layers (foreground/background) in res mipmap folders.
+- **iOS**: All required asset sizes with the proper JSON manifest catalog.
+- **Google Play**: High-resolution store listing icons.
+
 ### Easy Configuration
 
-All application identity properties are configured through `ludens.properties`:
+All application identity, resources, and build properties are configured through `ludens.properties`:
 
-- Application ID (e.g., `com.yourorganization.game`)
-- Version string and version code
-- Application name (shown in system settings)
-- Launcher name (shown under the home screen icon)
-- Immersive mode toggle
+- Application ID, version, and name (for system settings and launcher)
+- Automated App Icon Generator config (format, background color, scale)
+- Immersive mode, hardware acceleration, and cleartext traffic manifest flags
+- Target compile-time languages selection (`ludens.languages.available`)
+- Custom body and display fonts, plus language-specific fallbacks
+- WebView runtime error diagnostics traceback toggle
 
-### Compose Resources
+### Automatic Resource Sync
 
-Game assets are managed through Compose Multiplatform's resource system. You place your exported
-`www` folder in `composeResources/files`, and the build system handles the rest.
+Game assets (`project/www/`), custom fonts (`project/assets/fonts/`), and localized translation files (`project/assets/languages/`) are automatically synchronized to Compose resources during compilation, keeping your workspace clean.
+
 
 ## Platform Support
 

@@ -8,7 +8,6 @@ import androidx.compose.ui.zIndex
 import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewNavigator
@@ -77,11 +76,9 @@ private fun StartBridge(
         bridge.register(starter)
     }
 
-    LaunchedEffect(state.loadingState) {
-        if (state.loadingState is LoadingState.Finished && state.lastLoadedUrl.isNullOrEmpty()
-                .not()
-        ) {
-            if (state.lastLoadedUrl!!.endsWith(StartBootFile)) bridge.webView?.evaluateJavaScript(
+    EvaluateOnStart(state) {
+        if (state.lastLoadedUrl!!.endsWith(StartBootFile)) {
+            bridge.webView?.evaluateJavaScript(
                 "LudensStartBoot();"
             )
         }

@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -16,6 +19,7 @@ import com.yoimerdr.compose.ludens.app.ui.providers.LocalFPSPlayer
 import com.yoimerdr.compose.ludens.core.domain.model.settings.ActionType
 import com.yoimerdr.compose.ludens.features.home.presentation.sections.HomeScreenContent
 import com.yoimerdr.compose.ludens.features.home.presentation.sections.WebGame
+import com.yoimerdr.compose.ludens.features.home.presentation.sections.WebGameError
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeEvent
 import com.yoimerdr.compose.ludens.features.home.presentation.state.HomeRequest
 import com.yoimerdr.compose.ludens.features.home.presentation.state.RequestMute
@@ -23,6 +27,7 @@ import com.yoimerdr.compose.ludens.features.home.presentation.state.RequestWebGL
 import com.yoimerdr.compose.ludens.features.home.presentation.state.RestartingRequest
 import com.yoimerdr.compose.ludens.features.home.presentation.viewmodel.HomeViewModel
 import com.yoimerdr.compose.ludens.ui.components.dialogs.ConfirmationDialog
+import com.yoimerdr.compose.ludens.ui.components.dialogs.ErrorTracebackDialog
 import com.yoimerdr.compose.ludens.ui.components.dialogs.widthInDialog
 import com.yoimerdr.compose.ludens.ui.components.interaction.reject
 import com.yoimerdr.compose.ludens.ui.components.interaction.resolve
@@ -59,36 +64,52 @@ fun HomeScreen(
     onLoad: ((PluginState) -> Unit)? = null,
     onRestart: (() -> Unit)? = null,
 ) {
+    var crashError by remember { mutableStateOf<WebGameError?>(null) }
+
     HomeScreenEffects(
         viewModel = viewModel,
         nav = nav,
-        onRestart = onRestart
+        onRestart = onRestart,
     )
 
     SafeContent(
         fullBackgroundContent = {
             Box(
-                modifier = Modifier.fillMaxSize()
-                    .background(Color.Black)
+                modifier = Modifier.fillMaxSize().background(Color.Black),
             )
 
             WebGame(
                 viewModel = viewModel,
-                onLoad = onLoad
+                onLoad = onLoad,
+                onError = { payload ->
+                    crashError = payload
+                },
             )
         },
         fullForegroundContent = {
             HomeScreenConfirmation(
                 viewModel = viewModel,
             )
-        }
+
+            ErrorTracebackDialog(
+                showDialog = crashError != null,
+                errorMessage = crashError?.message ?: "",
+                stackTrace = crashError?.stackTrace ?: "",
+                onDismiss = { crashError = null },
+                onRestart = {
+                    crashError = null
+                    onRestart?.invoke()
+                },
+                modifier = Modifier.widthInDialog()
+            )
+        },
     ) {
         HomeScreenContent(
             viewModel = viewModel,
             showControls = showControls,
             onConfiguration = {
                 nav.navigate(Destination.Settings.route)
-            }
+            },
         )
     }
 
@@ -109,12 +130,9 @@ private fun HomeScreenConfirmation(
 ) {
     CollectInteractionResult(
         onReject = {
-            if (it.request is HomeRequest)
-                viewModel.reject(it.request)
-        }
-    ) {
-        if (it.request is HomeRequest)
-            viewModel.resolve(it.request)
+            if (it.request is HomeRequest) viewModel.reject(it.request)
+        }) {
+        if (it.request is HomeRequest) viewModel.resolve(it.request)
     }
 
     val interactor = LocalInteractionManager.current
@@ -122,8 +140,7 @@ private fun HomeScreenConfirmation(
 
     ConfirmationDialog(
         showDialog = request != null,
-        modifier = Modifier
-            .widthInDialog(),
+        modifier = Modifier.widthInDialog(),
         message = stringResource(Res.string.hmc_text_restarting_confirmation),
         onConfirm = {
             viewModel.viewModelScope.launch {
@@ -134,8 +151,7 @@ private fun HomeScreenConfirmation(
             viewModel.viewModelScope.launch {
                 interactor.reject()
             }
-        }
-    )
+        })
 }
 
 /**
@@ -208,8 +224,7 @@ private fun HomeScreenEffects(
                 }
 
                 is HomeEvent.ResolvedRequest -> {
-                    if (it.request is RestartingRequest)
-                        onRestart?.invoke()
+                    if (it.request is RestartingRequest) onRestart?.invoke()
                 }
 
                 else -> {}

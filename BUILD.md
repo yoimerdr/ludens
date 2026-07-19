@@ -1,6 +1,8 @@
 # Step-by-Step Build Guide
 
-[Leer en Español](BUILD.es.md) | [Web Docs](https://tryludens.vercel.app/)
+<p align="center">
+  <a href="BUILD.es.md">Leer en Español</a> | <a href="https://tryludens.vercel.app/">Web Docs</a>
+</p>
 
 This guide details the complete process to configure, customize, and generate an APK/AAB file for your RPG Maker MV/MZ game using **Ludens**.
 
@@ -53,8 +55,17 @@ Before exporting your game, consider the following:
 
 ### Get the Project
 
-1.  Clone this repository or download it as a ZIP and extract it.
-2.  Open Android Studio.
+1. Clone the repository.
+   - To use the latest release version (replace `<latest_tag>` with the latest version tag, e.g. `0.4.0`):
+     ```bash
+     git clone --branch <latest_tag> https://github.com/yoimerdr/ludens.git
+     ```
+   - To use the latest development version, clone the `develop` branch:
+     ```bash
+     git clone --branch develop https://github.com/yoimerdr/ludens.git
+     ```
+   - Alternatively, download it as a ZIP from the [GitHub Releases page](https://github.com/yoimerdr/ludens/releases) and extract it.
+2. Open Android Studio.
 3.  Select **Open** and navigate to the `ludens` project folder.
 4.  Wait for Gradle to finish syncing (Download/Sync).
 
@@ -121,6 +132,43 @@ After using either option, the application expects to find `index.html` inside t
   <em>Figure 5: Android Studio view showing the www folder and index.html file inside composeResources/files</em>
 </p>
 
+## Localization & Translations
+
+Ludens supports multiple languages for its wrapper client UI.
+
+> [!IMPORTANT]
+> This localization system translates **only** the native client/wrapper UI (such as the Settings screen options, control overlays, and native dialogs). It **does not** translate the actual RPG Maker game content, text, or dialogues inside the WebView. Game dialogue and assets must be translated using RPG Maker's own translation plugins or files inside your exported `www/` directory.
+
+The translation system works with two main components:
+
+### 1. Restricting Available Languages
+By default, the compilation includes all languages found in the project. If your game is only intended for a single language or a specific set of languages, you can restrict the options shown in the wrapper's settings menu by modifying [`ludens.properties`](ludens.properties):
+
+```properties
+# Limit the settings menu to only show English and Spanish
+ludens.languages.available=en,es
+```
+
+### 2. Adding a New Language Translation
+To add translation keys for a language not provided by default:
+
+1. Create a directory named after the ISO language tag (e.g. `fr` for French, `ja` for Japanese) inside `project/assets/languages/`:
+   `project/assets/languages/fr/`
+2. Create a file named `strings.xml` inside that directory.
+3. Copy the contents of the English [strings.xml](project/assets/languages/en/strings.xml) file as a base and translate the string values. For example:
+   ```xml
+   <resources>
+       <string name="settings_title">Paramètres</string>
+       <string name="tab_system">Système</string>
+       ...
+   </resources>
+   ```
+4. If you are using the `ludens.languages.available` property to restrict languages, make sure to add your new language tag to the list.
+5. Rebuild the project. The build system will automatically process the assets and generate the translation directories during compilation.
+
+> [!WARNING]
+> **DO NOT** edit or add `strings.xml` files directly inside `composeApp/src/commonMain/composeResources/values*`. During build compilation, a custom Gradle task cleans these folders and regenerates them from the source of truth (`project/assets/languages/`). Any manual changes inside `composeResources` will be **permanently lost**.
+
 ## Android
 
 ### Customization
@@ -185,15 +233,61 @@ These values are consumed by the custom `build-logic` plugins and injected durin
 
 #### App Icon
 
-Replace the images in `composeApp/src/androidMain/res/mipmap-*` or use the **Image Asset Studio** tool:
+Ludens includes an automated **App Icon Generator** plugin that creates launcher icons for all target platforms from a single source image (SVG or PNG).
 
-1.  Right-click on `composeApp/src/androidMain/res`.
-2.  New > Image Asset.
+##### Method A: Automated Generation (Recommended)
+
+1. Place your source icon image inside the `project/assets/icons/` directory.
+   - For best results, use a vector image named `icon.svg` or a high-resolution raster image named `icon.png` (at least 512x512 pixels).
+   - If you want to use separate adaptive layers for Android, you can place `icon_foreground.svg`/`icon_foreground.png` and `icon_background.svg`/`icon_background.png` in that same directory.
+2. Configure the icon generator in [`ludens.properties`](ludens.properties) under the `# ----- App Icon Generator -----` section. The values are automatically read by the build system:
+
+```properties
+# Name of the source master icon in project/assets/icons/
+ludens.icons.name=icon
+
+# Name of the foreground adaptive layer in project/assets/icons/
+ludens.icons.foreground=icon_foreground
+
+# Solid hex color background or resource reference
+ludens.icons.background=#FDFDFD
+
+# Android-specific configuration
+ludens.icons.android.enable=true
+ludens.icons.android.format=webp
+ludens.icons.android.playstore=true
+
+# iOS-specific configuration
+ludens.icons.ios.enable=true
+
+# Scale of the foreground asset inside the adaptive icon viewport
+ludens.icons.scale=0.62
+```
+
+3. Build the project. The build system will automatically generate:
+   - **Android**: Legacy round and square mipmap icons, XML adaptive icon sheets under `mipmap-anydpi-v26`, and vector/raster layers (`ic_launcher_foreground`, `ic_launcher_background`) placed in `androidMain/res/`.
+   - **iOS**: All required AppIcon sizes (iPhone, iPad, App Store) along with the corresponding `Contents.json` asset catalog manifest under `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
+   - **Google Play Store**: A high-resolution `ic_launcher-playstore.png` (512x512) listing icon.
+
+##### Method B: Manual Configuration (Alternative)
+
+If you prefer to generate your assets manually or use the standard Android developer tools:
+
+> [!WARNING]
+> **Disable Automatic Generation**: To prevent the automated generator task from overwriting your custom manual files on every build, you **MUST** disable the automatic generator inside [`ludens.properties`](ludens.properties):
+> ```properties
+> ludens.icons.android.enable=false
+> ludens.icons.ios.enable=false
+> ```
+
+1. Right-click on the `composeApp/src/androidMain/res` directory in Android Studio.
+2. Select **New > Image Asset**.
+3. Use the Asset Studio wizard to configure your layers and scale.
 
 <p align="center">
   <img src="docs/src/assets/images/guide/ludens-application-icon.png" alt="Configuring the Icon" height="320">
   <br>
-  <em>Figure 7: Using Image Asset Studio to update the application icon.</em>
+  <em>Figure 7: Using Image Asset Studio to manually update the application icon.</em>
 </p>
 
 ### Build and Test (Debug)

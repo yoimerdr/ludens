@@ -65,8 +65,7 @@ must have a unique `ludens.android.id` configured in its `ludens.properties` fil
 ### How do I change the app name and icon?
 
 - **App name**: Edit `ludens.android.name` and `ludens.android.launcherName` in `ludens.properties`.
-- **App icon**: Replace images in `composeApp/src/androidMain/res/mipmap-*` directories or use
-  Android Studio's **Image Asset Studio** (right-click `res` > **New > Image Asset**).
+- **App icon**: Place your source image (SVG or PNG) in `project/assets/icons/` and let the automated **App Icon Generator** compile icons for Android and iOS automatically. Configure colors and formats in `ludens.properties`. Alternatively, you can disable this and use Android Studio's **Image Asset Studio**.
 
 See the [Configuration](/configuration/android/) page for full details.
 
@@ -147,3 +146,10 @@ Common causes:
 1. Verify that controls are enabled in the in-app settings.
 2. Check that the button key mappings match the keys your game expects.
 3. Some plugins may override input handling — test without third-party plugins to isolate the issue.
+
+### My game crashed or shows an error traceback dialog
+
+Ludens captures JavaScript runtime exceptions and WebView loading failures, rendering a Compose traceback overlay dialog when `ludens.debug.errors=true` is set in `ludens.properties`.
+- **Copy logs**: Click the copy action inside the dialog to copy the technical stack trace to your clipboard.
+- **Restart**: Reload the WebView client instantly to restart the game.
+- **Troubleshoot**: If it's a JS crash, check your game's scripts and ensure `YDP_Ludens.js` is loaded as the first plugin. If it's a WebView loader error, check that all asset folders and the main `index.html` are correctly in place.

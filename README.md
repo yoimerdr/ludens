@@ -49,6 +49,7 @@ Ludens is a Compose Multiplatform wrapper built in Kotlin to port RPG Maker MV/M
   - Controls: Enable/Disable, Opacity, Button Positions, Key Mapping.
   - Actions: Configurable quick actions menu (Order, Enable/Disable).
 - Easy app/build configuration from [`ludens.properties`](ludens.properties).
+- Automated App Icon Generator: Compile Android (legacy + adaptive), iOS, and Play Store icons automatically from a single source asset.
 - Efficient asset management in `composeResources/files`.
 
 > [!NOTE]
@@ -58,6 +59,20 @@ Ludens is a Compose Multiplatform wrapper built in Kotlin to port RPG Maker MV/M
 
 > [!WARNING]
 > iOS build is not fully configured yet (currently template defaults). This guide focuses on Android.
+
+### Clone the Repository
+
+To get started, clone the repository.
+
+- To use the latest release version (replace `<latest_tag>` with the latest version tag, e.g. `0.3.0`):
+  ```bash
+  git clone --branch <latest_tag> https://github.com/yoimerdr/ludens.git
+  ```
+- To use the latest development version, clone the `develop` branch:
+  ```bash
+  git clone --branch develop https://github.com/yoimerdr/ludens.git
+  ```
+- Alternatively, download the source code as a ZIP from the [GitHub Releases page](https://github.com/yoimerdr/ludens/releases) and extract it.
 
 > [!TIP]
 > Always validate on emulator or physical device. Some RPG Maker plugins may not behave correctly on mobile WebView.
@@ -112,18 +127,9 @@ files/
        └── index.html
 ```
 
-### Localization & Translations
-
-Ludens supports multiple languages, which are fully synchronized via the build system:
-
-- **Source of Truth**: All localization strings (`strings.xml`) MUST be added or edited under the root folder `project/assets/languages/<language_tag>/` (e.g., `project/assets/languages/es/strings.xml`).
-- **Dynamic Synchronization**: During build time, a custom Gradle task wipes out the generated `values*` folders inside `composeResources` and updates them with active translation configurations from `project/assets/` and `ludens.properties`.
-- > [!WARNING]
-  > **DO NOT** edit or add `strings.xml` directly inside `composeApp/src/commonMain/composeResources/values*`. Any manual modifications here will be **permanently lost** on the next build.
-
 ### Android Configuration
 
-Edit [`ludens.properties`](ludens.properties):
+Edit [`ludens.properties`](ludens.properties) to set your app's basic identity:
 
 ```properties
 # Unique application identifier
@@ -149,10 +155,17 @@ ludens.android.launcherName=Game
 For the full build flow with screenshots and release-signing details, see [BUILD.md](BUILD.md).
 
 - Debug: `./gradlew assembleDebug`
-  - Output: `composeApp/build/outputs/apk/debug/`
+  - Output: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
 - Release: `./gradlew assembleRelease`
   - Create [`keystore.properties`](keystore.properties) first (see [`keystore.properties.template`](keystore.properties.template)).
-  - Output: `composeApp/build/outputs/apk/release/`
+  - Output: `composeApp/build/outputs/apk/release/composeApp-release.apk`
+
+### Next Steps / Customization
+
+Once your basic game compiles, customize it further using the [Step-by-Step Build Guide](BUILD.md):
+- [App Icon Generation](BUILD.md#app-icon) — Automatically generate launcher icons for all target platforms from a single source asset.
+- [Localization & Translations](BUILD.md#localization--translations) — Configure or add translation files for the client UI settings.
+- [Production Release Signing](BUILD.md#create-production-version-release) — Setup and configure signing credentials for publishing.
 
 ### iOS
 

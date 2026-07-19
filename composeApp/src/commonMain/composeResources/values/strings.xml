@@ -3,6 +3,9 @@
     <string name="are_sure">Are you sure?</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
+    <string name="runtime_error">Runtime Error</string>
+    <string name="copy_log">Copy Log</string>
+    <string name="restart">Restart</string>
     <string name="loading">Loading</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

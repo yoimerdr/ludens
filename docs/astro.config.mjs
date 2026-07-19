@@ -38,6 +38,7 @@ export default defineConfig({
 
           },
           versions: [
+            { slug: '0.3.0' },
             { slug: '0.1.0' },
           ],
         }),

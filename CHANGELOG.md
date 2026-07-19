@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.0] - 2026-07-16
 
 ### Added
 
+- Rich WebView Game Runtime Error Interception & Diagnostic Traceback Dialog supporting JavaScript exception capturing, native WebView loading failure interception, variable formatting, and localized translations across KMP.
+
+- Automated App Icon Generator Gradle plugin and task that compiles Android launcher icons (legacy and adaptive SVG/PNG), iOS app icons (all resolutions and JSON manifest), and Google Play Store listing icons from a single source image in `project/assets/icons/`.
 - New language support: Chinese (`zh`), Japanese (`ja`), Portuguese - Brazil (`pt-rBR`), and Russian (`ru`) for UI. ([@rainbowtrash2333](https://github.com/yoimerdr/ludens/pull/1))
 - Automatic synchronization of web assets from the `project/www/` root directory to Compose resources.
 - Font and language strings sync plugins for resource management within the `build-logic` to strip out unused languages and fonts.
@@ -27,11 +30,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved configuration files and enhanced internal documentation for clarity.
 - Changed how plugins are applied: now there is only a single `ludens.build` plugin, and the others must be activated/applied using the DSL in gradle.
 - Updated project documentation (`README`, `BUILD`, `CONTRIBUTING`) to detail the new root folder asset synchronization method.
+- Replace 404 page with game setup placeholder for default index.html pages.
+- Optimized WebView key event simulation script by batching events by type with a single guard per group.
 
 ### Fixed
 
 - Fixed unexpected error has been fixed in the generation of icon resources during compilation, which was causing the files to be placed inside the “generated” folder.
 - Fixed locale handling by including configuration orientation in `remember`.
+- Fixed movement key event script operator precedence issue by wrapping the assignment in parentheses.
+- Fixed potential null pointer exceptions in WebView scripts by adding null guards for global `Input` and `Graphics` objects.
+- Fixed error logger double-registration when `YDP_Ludens` is loaded.
+- Fixed missing accessibility descriptions by adding content descriptions to FloatingDock buttons.
 
 ## [0.3.0] - 2026-04-25
 
