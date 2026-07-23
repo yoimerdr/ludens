@@ -62,28 +62,23 @@ class AppIconGeneratorPlugin : Plugin<Project> {
                 iconScale.set(project.provider { config.iconScale })
                 rootDir.set(project.rootDir)
                 commonResourcesDir.set(project.rootProject.layout.projectDirectory.dir("project/assets/icons"))
-                androidResDir.set(project.rootProject.layout.projectDirectory.dir("composeApp/src/androidMain/res"))
+                androidResDir.set(project.rootProject.layout.projectDirectory.dir("androidApp/src/main/res"))
                 iosAppIconSetDir.set(project.rootProject.layout.projectDirectory.dir("iosApp/iosApp/Assets.xcassets/AppIcon.appiconset"))
-                playstoreIconFile.set(project.rootProject.layout.projectDirectory.file("composeApp/src/androidMain/ic_launcher-playstore.png"))
+                playstoreIconFile.set(project.rootProject.layout.projectDirectory.file("androidApp/src/main/ic_launcher-playstore.png"))
             }
 
-        project.pluginManager.withPlugin("com.android.application") {
-            project.extensions.getByType(AndroidComponentsExtension::class.java)
-                .onVariants { variant ->
-                    val variantName =
-                        variant.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        val attachToAndroidProject: (Project) -> Unit = { targetProject ->
+            targetProject.tasks.matching {
+                it.name in listOf("preBuild", "androidPreBuild", "preAndroidMainBuild")
+            }.configureEach {
+                dependsOn(generateIconsTaskProvider)
+            }
+        }
 
-                    project.tasks.matching {
-                        it.name in listOf(
-                            "merge${variantName}Resources",
-                            "package${variantName}Resources",
-                            "process${variantName}Resources",
-                            "assemble${variantName}"
-                        )
-                    }.configureEach {
-                        dependsOn(generateIconsTaskProvider)
-                    }
-                }
+        project.rootProject.allprojects {
+            val p = this
+            p.plugins.withId("com.android.application") { attachToAndroidProject(p) }
+            p.plugins.withId("com.android.kotlin.multiplatform.library") { attachToAndroidProject(p) }
         }
         project.plugins.withType(KotlinMultiplatformPluginWrapper::class.java) {
             project.extensions.findByType(KotlinMultiplatformExtension::class.java)?.targets?.withType(

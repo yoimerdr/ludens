@@ -11,7 +11,6 @@ import com.yoimerdr.compose.ludens.app.App
 import com.yoimerdr.compose.ludens.konfig.generated.BuildKonfig
 import org.koin.android.ext.koin.androidContext
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -34,7 +33,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun immersive() {
-        if(!BuildKonfig.LUDENS_IMMERSIVE)
+        if (!BuildKonfig.LUDENS_IMMERSIVE)
             return
 
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)

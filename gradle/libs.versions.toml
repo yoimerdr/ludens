@@ -1,8 +1,8 @@
 [versions]
-agp = "8.13.2"
-android-compileSdk = "36"
+agp = "9.2.1"
+android-compileSdk = "37"
 android-minSdk = "21"
-android-targetSdk = "36"
+android-targetSdk = "37"
 androidx-activity = "1.11.0"
 androidx-appcompat = "1.7.1"
 androidx-core = "1.17.0"
@@ -75,7 +75,7 @@ kotlinx-collections-immutable = {module = "org.jetbrains.kotlinx:kotlinx-collect
 webp-imageio = { module = "org.sejda.imageio:webp-imageio", version.ref = "webpImageio" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
+androidMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

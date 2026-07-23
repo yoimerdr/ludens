@@ -2,6 +2,7 @@
 .kotlin
 .gradle
 build/
+release/
 xcuserdata
 !build-logic/src/**/build/
 !docs/src/**/build/
@@ -18,7 +19,8 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
-composeApp/src/commonMain/composeResources/files/www
+shared/src/commonMain/composeResources/files/www/*
+!shared/src/commonMain/composeResources/files/www/index.html
 keystore.properties
 *.jks
 /**/dist

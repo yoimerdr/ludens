@@ -262,6 +262,7 @@ abstract class AndroidBuildPostProcessTask : DefaultTask() {
                 val discriminator = file.nameWithoutExtension
                     .removePrefix("app-")
                     .removePrefix("composeApp-")
+                    .removePrefix("androidApp-")
                 if (discriminator.isNotBlank() && !nameWithoutExt.contains(discriminator)) {
                     "$nameWithoutExt-$discriminator.$ext"
                 } else if (index > 0) {

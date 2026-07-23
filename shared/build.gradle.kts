@@ -1,27 +1,22 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
-import ludens.build.android.configuration.permissions
-import ludens.build.android.postbuild.postBuild
 import ludens.build.compose.configuration.ludensConfiguration
 import ludens.build.compose.fonts.fontsSync
 import ludens.build.compose.language.languageMetadata
 import ludens.build.compose.language.languageStringsSync
-import ludens.build.compose.resources.icons.appIconGenerator
 import ludens.build.compose.resources.filesRes
+import ludens.build.compose.resources.icons.appIconGenerator
 import ludens.build.compose.resources.resourcesSync
 import ludens.build.compose.settings.settingsPreset
 import ludens.build.helpers.PluginActivationMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.io.FileInputStream
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.google.protobuf)
     alias(libs.plugins.squareup.wire)
     alias(libs.plugins.google.ksp)
     id("ludens.build")
@@ -31,20 +26,13 @@ plugins {
 ludens {
     compose {
         filesRes()
-
         settingsPreset()
-
-
         languageStringsSync {
             mode.set(PluginActivationMode.All)
         }
-
         languageMetadata()
-
         fontsSync()
-
         resourcesSync()
-
         appIconGenerator {
             name = ludensConfiguration.icons.name
             foreground = ludensConfiguration.icons.foreground
@@ -56,31 +44,16 @@ ludens {
             iconScale = ludensConfiguration.icons.scale
         }
     }
-    android {
-        permissions()
-
-        postBuild {
-            enable = ludensConfiguration.android.build.enable
-            outputDir = ludensConfiguration.android.build.outputDir
-            pattern = ludensConfiguration.android.build.pattern
-            action = ludensConfiguration.android.build.action
-            includeVariants = listOf(ludensConfiguration.android.build.includeVariants)
-
-            context {
-                appName = ludensConfiguration.android.name
-                versionName = ludensConfiguration.android.version
-                versionCode = ludensConfiguration.android.versionCode
-                minSdk = ludensConfiguration.android.minSDK
-                targetSdk = ludensConfiguration.android.targetSDK
-                appId = ludensConfiguration.android.id
-            }
-        }
-    }
 }
 
-// Using the full extension type to bypass the "unresolved reference" accessor issue
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "ludens.composeapp.generated.resources"
+}
+
 buildkonfig {
     packageName = "com.yoimerdr.compose.ludens.konfig.generated"
+    exposeObjectWithName = "BuildKonfig"
 
     defaultConfigs {
         buildConfigField(Type.STRING, "LUDENS_VERSION", "0.4.0")
@@ -104,9 +77,15 @@ buildkonfig {
 }
 
 kotlin {
-    androidTarget {
+    android {
+        namespace = "com.yoimerdr.compose.ludens.shared"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = ludensConfiguration.android.minSDK
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget = JvmTarget.JVM_11
+        }
+        androidResources {
+            enable = true
         }
     }
 
@@ -125,6 +104,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(compose.uiTooling)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -167,76 +147,6 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.yoimerdr.compose.ludens"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        // Core app identity comes from `ludens.properties`.
-        applicationId = ludensConfiguration.android.id
-        minSdk = ludensConfiguration.android.minSDK
-        targetSdk = ludensConfiguration.android.targetSDK
-        versionCode = ludensConfiguration.android.versionCode
-        versionName = ludensConfiguration.android.version
-
-        resValue("string", "app_name", ludensConfiguration.android.name)
-        resValue("string", "app_launcher_name", ludensConfiguration.android.launcherName)
-
-        // Manifest placeholders are resolved in `src/androidMain/AndroidManifest.xml`.
-        manifestPlaceholders["ludensAllowBackup"] = ludensConfiguration.android.manifest.allowBackup
-        manifestPlaceholders["ludensLargeHeap"] = ludensConfiguration.android.manifest.largeHeap
-        manifestPlaceholders["ludensHardwareAccelerated"] =
-            ludensConfiguration.android.manifest.hardwareAccelerated
-        manifestPlaceholders["ludensScreenOrientation"] =
-            ludensConfiguration.android.manifest.screenOrientation
-        manifestPlaceholders["ludensUsesCleartextTraffic"] =
-            ludensConfiguration.android.manifest.usesCleartextTraffic
-        manifestPlaceholders["ludensResizeableActivity"] =
-            ludensConfiguration.android.manifest.resizeableActivity
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    signingConfigs {
-        create("release") {
-            val keystorePropertiesFile = rootProject.file("keystore.properties")
-            if (keystorePropertiesFile.exists()) {
-                val properties = Properties()
-                properties.load(FileInputStream(keystorePropertiesFile))
-
-                storeFile = rootProject.file(properties.getProperty("storeFile"))
-                storePassword = properties.getProperty("storePassword")
-                keyAlias = properties.getProperty("keyAlias")
-                keyPassword = properties.getProperty("keyPassword")
-            }
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("release")
-        }
-        getByName("debug") {
-            applicationIdSuffix = ".debug"
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    buildFeatures {
-        buildConfig = true
-    }
-}
-
 wire {
     kotlin {}
 
@@ -250,7 +160,6 @@ ksp {
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
     add("kspCommonMainMetadata", libs.io.koin.ksp.compiler)
     add("kspAndroid", libs.io.koin.ksp.compiler)
     add("kspIosArm64", libs.io.koin.ksp.compiler)
