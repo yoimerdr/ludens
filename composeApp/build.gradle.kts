@@ -1,10 +1,10 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 import ludens.build.android.configuration.permissions
+import ludens.build.android.postbuild.postBuild
 import ludens.build.compose.configuration.ludensConfiguration
 import ludens.build.compose.fonts.fontsSync
 import ludens.build.compose.language.languageMetadata
 import ludens.build.compose.language.languageStringsSync
-import ludens.build.compose.resources.icons.AndroidIconFormat
 import ludens.build.compose.resources.icons.appIconGenerator
 import ludens.build.compose.resources.filesRes
 import ludens.build.compose.resources.resourcesSync
@@ -58,6 +58,23 @@ ludens {
     }
     android {
         permissions()
+
+        postBuild {
+            enable = ludensConfiguration.android.build.enable
+            outputDir = ludensConfiguration.android.build.outputDir
+            pattern = ludensConfiguration.android.build.pattern
+            action = ludensConfiguration.android.build.action
+            includeVariants = listOf(ludensConfiguration.android.build.includeVariants)
+
+            context {
+                appName = ludensConfiguration.android.name
+                versionName = ludensConfiguration.android.version
+                versionCode = ludensConfiguration.android.versionCode
+                minSdk = ludensConfiguration.android.minSDK
+                targetSdk = ludensConfiguration.android.targetSDK
+                appId = ludensConfiguration.android.id
+            }
+        }
     }
 }
 

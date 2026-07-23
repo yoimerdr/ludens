@@ -71,6 +71,12 @@ data class LudensAndroidConfiguration(
      * Maps from `ludens.android.permissions.*`.
      */
     val permissions: LudensAndroidPermissionsConfiguration = LudensAndroidPermissionsConfiguration(),
+    /**
+     * Android post-build artifact renaming and relocation configuration.
+     *
+     * Maps from `ludens.android.build.*`.
+     */
+    val build: LudensAndroidBuildConfiguration = LudensAndroidBuildConfiguration(),
 ) : Serializable {
     init {
         require(minSDK >= 21) {
@@ -221,3 +227,23 @@ data class LudensAndroidPermissionsConfiguration(
      */
     val changeWifiState: Boolean = false,
 ) : Serializable
+
+/**
+ * Android build post-processing settings loaded from `ludens.properties`.
+ *
+ * Configures automatic renaming and relocating of compiled Android APKs and AABs.
+ *
+ * @property enable Whether post-build artifact renaming and relocating is enabled.
+ * @property outputDir Destination directory relative to the project root.
+ * @property pattern Naming template pattern (e.g. `{appName}-{versionName}-{buildType}`).
+ * @property action Operation mode (`"copy"` or `"move"`).
+ * @property includeVariants Target build variants (`"all"`, `"release"`, `"debug"`, or comma-separated list).
+ */
+data class LudensAndroidBuildConfiguration(
+    val enable: Boolean = false,
+    val outputDir: String = "output/builds",
+    val pattern: String = "{appName}-{versionName}-{buildType}",
+    val action: String = "copy",
+    val includeVariants: String = "all",
+) : Serializable
+
