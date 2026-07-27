@@ -7,32 +7,38 @@ import java.io.Serializable
  *
  * This object controls the app identity, SDK levels, manifest flags and optional permissions
  * used by the Android application module.
+ *
+ * [id], [version], [versionCode] and [name] are optional overrides of the shared
+ * [LudensAppConfiguration] — when unset (`null`), the Android build uses the shared
+ * `ludens.app.*` value instead. Read the effective value via
+ * [LudensConfiguration.androidIdentity] rather than these fields directly.
  */
 data class LudensAndroidConfiguration(
     /**
-     * Android application id.
+     * Android application id override. Falls back to the shared `ludens.app.id` when unset.
      *
      * Maps from `ludens.android.id`.
      */
-    val id: String = "com.yoimerdr.compose.ludens",
+    override val id: String? = null,
     /**
-     * App version name.
+     * App version name override. Falls back to the shared `ludens.app.version` when unset.
      *
      * Maps from `ludens.android.version`.
      */
-    val version: String = "1.0",
+    override val version: String? = null,
     /**
-     * App version code.
+     * App version code override. Falls back to the shared `ludens.app.versionCode` when unset.
      *
      * Maps from `ludens.android.versionCode`.
      * */
-    val versionCode: Int = 1,
+    override val versionCode: Int? = null,
     /**
-     * App display name used in settings.
+     * App display name override used in settings. Falls back to the shared `ludens.app.name`
+     * when unset.
      *
      * Maps from `ludens.android.name`.
      */
-    val name: String = "Ludens",
+    override val name: String? = null,
     /**
      * Launcher label shown under the icon.
      *
@@ -71,7 +77,13 @@ data class LudensAndroidConfiguration(
      * Maps from `ludens.android.permissions.*`.
      */
     val permissions: LudensAndroidPermissionsConfiguration = LudensAndroidPermissionsConfiguration(),
-) : Serializable {
+    /**
+     * Android post-build artifact renaming and relocation configuration.
+     *
+     * Maps from `ludens.android.build.*`.
+     */
+    val build: LudensAndroidBuildConfiguration = LudensAndroidBuildConfiguration(),
+) : Serializable, LudensIdentity {
     init {
         require(minSDK >= 21) {
             "minSDK must be at least 21. Current value: $minSDK"
@@ -80,19 +92,26 @@ data class LudensAndroidConfiguration(
             "targetSDK ($targetSDK) cannot be lower than minSDK ($minSDK)."
         }
 
-        val idRegex = Regex("^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z][a-zA-Z0-9_]*)+$")
-        require(id.matches(idRegex)) {
-            "The id '$id' is not a valid Android Application ID. (Valid example: com.my.app)"
+        id?.let {
+            val idRegex = Regex("^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z][a-zA-Z0-9_]*)+$")
+            require(it.matches(idRegex)) {
+                "The 'id' override ('$it') is not a valid Android Application ID. (Valid example: com.my.app)"
+            }
         }
 
-        val versionRegex = Regex("^\\d+\\.\\d+.*$")
-        require(version.matches(versionRegex)) {
-            "The version '$version' is invalid. It must follow the Major.Minor format (e.g., 1.0 or 1.0.0)."
+        version?.let {
+            val versionRegex = Regex("^\\d+\\.\\d+.*$")
+            require(it.matches(versionRegex)) {
+                "The 'version' override ('$it') is invalid. It must follow the Major.Minor format (e.g., 1.0 or 1.0.0)."
+            }
         }
 
-        require(name.isNotBlank()) {
-            "The app 'name' cannot be blank."
+        name?.let {
+            require(it.isNotBlank()) {
+                "The 'name' override cannot be blank."
+            }
         }
+
         require(launcherName.isNotBlank()) {
             "The 'launcherName' cannot be blank."
         }
@@ -221,3 +240,23 @@ data class LudensAndroidPermissionsConfiguration(
      */
     val changeWifiState: Boolean = false,
 ) : Serializable
+
+/**
+ * Android build post-processing settings loaded from `ludens.properties`.
+ *
+ * Configures automatic renaming and relocating of compiled Android APKs and AABs.
+ *
+ * @property enable Whether post-build artifact renaming and relocating is enabled.
+ * @property outputDir Destination directory relative to the project root.
+ * @property pattern Naming template pattern (e.g. `{appName}-{versionName}-{buildType}`).
+ * @property action Operation mode (`"copy"` or `"move"`).
+ * @property includeVariants Target build variants (`"all"`, `"release"`, `"debug"`, or comma-separated list).
+ */
+data class LudensAndroidBuildConfiguration(
+    val enable: Boolean = false,
+    val outputDir: String = "output/builds",
+    val pattern: String = "{appName}-{versionName}-{buildType}",
+    val action: String = "copy",
+    val includeVariants: String = "all",
+) : Serializable
+

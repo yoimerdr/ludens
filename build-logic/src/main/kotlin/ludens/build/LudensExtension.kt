@@ -7,9 +7,10 @@ import javax.inject.Inject
 /**
  * Top-level Gradle extension registered by [LudensBuildPlugin] under the `ludens` name.
  *
- * Provides two sub-extensions for configuring different aspects of the build:
+ * Provides three sub-extensions for configuring different aspects of the build:
  * - [compose] — for Compose Multiplatform related plugins.
  * - [android] — for Android related plugins.
+ * - [ios] — for iOS related plugins.
  *
  * **Note:** These entry points are organized by convention rather than strict restriction.
  * While an Android-affecting plugin *could* technically be activated via the [compose] extension,
@@ -25,16 +26,22 @@ import javax.inject.Inject
  *     android {
  *         // Android-specific configuration
  *     }
+ *     ios {
+ *         // iOS-specific configuration
+ *     }
  * }
  * ```
  *
  * @property compose The Compose sub-extension.
  * @property android The Android sub-extension.
+ * @property ios The iOS sub-extension.
  */
 abstract class LudensExtension @Inject constructor(project: Project) {
     val compose: LudensComposeExtension = project.objects.newInstance(LudensComposeExtension::class.java, project)
 
     val android: LudensAndroidExtension = project.objects.newInstance(LudensAndroidExtension::class.java, project)
+
+    val ios: LudensIosExtension = project.objects.newInstance(LudensIosExtension::class.java, project)
 
     /**
      * Configures the [LudensComposeExtension] via an [Action] block.
@@ -48,5 +55,12 @@ abstract class LudensExtension @Inject constructor(project: Project) {
      */
     fun android(action: Action<LudensAndroidExtension>) {
         action.execute(android)
+    }
+
+    /**
+     * Configures the [LudensIosExtension] via an [Action] block.
+     */
+    fun ios(action: Action<LudensIosExtension>) {
+        action.execute(ios)
     }
 }

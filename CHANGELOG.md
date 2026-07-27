@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Shared cross-platform app identity (`ludens.app.*`) in `ludens.properties` with per-platform optional overrides for Android and iOS. `LudensConfiguration` exposes resolved `androidIdentity`/`iosIdentity` merging shared defaults with platform-specific overrides.
+- iOS pre-build metadata sync plugin that propagates `PRODUCT_NAME`, `PRODUCT_BUNDLE_IDENTIFIER`, `MARKETING_VERSION`, and `CURRENT_PROJECT_VERSION` to `Config.xcconfig`.
+- Android post-build artifact rename and relocate plugin with configurable naming pattern, output directory, and operation mode (`copy`/`move`).
+
+### Changed
+
+- `ludens.properties` restructured: identity values moved from `ludens.android.*` to shared `ludens.app.*` namespace; per-platform overrides inherit from shared values when unset.
+
 ## [0.4.0] - 2026-07-16
 
 ### Added

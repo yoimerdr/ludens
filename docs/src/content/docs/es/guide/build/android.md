@@ -9,15 +9,20 @@ juego de RPG Maker envuelto con Ludens.
 ## Configuración de la App
 
 Antes de compilar tu APK, asegúrate de haber configurado la identidad de tu aplicación en
-`ludens.properties`. Este archivo en la raíz del proyecto controla cómo Android identifica tu
-aplicación.
+`ludens.properties`. Los valores centrales de identidad viven bajo el espacio de nombres compartido
+`ludens.app.*`:
 
 ```properties title="ludens.properties"
-ludens.android.id=com.tudominio.juego
-ludens.android.name=Mi Juego RPG
-ludens.android.launcherName=Juego RPG
-ludens.android.version=1.0.0
+ludens.app.id=com.tudominio.juego
+ludens.app.name=Mi Juego RPG
+ludens.app.version=1.0.0
+ludens.app.versionCode=1
 ```
+
+Android además lee `ludens.android.launcherName` (el nombre mostrado bajo el icono en la pantalla de
+inicio), que no tiene equivalente compartido. Las claves `ludens.android.id`, `ludens.android.name`,
+`ludens.android.version` y `ludens.android.versionCode` son sobreescrituras opcionales por plataforma
+y están comentadas por defecto — déjalas sin establecer para usar los valores compartidos de arriba.
 
 Para ver la lista completa de propiedades disponibles, incluyendo permisos y aceleración de
 hardware, consulta la guía de [Configuración Android](/es/configuration/android/).
@@ -54,11 +59,21 @@ Si prefieres usar la interfaz de Android Studio:
 
 ### Resultado
 
-El APK se generará en:
+La salida raw de Gradle se coloca en:
 
 ```text
 composeApp/build/outputs/apk/debug/composeApp-debug.apk
 ```
+
+Con la configuración de post-procesado habilitada por defecto, el artefacto también se copia en:
+
+```text
+output/debug/<appName>-<version>-debug.apk
+```
+
+Consulta [Post-Procesado del Build de Android](/es/configuration/android/#post-procesado-del-build-de-android)
+para personalizar el directorio de salida y el patrón de nombre, o para desactivar este
+comportamiento.
 
 ![Resultado exitoso de la compilación.](../../../../../assets/images/guide/ludens-build-debug.png)
 

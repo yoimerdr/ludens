@@ -1,43 +1,11 @@
 ---
 title: Shared Configuration
 description: Platform-agnostic configuration properties for Ludens.
+slug: 0.4.0/configuration/shared
 ---
 
 Shared configuration properties are managed through `ludens.properties` in the project root. These
 settings affect the core application logic and the user interface across all platforms.
-
-## App Identity
-
-These properties define the base application identity used across platforms. Both Android and iOS
-read from this namespace by default. Each platform can override individual values using its own
-prefix (`ludens.android.*`) without touching the shared ones.
-
-```properties
-# Shared application identity
-ludens.app.id=com.ludens.compose.ludens
-ludens.app.name=Ludens
-ludens.app.version=0.4.0
-ludens.app.versionCode=1
-```
-
-Configure these properties using the `ludens.app.*` prefix:
-
-| Property      | Type    | Default                     | Description                                                                                      |
-|---------------|---------|-----------------------------|--------------------------------------------------------------------------------------------------|
-| `id`          | String  | `com.ludens.compose.ludens` | Reverse-DNS application identifier. Must use only letters, digits, and dots (no underscores or hyphens). |
-| `name`        | String  | `Ludens`                    | Display name shown in system settings and other platform UI.                                     |
-| `version`     | String  | `0.4.0`                     | Visible version string shown to the user (e.g. `1.0.0`).                                        |
-| `versionCode` | Integer | `1`                         | Internal build number. Increment with every release. Does not have to match the version string.  |
-
-:::note[Platform overrides]
-Each platform can diverge from these shared values by setting its own key. For Android, those are
-`ludens.android.id`, `ludens.android.version`, `ludens.android.versionCode`, and
-`ludens.android.name` — all commented out by default. Leave them unset to keep using the shared
-value. The `ludens.android.launcherName` property has no shared equivalent and remains
-Android-only.
-:::
-
----
 
 ## Settings Presets
 
@@ -69,7 +37,7 @@ The following property is configured under the `ludens.settings.*` prefix:
 | `minimalist`  | Maximum screen space: disables both controls and quick actions by default.    |
 | `custom`      | Ignores built-in logic and uses the custom preset properties defined below.   |
 
----
+***
 
 ## Custom Preset Configuration
 
@@ -105,7 +73,7 @@ These properties use the `ludens.settings.preset.*` prefix:
 | `systemTheme`    | String  | `system`   | Default theme: `system`, `light`, `dark`.                              |
 | `systemLanguage` | String  | `system`   | Default language fallback: `system`, `en`, `es`, `zh`, `ja`, `pt-rBR`, `ru`. |
 
----
+***
 
 ## Localization & Languages
 
@@ -129,16 +97,16 @@ ludens.languages.available=en,es
 |---|---|---|---|
 | `ludens.languages.available` | List/String | `*` | Comma-separated list of ISO language tags to include in the build (e.g., `en,es,zh,ja`). |
 
-To add translation keys for a language not provided by default, see the [Localization guide in the BUILD docs](/guide/build/android/#localization--translations).
+To add translation keys for a language not provided by default, see the [Localization guide in the BUILD docs](/0.4.0/guide/build/android/#localization--translations).
 
----
+***
 
 ## Custom Fonts & Typography
 
 Ludens uses Compose Multiplatform's resource system to manage typography.
 
-- **Source Folder**: Place your custom `.ttf` or `.otf` font files in `project/assets/fonts/`.
-- **System Fonts**: The default display font is `Plus Jakarta Sans` and the body font is `Inter`.
+* **Source Folder**: Place your custom `.ttf` or `.otf` font files in `project/assets/fonts/`.
+* **System Fonts**: The default display font is `Plus Jakarta Sans` and the body font is `Inter`.
 
 You can configure global default fonts or specify language-specific font fallbacks in `ludens.properties`:
 
@@ -165,4 +133,3 @@ These properties use the `ludens.fonts.*` prefix:
 | `body` | String | Default font for body/paragraph elements. |
 | `language.<lang_tag>.display` | String | Heading font fallback specifically for `<lang_tag>` locale. |
 | `language.<lang_tag>.body` | String | Body font fallback specifically for `<lang_tag>` locale. |
-

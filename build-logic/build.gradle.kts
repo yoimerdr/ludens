@@ -57,5 +57,13 @@ gradlePlugin {
             id = "ludens.build.compose.icons.generator"
             implementationClass = "ludens.build.compose.resources.icons.AppIconGeneratorPlugin"
         }
+        register("ludensAndroidPostBuild") {
+            id = "ludens.build.android.postbuild"
+            implementationClass = "ludens.build.android.postbuild.AndroidBuildPostProcessPlugin"
+        }
+        register("ludensIosPreBuild") {
+            id = "ludens.build.ios.prebuild"
+            implementationClass = "ludens.build.ios.prebuild.IosBuildPreProcessPlugin"
+        }
     }
 }

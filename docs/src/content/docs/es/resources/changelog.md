@@ -9,6 +9,18 @@ Ludens.
 Para ver una lista completa de commits y correcciones menores, por favor consulta la página
 de [GitHub Releases](https://github.com/yoimerdr/ludens/releases).
 
+## [No lanzado / Unreleased]
+
+### Añadido
+
+- Identidad de aplicación multiplataforma compartida (`ludens.app.*`) en `ludens.properties` con sobreescrituras opcionales por plataforma para Android e iOS. `LudensConfiguration` expone las propiedades resueltas `androidIdentity`/`iosIdentity` combinando valores por defecto compartidos con sobreescrituras específicas.
+- Plugin de sincronización de metadatos pre-build para iOS que propaga `PRODUCT_NAME`, `PRODUCT_BUNDLE_IDENTIFIER`, `MARKETING_VERSION` y `CURRENT_PROJECT_VERSION` a `Config.xcconfig`.
+- Plugin de renombrado y reubicación post-build de artefactos de Android con patrón de nombres configurable, directorio de salida y modo de operación (`copy`/`move`).
+
+### Cambiado
+
+- `ludens.properties` reestructurado: los valores de identidad se movieron del espacio de nombres `ludens.android.*` a `ludens.app.*`; las sobreescrituras por plataforma heredan de los valores compartidos cuando no están definidas.
+
 ## v0.4.0 - 2026-07-16
 
 ### Añadido

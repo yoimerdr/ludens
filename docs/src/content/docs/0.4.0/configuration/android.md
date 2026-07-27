@@ -1,6 +1,7 @@
 ---
 title: Android Configuration
 description: Android specific configuration for Ludens.
+slug: 0.4.0/configuration/android
 ---
 
 Android-specific application identity and manifest properties are managed through
@@ -9,42 +10,36 @@ touching Kotlin code or complex build scripts.
 
 ## Application Identity
 
-Android reads its identity from the shared `ludens.app.*` namespace by default (see
-[Shared Configuration](/configuration/shared/#app-identity)). The keys below are optional
-Android-only overrides — they are commented out in `ludens.properties` and only need to be set
-when Android must diverge from the shared value (for example, a different package ID for a
-specific store).
+These properties define the package name, version, and names shown by the Android system.
 
 ```properties
-# Optional Android identity overrides
-# ludens.android.id=
-# ludens.android.version=
-# ludens.android.versionCode=
-# ludens.android.name=
-
-# Android launcher label
+# ----- Android Identity -----
+ludens.android.id=com.ludens.compose.ludens
+ludens.android.version=0.4.0
+ludens.android.versionCode=1
+ludens.android.name=Ludens
 ludens.android.launcherName=Ludens
 ludens.android.minSDK=21
 ludens.android.targetSDK=36
 ludens.android.immersive=true
 ```
 
-Configurable properties using the `ludens.android.*` prefix:
+Configure these properties using the `ludens.android.*` prefix:
 
-| Property       | Type    | Default (inherits from)     | Description                                                    |
-|----------------|---------|-----------------------------|----------------------------------------------------------------|
-| `id`           | String  | `ludens.app.id`             | Android application identifier. Override when the shared value can't be used as-is. |
-| `version`      | String  | `ludens.app.version`        | Visible version name override for Android.                     |
-| `versionCode`  | Integer | `ludens.app.versionCode`    | Play Store update compatibility integer. Override if Android needs a different counter. |
-| `name`         | String  | `ludens.app.name`           | Full application name in Android system settings.              |
-| `launcherName` | String  | `Ludens`                    | Name displayed under the home screen icon (Android-only).      |
-| `minSDK`       | Integer | `21`                        | Minimum Android API level supported.                           |
-| `targetSDK`    | Integer | `36`                        | Target Android API level for the build.                        |
-| `immersive`    | Boolean | `true`                      | Enables immersive mode (hides system bars).                    |
+| Property       | Type    | Default                     | Description                                        |
+|----------------|---------|-----------------------------|----------------------------------------------------|
+| `id`           | String  | `com.ludens.compose.ludens` | Unique application identifier (package name).      |
+| `version`      | String  | `0.4.0`                     | Visible version name shown to the user.            |
+| `versionCode`  | Integer | `1`                         | Internal version code used for Play Store updates. |
+| `name`         | String  | `Ludens`                    | Full application name in system settings.          |
+| `launcherName` | String  | `Ludens`                    | Name displayed under the home screen icon.         |
+| `minSDK`       | Integer | `21`                        | Minimum Android API level supported.               |
+| `targetSDK`    | Integer | `36`                        | Target Android API level for the build.            |
+| `immersive`    | Boolean | `true`                      | Enables immersive mode (hides system bars).        |
 
 :::note
-The application identifier must follow the reverse domain format and must be unique if you plan to
-publish on the Google Play Store. Changing it after publication creates a new listing.
+The `id` must follow the reverse domain format and must be unique if you plan to publish on the
+Google Play Store. Changing it after publication creates a new listing.
 :::
 
 ## Application Icon
@@ -54,8 +49,8 @@ Ludens includes an automated **App Icon Generator** plugin that creates launcher
 ### Automated Generation (Recommended)
 
 1. Place your source icon image inside the `project/assets/icons/` directory.
-   - For best results, use a vector image named `icon.svg` or a high-resolution raster image named `icon.png` (at least 512x512 pixels).
-   - If you want to use separate adaptive layers for Android, you can place `icon_foreground.svg`/`icon_foreground.png` and `icon_background.svg`/`icon_background.png` in that same directory.
+   * For best results, use a vector image named `icon.svg` or a high-resolution raster image named `icon.png` (at least 512x512 pixels).
+   * If you want to use separate adaptive layers for Android, you can place `icon_foreground.svg`/`icon_foreground.png` and `icon_background.svg`/`icon_background.png` in that same directory.
 2. Configure the icon generator in `ludens.properties`:
 
 ```properties
@@ -81,9 +76,9 @@ ludens.icons.scale=0.62
 ```
 
 3. Build the project. The build system will automatically generate:
-   - **Android**: Legacy round and square mipmap icons, XML adaptive icon sheets under `mipmap-anydpi-v26`, and vector/raster layers (`ic_launcher_foreground`, `ic_launcher_background`) placed in `androidMain/res/`.
-   - **iOS**: All required AppIcon sizes (iPhone, iPad, App Store) along with the corresponding `Contents.json` asset catalog manifest under `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
-   - **Google Play Store**: A high-resolution `ic_launcher-playstore.png` (512x512) listing icon.
+   * **Android**: Legacy round and square mipmap icons, XML adaptive icon sheets under `mipmap-anydpi-v26`, and vector/raster layers (`ic_launcher_foreground`, `ic_launcher_background`) placed in `androidMain/res/`.
+   * **iOS**: All required AppIcon sizes (iPhone, iPad, App Store) along with the corresponding `Contents.json` asset catalog manifest under `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
+   * **Google Play Store**: A high-resolution `ic_launcher-playstore.png` (512x512) listing icon.
 
 ### Manual Configuration (Alternative)
 
@@ -91,6 +86,7 @@ If you prefer to generate your assets manually or use the standard Android devel
 
 :::caution[Disable Automatic Generation]
 To prevent the automated generator task from overwriting your custom manual files on every build, you **MUST** disable the automatic generator in `ludens.properties`:
+
 ```properties
 ludens.icons.android.enable=false
 ludens.icons.ios.enable=false
@@ -101,7 +97,7 @@ ludens.icons.ios.enable=false
 2. Select **New > Image Asset**.
 3. Use the Asset Studio wizard to configure your layers and scale.
 
-![Using Image Asset Studio to update the application icon.](../../../assets/images/guide/ludens-application-icon.png)
+![Using Image Asset Studio to update the application icon.](../../../../assets/images/guide/0.4.0/ludens-application-icon.png)
 
 ## Manifest Configuration
 
@@ -211,54 +207,6 @@ permission at runtime via a
 custom bridge. Ludens currently does not provide a native permission bridge out of the box.
 :::
 
-## Android Build Post-Processing
-
-Ludens can automatically rename and relocate the generated APK or AAB after a build completes. This
-is useful for organizing output artifacts with a consistent naming convention without manual steps.
-
-```properties
-# Android artifact rename and relocate settings
-ludens.android.build.enable=true
-ludens.android.build.outputDir=output/{buildType}
-ludens.android.build.pattern={appName}-{versionName}-{buildType}
-ludens.android.build.action=copy
-ludens.android.build.includeVariants=all
-```
-
-Configure these properties using the `ludens.android.build.*` prefix:
-
-| Property          | Type    | Default                          | Description                                                                 |
-|-------------------|---------|----------------------------------|-----------------------------------------------------------------------------|
-| `enable`          | Boolean | `true`                           | Enables the post-build rename and relocate task.                            |
-| `outputDir`       | String  | `output/{buildType}`             | Destination directory relative to the project root. Supports placeholders.  |
-| `pattern`         | String  | `{appName}-{versionName}-{buildType}` | Naming template for the output file. The extension is added automatically. |
-| `action`          | String  | `copy`                           | `copy` duplicates the artifact; `move` relocates it from the build directory. |
-| `includeVariants` | String  | `all`                            | Which build variants to process: `all`, `release`, `debug`, or a comma-separated list. |
-
-### Naming Placeholders
-
-The `outputDir` and `pattern` values support the following placeholders:
-
-| Placeholder      | Value                                         |
-|------------------|-----------------------------------------------|
-| `{appName}`      | Application name from `ludens.app.name`       |
-| `{name}`         | Module name                                   |
-| `{versionName}`  | Version string from `ludens.app.version`      |
-| `{versionCode}`  | Version integer from `ludens.app.versionCode` |
-| `{buildType}`    | `debug` or `release`                          |
-| `{minSdk}`       | Minimum SDK from `ludens.android.minSDK`      |
-| `{targetSdk}`    | Target SDK from `ludens.android.targetSDK`    |
-| `{timestamp}`    | Build timestamp                               |
-| `{appId}`        | Application ID                                |
-| `{artifactType}` | `apk` or `aab`                                |
-
-:::note[Output path in AGENTS.md and build docs]
-With the default configuration, the post-processed debug APK is placed at
-`output/debug/<appName>-<version>-debug.apk` instead of the raw Gradle output location.
-:::
-
----
-
 ## Signing Configuration
 
 For release builds, you need a signing keystore. Create a `keystore.properties` file in the project
@@ -295,13 +243,13 @@ Configure this property using the `ludens.debug.*` prefix:
 ### How It Works
 
 When `ludens.debug.errors` is set to `true`:
+
 1. **JavaScript Exceptions**: Ludens injects an error listener into the game WebView to capture unhandled JavaScript runtime exceptions and unhandled promise rejections.
 2. **Native Load Failures**: The native WebView client intercepts resource loading failures (e.g., missing files, incorrect paths, 404 errors).
 3. **Traceback Dialog**: Instead of silently failing or showing a black screen, Ludens renders a native Compose Multiplatform dialog with the detailed exception message and stack trace.
-   - **Copy to Clipboard**: Copy the complete technical traceback for debugging.
-   - **Restart**: Instantly reload the WebView and restart the game.
+   * **Copy to Clipboard**: Copy the complete technical traceback for debugging.
+   * **Restart**: Instantly reload the WebView and restart the game.
 
 :::note[Plugin Support]
 JavaScript stack trace capture is only fully supported if you have the [`YDP_Ludens.js` (v1.2.0+)](https://github.com/yoimerdr/rpgm-plugins) plugin loaded as the first plugin in your RPG Maker project.
 :::
-

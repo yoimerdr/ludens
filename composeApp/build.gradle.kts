@@ -1,10 +1,11 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 import ludens.build.android.configuration.permissions
+import ludens.build.android.postbuild.postBuild
 import ludens.build.compose.configuration.ludensConfiguration
+import ludens.build.ios.prebuild.preBuild
 import ludens.build.compose.fonts.fontsSync
 import ludens.build.compose.language.languageMetadata
 import ludens.build.compose.language.languageStringsSync
-import ludens.build.compose.resources.icons.AndroidIconFormat
 import ludens.build.compose.resources.icons.appIconGenerator
 import ludens.build.compose.resources.filesRes
 import ludens.build.compose.resources.resourcesSync
@@ -56,8 +57,40 @@ ludens {
             iconScale = ludensConfiguration.icons.scale
         }
     }
+    ios {
+        preBuild {
+            enable = ludensConfiguration.ios.build.enable
+
+            context {
+                val identity = ludensConfiguration.iosIdentity
+                appName = identity.name
+                bundleId = identity.id
+                marketingVersion = identity.version
+                projectVersion = identity.versionCode.toString()
+            }
+        }
+    }
+
     android {
         permissions()
+
+        postBuild {
+            enable = ludensConfiguration.android.build.enable
+            outputDir = ludensConfiguration.android.build.outputDir
+            pattern = ludensConfiguration.android.build.pattern
+            action = ludensConfiguration.android.build.action
+            includeVariants = listOf(ludensConfiguration.android.build.includeVariants)
+
+            context {
+                val identity = ludensConfiguration.androidIdentity
+                appName = identity.name
+                versionName = identity.version
+                versionCode = identity.versionCode
+                minSdk = ludensConfiguration.android.minSDK
+                targetSdk = ludensConfiguration.android.targetSDK
+                appId = identity.id
+            }
+        }
     }
 }
 
@@ -155,14 +188,16 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        // Core app identity comes from `ludens.properties`.
-        applicationId = ludensConfiguration.android.id
+        // Core app identity comes from `ludens.properties` (shared `ludens.app.*` defaults,
+        // overridable per-platform via `ludens.android.*`).
+        val androidIdentity = ludensConfiguration.androidIdentity
+        applicationId = androidIdentity.id
         minSdk = ludensConfiguration.android.minSDK
         targetSdk = ludensConfiguration.android.targetSDK
-        versionCode = ludensConfiguration.android.versionCode
-        versionName = ludensConfiguration.android.version
+        versionCode = androidIdentity.versionCode
+        versionName = androidIdentity.version
 
-        resValue("string", "app_name", ludensConfiguration.android.name)
+        resValue("string", "app_name", androidIdentity.name)
         resValue("string", "app_launcher_name", ludensConfiguration.android.launcherName)
 
         // Manifest placeholders are resolved in `src/androidMain/AndroidManifest.xml`.

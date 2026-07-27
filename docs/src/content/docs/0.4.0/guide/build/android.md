@@ -1,6 +1,7 @@
 ---
 title: Android Build
 description: How to build debug and release APKs for your Ludens project.
+slug: 0.4.0/guide/build/android
 ---
 
 This guide covers building both debug (testing) and release (production) builds for your RPG Maker
@@ -9,22 +10,17 @@ game wrapped with Ludens.
 ## App Setup
 
 Before building your APK, ensure you have configured your application identity in
-`ludens.properties`. The core identity values live under the shared `ludens.app.*` namespace:
+`ludens.properties`. This file at the project root controls how your app is identified by Android.
 
 ```properties title="ludens.properties"
-ludens.app.id=com.yourdomain.game
-ludens.app.name=My RPG Game
-ludens.app.version=1.0.0
-ludens.app.versionCode=1
+ludens.android.id=com.yourdomain.game
+ludens.android.name=My RPG Game
+ludens.android.launcherName=RPG Game
+ludens.android.version=1.0.0
 ```
 
-Android additionally reads `ludens.android.launcherName` (the name shown below the home screen icon),
-which has no shared equivalent. The `ludens.android.id`, `ludens.android.name`,
-`ludens.android.version`, and `ludens.android.versionCode` keys are optional per-platform overrides
-and are commented out by default — leave them unset to use the shared values above.
-
 For a full list of available properties, including permissions and hardware acceleration, see
-the [Android Configuration](/configuration/android/) guide.
+the [Android Configuration](/0.4.0/configuration/android/) guide.
 
 ## Debug Build
 
@@ -36,15 +32,15 @@ If you prefer using the Android Studio interface:
 
 1. Open the configurations menu and select **Edit Configurations...**.
 
-![Accessing the configurations menu.](../../../../assets/images/guide/ludens-build-configurations.png)
+![Accessing the configurations menu.](../../../../../assets/images/guide/0.4.0/ludens-build-configurations.png)
 
 2. Add a new **Gradle** task.
 
-![Creating a new Gradle task.](../../../../assets/images/guide/ludens-build-configurations-gradle-task.png)
+![Creating a new Gradle task.](../../../../../assets/images/guide/0.4.0/ludens-build-configurations-gradle-task.png)
 
 3. Name the task (e.g., `assembleDebug`) and in the **Arguments** field type: `assembleDebug`.
 
-![Configuring the task arguments.](../../../../assets/images/guide/ludens-build-configurations-gradle-task-assembleDebug.png)
+![Configuring the task arguments.](../../../../../assets/images/guide/0.4.0/ludens-build-configurations-gradle-task-assembleDebug.png)
 
 4. Click **Run** to start the build.
 
@@ -58,22 +54,13 @@ If you prefer using the Android Studio interface:
 
 ### Result
 
-The raw Gradle output is placed at:
+The APK will be generated at:
 
 ```text
 composeApp/build/outputs/apk/debug/composeApp-debug.apk
 ```
 
-With the default post-processing configuration enabled, the artifact is also copied to:
-
-```text
-output/debug/<appName>-<version>-debug.apk
-```
-
-See [Android Build Post-Processing](/configuration/android/#android-build-post-processing) to
-customize the output directory and naming pattern, or to disable this behavior.
-
-![Successful build result.](../../../../assets/images/guide/ludens-build-debug.png)
+![Successful build result.](../../../../../assets/images/guide/0.4.0/ludens-build-debug.png)
 
 :::note[Debug Application ID]
 The debug build automatically appends `.debug` to your `applicationId`. This allows you to install
@@ -90,7 +77,6 @@ by running:
 ```bash
 ./gradlew clean
 ```
-
 :::
 
 ## Release Build
@@ -103,7 +89,7 @@ This option guides you step-by-step through signing your application.
 
 1. Go to **Build > Generate Signed Bundle / APK**.
 
-![Starting the signing wizard.](../../../../assets/images/guide/ludens-build-configurations-sign.png)
+![Starting the signing wizard.](../../../../../assets/images/guide/0.4.0/ludens-build-configurations-sign.png)
 
 2. Select **APK** and click **Next**.
 
@@ -111,19 +97,19 @@ This option guides you step-by-step through signing your application.
 
    **Create New** — If you don't have one, click **Create new...**.
 
-   ![Creating a new Keystore. Keep your password and the .jks file safe.](../../../../assets/images/guide/ludens-build-configurations-sign-creation.png)
+   ![Creating a new Keystore. Keep your password and the .jks file safe.](../../../../../assets/images/guide/0.4.0/ludens-build-configurations-sign-creation.png)
 
    **Use Existing** — If you already have one, load it and enter credentials.
 
-   ![Keystore credentials.](../../../../assets/images/guide/ludens-build-configurations-sign-use.png)
+   ![Keystore credentials.](../../../../../assets/images/guide/0.4.0/ludens-build-configurations-sign-use.png)
 
 4. Select the **release** build flavor and click **Create**.
 
-![Output variant selection.](../../../../assets/images/guide/ludens-build-configurations-sign-release.png)
+![Output variant selection.](../../../../../assets/images/guide/0.4.0/ludens-build-configurations-sign-release.png)
 
 5. **Result**:
 
-![Notification of successfully generated APK.](../../../../assets/images/guide/ludens-build-release.png)
+![Notification of successfully generated APK.](../../../../../assets/images/guide/0.4.0/ludens-build-release.png)
 
 ### Option B: Gradle Task
 
@@ -149,7 +135,7 @@ Ideal for automating the build, but requires prior manual configuration.
 
 4. **Result**:
 
-![Build result from Gradle.](../../../../assets/images/guide/ludens-build-release-gradle.png)
+![Build result from Gradle.](../../../../../assets/images/guide/0.4.0/ludens-build-release-gradle.png)
 
 ### Output Location
 
