@@ -16,12 +16,12 @@ open class PostBuildContext {
     /**
      * Application display name.
      */
-    var appName: String = "App"
+    var appName: String = "Ludens"
 
     /**
      * Application version name.
      */
-    var versionName: String = "1.0.0"
+    var versionName: String = "1.0"
 
     /**
      * Application version code integer.
@@ -41,7 +41,7 @@ open class PostBuildContext {
     /**
      * Android Application ID package name.
      */
-    var appId: String = "com.example.app"
+    var appId: String = "com.yoimerdr.compose.ludens"
 }
 
 /**
@@ -61,12 +61,13 @@ open class PostBuildContext {
  *             includeVariants = listOf(ludensConfiguration.android.build.includeVariants)
 
  *             context {
- *                 appName = ludensConfiguration.android.name
- *                 versionName = ludensConfiguration.android.version
- *                 versionCode = ludensConfiguration.android.versionCode
+ *                 val identity = ludensConfiguration.resolvedAndroidIdentity
+ *                 appName = identity.name
+ *                 versionName = identity.version
+ *                 versionCode = identity.versionCode
  *                 minSdk = ludensConfiguration.android.minSDK
  *                 targetSdk = ludensConfiguration.android.targetSDK
- *                 appId = ludensConfiguration.android.id
+ *                 appId = identity.id
  *             }
  *         }
  *     }
