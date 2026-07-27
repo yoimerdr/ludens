@@ -8,6 +8,18 @@ This page documents the release history and major changes for the Ludens project
 For a complete list of commits and minor fixes, please refer to
 the [GitHub Releases](https://github.com/yoimerdr/ludens/releases) page.
 
+## [Unreleased]
+
+### Added
+
+- Shared cross-platform app identity (`ludens.app.*`) in `ludens.properties` with per-platform optional overrides for Android and iOS. `LudensConfiguration` exposes resolved `androidIdentity`/`iosIdentity` merging shared defaults with platform-specific overrides.
+- iOS pre-build metadata sync plugin that propagates `PRODUCT_NAME`, `PRODUCT_BUNDLE_IDENTIFIER`, `MARKETING_VERSION`, and `CURRENT_PROJECT_VERSION` to `Config.xcconfig`.
+- Android post-build artifact rename and relocate plugin with configurable naming pattern, output directory, and operation mode (`copy`/`move`).
+
+### Changed
+
+- `ludens.properties` restructured: identity values moved from `ludens.android.*` to shared `ludens.app.*` namespace; per-platform overrides inherit from shared values when unset.
+
 ## v0.4.0 - 2026-07-16
 
 ### Added

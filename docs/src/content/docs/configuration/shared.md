@@ -6,6 +6,39 @@ description: Platform-agnostic configuration properties for Ludens.
 Shared configuration properties are managed through `ludens.properties` in the project root. These
 settings affect the core application logic and the user interface across all platforms.
 
+## App Identity
+
+These properties define the base application identity used across platforms. Both Android and iOS
+read from this namespace by default. Each platform can override individual values using its own
+prefix (`ludens.android.*`) without touching the shared ones.
+
+```properties
+# Shared application identity
+ludens.app.id=com.ludens.compose.ludens
+ludens.app.name=Ludens
+ludens.app.version=0.4.0
+ludens.app.versionCode=1
+```
+
+Configure these properties using the `ludens.app.*` prefix:
+
+| Property      | Type    | Default                     | Description                                                                                      |
+|---------------|---------|-----------------------------|--------------------------------------------------------------------------------------------------|
+| `id`          | String  | `com.ludens.compose.ludens` | Reverse-DNS application identifier. Must use only letters, digits, and dots (no underscores or hyphens). |
+| `name`        | String  | `Ludens`                    | Display name shown in system settings and other platform UI.                                     |
+| `version`     | String  | `0.4.0`                     | Visible version string shown to the user (e.g. `1.0.0`).                                        |
+| `versionCode` | Integer | `1`                         | Internal build number. Increment with every release. Does not have to match the version string.  |
+
+:::note[Platform overrides]
+Each platform can diverge from these shared values by setting its own key. For Android, those are
+`ludens.android.id`, `ludens.android.version`, `ludens.android.versionCode`, and
+`ludens.android.name` — all commented out by default. Leave them unset to keep using the shared
+value. The `ludens.android.launcherName` property has no shared equivalent and remains
+Android-only.
+:::
+
+---
+
 ## Settings Presets
 
 Ludens uses presets to simplify the initial configuration. You can choose from several built-in

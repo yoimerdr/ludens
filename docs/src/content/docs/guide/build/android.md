@@ -9,14 +9,19 @@ game wrapped with Ludens.
 ## App Setup
 
 Before building your APK, ensure you have configured your application identity in
-`ludens.properties`. This file at the project root controls how your app is identified by Android.
+`ludens.properties`. The core identity values live under the shared `ludens.app.*` namespace:
 
 ```properties title="ludens.properties"
-ludens.android.id=com.yourdomain.game
-ludens.android.name=My RPG Game
-ludens.android.launcherName=RPG Game
-ludens.android.version=1.0.0
+ludens.app.id=com.yourdomain.game
+ludens.app.name=My RPG Game
+ludens.app.version=1.0.0
+ludens.app.versionCode=1
 ```
+
+Android additionally reads `ludens.android.launcherName` (the name shown below the home screen icon),
+which has no shared equivalent. The `ludens.android.id`, `ludens.android.name`,
+`ludens.android.version`, and `ludens.android.versionCode` keys are optional per-platform overrides
+and are commented out by default — leave them unset to use the shared values above.
 
 For a full list of available properties, including permissions and hardware acceleration, see
 the [Android Configuration](/configuration/android/) guide.
@@ -53,11 +58,20 @@ If you prefer using the Android Studio interface:
 
 ### Result
 
-The APK will be generated at:
+The raw Gradle output is placed at:
 
 ```text
 composeApp/build/outputs/apk/debug/composeApp-debug.apk
 ```
+
+With the default post-processing configuration enabled, the artifact is also copied to:
+
+```text
+output/debug/<appName>-<version>-debug.apk
+```
+
+See [Android Build Post-Processing](/configuration/android/#android-build-post-processing) to
+customize the output directory and naming pattern, or to disable this behavior.
 
 ![Successful build result.](../../../../assets/images/guide/ludens-build-debug.png)
 

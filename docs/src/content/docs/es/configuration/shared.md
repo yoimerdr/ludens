@@ -4,9 +4,41 @@ description: Propiedades de configuración agnósticas de la plataforma para Lud
 ---
 
 Las propiedades de configuración compartida se gestionan a través de `ludens.properties` en la raíz
-del proyecto. Estos
-ajustes afectan la lógica central de la aplicación y la interfaz de usuario en todas las
-plataformas.
+del proyecto. Estos ajustes afectan la lógica central de la aplicación y la interfaz de usuario en
+todas las plataformas.
+
+## Identidad de la App
+
+Estas propiedades definen la identidad base de la aplicación usada en todas las plataformas. Tanto
+Android como iOS leen de este espacio de nombres por defecto. Cada plataforma puede sobreescribir
+valores individuales usando su propio prefijo (`ludens.android.*`) sin tocar los compartidos.
+
+```properties
+# Identidad compartida de la aplicación
+ludens.app.id=com.ludens.compose.ludens
+ludens.app.name=Ludens
+ludens.app.version=0.4.0
+ludens.app.versionCode=1
+```
+
+Configura estas propiedades usando el prefijo `ludens.app.*`:
+
+| Propiedad     | Tipo    | Por defecto                 | Descripción                                                                                                      |
+|---------------|---------|-----------------------------|------------------------------------------------------------------------------------------------------------------|
+| `id`          | String  | `com.ludens.compose.ludens` | Identificador de la app en formato dominio invertido. Solo letras, dígitos y puntos (sin guiones ni guión bajo). |
+| `name`        | String  | `Ludens`                    | Nombre visible en ajustes del sistema y otras interfaces de plataforma.                                          |
+| `version`     | String  | `0.4.0`                     | Cadena de versión visible para el usuario (p. ej. `1.0.0`).                                                     |
+| `versionCode` | Entero  | `1`                         | Número de build interno. Incrementar con cada release. No tiene que coincidir con la cadena de versión.          |
+
+:::note[Sobreescrituras por plataforma]
+Cada plataforma puede divergir de estos valores compartidos estableciendo su propia clave. Para
+Android, son `ludens.android.id`, `ludens.android.version`, `ludens.android.versionCode` y
+`ludens.android.name` — todas comentadas por defecto. Déjalas sin establecer para usar el valor
+compartido. La propiedad `ludens.android.launcherName` no tiene equivalente compartido y sigue
+siendo exclusiva de Android.
+:::
+
+---
 
 ## Presets de Ajustes
 

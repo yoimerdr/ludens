@@ -9,38 +9,42 @@ tocar código Kotlin ni scripts de compilación complejos.
 
 ## Identidad de la Aplicación
 
-Estas propiedades definen el nombre del paquete, la versión y los nombres mostrados por el sistema
-Android.
+Android lee su identidad del espacio de nombres compartido `ludens.app.*` por defecto (ver
+[Configuración Compartida](/es/configuration/shared/#identidad-de-la-app)). Las claves de abajo son
+sobreescrituras opcionales exclusivas de Android — están comentadas en `ludens.properties` y solo
+necesitas establecerlas cuando Android deba divergir del valor compartido (por ejemplo, un ID de
+paquete diferente para una tienda específica).
 
 ```properties
-# ----- Android Identity -----
-ludens.android.id=com.ludens.compose.ludens
-ludens.android.version=0.4.0
-ludens.android.versionCode=1
-ludens.android.name=Ludens
+# Sobreescrituras opcionales de identidad para Android
+# ludens.android.id=
+# ludens.android.version=
+# ludens.android.versionCode=
+# ludens.android.name=
+
+# Etiqueta del lanzador de Android
 ludens.android.launcherName=Ludens
 ludens.android.minSDK=21
 ludens.android.targetSDK=36
 ludens.android.immersive=true
 ```
 
-Configura estas propiedades usando el prefijo `ludens.android.*`:
+Propiedades configurables usando el prefijo `ludens.android.*`:
 
-| Propiedad      | Tipo     | Por defecto                 | Descripción                                                      |
-|----------------|----------|-----------------------------|------------------------------------------------------------------|
-| `id`           | String   | `com.ludens.compose.ludens` | Identificador único de la aplicación (package name).             |
-| `version`      | String   | `0.4.0`                     | Nombre de la versión visible para el usuario.                    |
-| `versionCode`  | Entero   | `1`                         | Código de versión interno para actualizaciones en la Play Store. |
-| `name`         | String   | `Ludens`                    | Nombre completo de la aplicación en ajustes del sistema.         |
-| `launcherName` | String   | `Ludens`                    | Nombre mostrado bajo el icono en la pantalla de inicio.          |
-| `minSDK`       | Entero   | `21`                        | Nivel mínimo de API de Android soportado.                        |
-| `targetSDK`    | Entero   | `36`                        | Nivel de API de Android al que se dirige la compilación.         |
-| `immersive`    | Booleano | `true`                      | Activa el modo inmersivo (oculta las barras del sistema).        |
+| Propiedad      | Tipo     | Por defecto (hereda de)  | Descripción                                                                        |
+|----------------|----------|--------------------------|------------------------------------------------------------------------------------|
+| `id`           | String   | `ludens.app.id`          | Identificador de la app. Sobreescribir si el valor compartido no puede usarse tal cual. |
+| `version`      | String   | `ludens.app.version`     | Sobreescritura del nombre de versión visible para Android.                         |
+| `versionCode`  | Entero   | `ludens.app.versionCode` | Entero de compatibilidad de actualizaciones en Play Store. Sobreescribir si Android necesita un contador diferente. |
+| `name`         | String   | `ludens.app.name`        | Nombre completo de la aplicación en ajustes del sistema Android.                  |
+| `launcherName` | String   | `Ludens`                 | Nombre mostrado bajo el icono en la pantalla de inicio (exclusivo Android).        |
+| `minSDK`       | Entero   | `21`                     | Nivel mínimo de API de Android soportado.                                          |
+| `targetSDK`    | Entero   | `36`                     | Nivel de API de Android al que se dirige la compilación.                           |
+| `immersive`    | Booleano | `true`                   | Activa el modo inmersivo (oculta las barras del sistema).                          |
 
 :::note
-El `id` debe seguir el formato de dominio invertido y debe ser único si planeas publicar en Google
-Play
-Store. Cambiarlo después de la publicación crea una nueva ficha de aplicación.
+El identificador debe seguir el formato de dominio invertido y ser único si planeas publicar en
+Google Play Store. Cambiarlo después de la publicación crea una nueva ficha de aplicación.
 :::
 
 ## Icono de la Aplicación
@@ -211,6 +215,55 @@ permiso en tiempo
 de ejecución mediante un puente personalizado. Actualmente, Ludens no incluye un puente nativo para
 esto.
 :::
+
+## Post-Procesado del Build de Android
+
+Ludens puede renombrar y reubicar automáticamente el APK o AAB generado tras completar el build.
+Esto es útil para organizar los artefactos de salida con una convención de nombres consistente sin
+pasos manuales.
+
+```properties
+# Configuración de renombrado y reubicación de artefactos de Android
+ludens.android.build.enable=true
+ludens.android.build.outputDir=output/{buildType}
+ludens.android.build.pattern={appName}-{versionName}-{buildType}
+ludens.android.build.action=copy
+ludens.android.build.includeVariants=all
+```
+
+Configura estas propiedades usando el prefijo `ludens.android.build.*`:
+
+| Propiedad          | Tipo     | Por defecto                          | Descripción                                                                        |
+|--------------------|----------|--------------------------------------|------------------------------------------------------------------------------------|
+| `enable`           | Booleano | `true`                               | Activa la tarea de renombrado y reubicación post-build.                            |
+| `outputDir`        | String   | `output/{buildType}`                 | Directorio de destino relativo a la raíz del proyecto. Admite marcadores.          |
+| `pattern`          | String   | `{appName}-{versionName}-{buildType}` | Plantilla de nombre para el archivo de salida. La extensión se añade automáticamente. |
+| `action`           | String   | `copy`                               | `copy` duplica el artefacto; `move` lo reubica desde el directorio de build.       |
+| `includeVariants`  | String   | `all`                                | Variantes a procesar: `all`, `release`, `debug` o una lista separada por comas.    |
+
+### Marcadores de Nombre
+
+Los valores de `outputDir` y `pattern` admiten los siguientes marcadores:
+
+| Marcador         | Valor                                              |
+|------------------|----------------------------------------------------|
+| `{appName}`      | Nombre de la app desde `ludens.app.name`           |
+| `{name}`         | Nombre del módulo                                  |
+| `{versionName}`  | Cadena de versión desde `ludens.app.version`       |
+| `{versionCode}`  | Entero de versión desde `ludens.app.versionCode`   |
+| `{buildType}`    | `debug` o `release`                                |
+| `{minSdk}`       | SDK mínimo desde `ludens.android.minSDK`           |
+| `{targetSdk}`    | SDK objetivo desde `ludens.android.targetSDK`      |
+| `{timestamp}`    | Marca de tiempo del build                          |
+| `{appId}`        | ID de la aplicación                                |
+| `{artifactType}` | `apk` o `aab`                                      |
+
+:::note[Ruta de salida]
+Con la configuración por defecto, el APK debug post-procesado se coloca en
+`output/debug/<appName>-<version>-debug.apk` en lugar de la ruta de salida raw de Gradle.
+:::
+
+---
 
 ## Configuración de Firma
 
