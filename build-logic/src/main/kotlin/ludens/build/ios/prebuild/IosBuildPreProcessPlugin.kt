@@ -19,12 +19,12 @@ class IosBuildPreProcessPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val config = project.extensions.create("preBuild", PreBuildExtension::class.java)
 
-        if (!config.enable) return
-
         val iosPreBuildTaskProvider =
             project.tasks.register("iosPreBuild", IosBuildPreProcessTask::class.java) {
                 group = "ludens"
                 description = "Pre-processes Config.xcconfig with Ludens metadata before iOS framework link."
+
+                onlyIf { config.enable }
 
                 appName.set(project.provider { config.context.appName })
                 bundleId.set(project.provider { config.context.bundleId })
