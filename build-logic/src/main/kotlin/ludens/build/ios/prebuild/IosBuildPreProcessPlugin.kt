@@ -48,7 +48,7 @@ class IosBuildPreProcessPlugin : Plugin<Project> {
 /**
  * Applies and configures the [IosBuildPreProcessPlugin].
  *
- * Usage in `composeApp/build.gradle.kts`:
+ * Usage in `shared/build.gradle.kts`:
  * ```kotlin
  * ludens {
  *     ios {

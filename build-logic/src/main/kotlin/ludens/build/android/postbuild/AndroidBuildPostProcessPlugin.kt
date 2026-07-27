@@ -116,7 +116,7 @@ class AndroidBuildPostProcessPlugin : Plugin<Project> {
 /**
  * Applies and configures the [AndroidBuildPostProcessPlugin].
  *
- * Usage in `composeApp/build.gradle.kts`:
+ * Usage in `androidApp/build.gradle.kts`:
  * ```kotlin
  * ludens {
  *     android {

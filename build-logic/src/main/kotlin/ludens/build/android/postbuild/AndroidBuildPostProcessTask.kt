@@ -73,7 +73,7 @@ abstract class AndroidBuildPostProcessTask : DefaultTask() {
     abstract val inputBundleDir: DirectoryProperty
 
     /**
-     * Fallback input directory at module level (e.g. `composeApp/release` created by Android Studio wizard).
+     * Fallback input directory at module level (e.g. `androidApp/release` created by Android Studio wizard).
      */
     @get:InputFiles
     @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -197,7 +197,7 @@ abstract class AndroidBuildPostProcessTask : DefaultTask() {
         val primaryDir = if (targetExt == "aab") inputBundleDir.orNull?.asFile else inputApkDir.orNull?.asFile
         var artifactFiles = scanDir(primaryDir)
 
-        // Priority 2: Fallback directory (e.g. composeApp/release created by Android Studio wizard)
+        // Priority 2: Fallback directory (e.g. androidApp/release created by Android Studio wizard)
         if (artifactFiles.isEmpty()) {
             val fallbackDir = moduleVariantDir.orNull?.asFile
             if (fallbackDir != null && fallbackDir.canonicalPath != primaryDir?.canonicalPath) {
