@@ -21,11 +21,26 @@ import java.io.Serializable
  */
 data class LudensConfiguration(
     /**
+     * Shared cross-platform application identity (id, name, version, version code).
+     *
+     * [android] and [ios] may each override any of these individually; use the `resolved*`
+     * properties below to read the effective value for a given platform.
+     *
+     * Loaded from the `ludens.app.*` namespace.
+     */
+    val app: LudensAppConfiguration = LudensAppConfiguration(),
+    /**
      * Android-specific build and manifest settings.
      *
      * Loaded from the `ludens.android.*` namespace.
      */
     val android: LudensAndroidConfiguration = LudensAndroidConfiguration(),
+    /**
+     * iOS-specific pre-build metadata sync settings.
+     *
+     * Loaded from the `ludens.ios.*` namespace.
+     */
+    val ios: LudensIosConfiguration = LudensIosConfiguration(),
     /**
      * Settings preset selection and raw override values.
      *
@@ -56,7 +71,19 @@ data class LudensConfiguration(
      * Loaded from the `ludens.debug.*` namespace.
      */
     val debug: LudensDebugConfiguration = LudensDebugConfiguration(),
-) : Serializable
+) : Serializable {
+    /**
+     * Effective Android identity — [android]'s override resolved against the shared [app]
+     * identity.
+     */
+    val androidIdentity: LudensApplicationIdentity get() = android.resolve(app.identity)
+
+    /**
+     * Effective iOS identity — [ios]'s override resolved against the shared [app] identity.
+     * [LudensApplicationIdentity.id] is the effective bundle identifier.
+     */
+    val iosIdentity: LudensApplicationIdentity get() = ios.resolve(app.identity)
+}
 
 /**
  * Jackson wrapper used by `JavaPropsMapper` to deserialize the `ludens` root block.

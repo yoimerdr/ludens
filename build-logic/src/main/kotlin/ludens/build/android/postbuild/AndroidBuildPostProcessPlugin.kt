@@ -128,12 +128,13 @@ class AndroidBuildPostProcessPlugin : Plugin<Project> {
  *             includeVariants = listOf(ludensConfiguration.android.build.includeVariants)
 
  *             context {
- *                 appName = ludensConfiguration.android.name
- *                 versionName = ludensConfiguration.android.version
- *                 versionCode = ludensConfiguration.android.versionCode
+ *                 val identity = ludensConfiguration.resolvedAndroidIdentity
+ *                 appName = identity.name
+ *                 versionName = identity.version
+ *                 versionCode = identity.versionCode
  *                 minSdk = ludensConfiguration.android.minSDK
  *                 targetSdk = ludensConfiguration.android.targetSDK
- *                 appId = ludensConfiguration.android.id
+ *                 appId = identity.id
  *             }
  *         }
  *     }

@@ -1,5 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 import ludens.build.compose.configuration.ludensConfiguration
+import ludens.build.ios.prebuild.preBuild
 import ludens.build.compose.fonts.fontsSync
 import ludens.build.compose.language.languageMetadata
 import ludens.build.compose.language.languageStringsSync
@@ -42,6 +43,19 @@ ludens {
             enableIos = ludensConfiguration.icons.ios.enable
             androidIconFormat = ludensConfiguration.icons.android.resolvedFormat
             iconScale = ludensConfiguration.icons.scale
+        }
+    }
+    ios {
+        preBuild {
+            enable = ludensConfiguration.ios.build.enable
+
+            context {
+                val identity = ludensConfiguration.iosIdentity
+                appName = identity.name
+                bundleId = identity.id
+                marketingVersion = identity.version
+                projectVersion = identity.versionCode.toString()
+            }
         }
     }
 }
@@ -146,6 +160,7 @@ kotlin {
         kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
     }
 }
+
 
 wire {
     kotlin {}

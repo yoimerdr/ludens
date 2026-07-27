@@ -23,12 +23,13 @@ ludens {
             includeVariants = listOf(ludensConfiguration.android.build.includeVariants)
 
             context {
-                appName = ludensConfiguration.android.name
-                versionName = ludensConfiguration.android.version
-                versionCode = ludensConfiguration.android.versionCode
+                val identity = ludensConfiguration.androidIdentity
+                appName = identity.name
+                versionName = identity.version
+                versionCode = identity.versionCode
                 minSdk = ludensConfiguration.android.minSDK
                 targetSdk = ludensConfiguration.android.targetSDK
-                appId = ludensConfiguration.android.id
+                appId = identity.id
             }
         }
     }
@@ -39,13 +40,14 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = ludensConfiguration.android.id
+        val androidIdentity = ludensConfiguration.androidIdentity
+        applicationId = androidIdentity.id
         minSdk = ludensConfiguration.android.minSDK
         targetSdk = ludensConfiguration.android.targetSDK
-        versionCode = ludensConfiguration.android.versionCode
-        versionName = ludensConfiguration.android.version
+        versionCode = androidIdentity.versionCode
+        versionName = androidIdentity.version
 
-        resValue("string", "app_name", ludensConfiguration.android.name)
+        resValue("string", "app_name", androidIdentity.name)
         resValue("string", "app_launcher_name", ludensConfiguration.android.launcherName)
 
         manifestPlaceholders["ludensAllowBackup"] = ludensConfiguration.android.manifest.allowBackup

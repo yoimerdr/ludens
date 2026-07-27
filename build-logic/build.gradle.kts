@@ -61,5 +61,9 @@ gradlePlugin {
             id = "ludens.build.android.postbuild"
             implementationClass = "ludens.build.android.postbuild.AndroidBuildPostProcessPlugin"
         }
+        register("ludensIosPreBuild") {
+            id = "ludens.build.ios.prebuild"
+            implementationClass = "ludens.build.ios.prebuild.IosBuildPreProcessPlugin"
+        }
     }
 }
