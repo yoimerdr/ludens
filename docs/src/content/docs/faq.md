@@ -83,7 +83,7 @@ The default build tasks generate APK files. To generate an AAB, you can run:
 ./gradlew bundleRelease
 ```
 
-The AAB will be output to `composeApp/build/outputs/bundle/release/`.
+The AAB will be output to `androidApp/build/outputs/bundle/release/`.
 
 ---
 

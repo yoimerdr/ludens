@@ -86,7 +86,7 @@ Las tareas de compilación por defecto generan archivos APK. Para generar un AAB
 ./gradlew bundleRelease
 ```
 
-El AAB se generará en `composeApp/build/outputs/bundle/release/`.
+El AAB se generará en `androidApp/build/outputs/bundle/release/`.
 
 ---
 

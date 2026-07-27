@@ -25,7 +25,7 @@ paquete diferente para una tienda específica).
 # Etiqueta del lanzador de Android
 ludens.android.launcherName=Ludens
 ludens.android.minSDK=21
-ludens.android.targetSDK=36
+ludens.android.targetSDK=37
 ludens.android.immersive=true
 ```
 
@@ -39,7 +39,7 @@ Propiedades configurables usando el prefijo `ludens.android.*`:
 | `name`         | String   | `ludens.app.name`        | Nombre completo de la aplicación en ajustes del sistema Android.                  |
 | `launcherName` | String   | `Ludens`                 | Nombre mostrado bajo el icono en la pantalla de inicio (exclusivo Android).        |
 | `minSDK`       | Entero   | `21`                     | Nivel mínimo de API de Android soportado.                                          |
-| `targetSDK`    | Entero   | `36`                     | Nivel de API de Android al que se dirige la compilación.                           |
+| `targetSDK`    | Entero   | `37`                     | Nivel de API de Android al que se dirige la compilación.                           |
 | `immersive`    | Booleano | `true`                   | Activa el modo inmersivo (oculta las barras del sistema).                          |
 
 :::note
@@ -81,7 +81,7 @@ ludens.icons.scale=0.62
 ```
 
 3. Compila el proyecto. El sistema de compilación generará automáticamente:
-   - **Android**: Iconos mipmap redondos y cuadrados tradicionales, hojas de iconos adaptativos XML bajo `mipmap-anydpi-v26` y capas vectoriales/rasterizadas (`ic_launcher_foreground`, `ic_launcher_background`) colocadas en `androidMain/res/`.
+   - **Android**: Iconos mipmap redondos y cuadrados tradicionales, hojas de iconos adaptativos XML bajo `mipmap-anydpi-v26` y capas vectoriales/rasterizadas (`ic_launcher_foreground`, `ic_launcher_background`) colocadas en `androidApp/src/main/res/`.
    - **iOS**: Todos los tamaños de AppIcon requeridos (iPhone, iPad, App Store) junto con el manifiesto del catálogo de assets `Contents.json` correspondiente bajo `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
    - **Google Play Store**: Un icono de ficha en alta resolución `ic_launcher-playstore.png` (512x512).
 
@@ -97,7 +97,7 @@ ludens.icons.ios.enable=false
 ```
 :::
 
-1. Haz clic derecho en el directorio `composeApp/src/androidMain/res` en Android Studio.
+1. Haz clic derecho en el directorio `androidApp/src/main/res` en Android Studio.
 2. Selecciona **New > Image Asset**.
 3. Usa el asistente de Image Asset Studio para configurar tus capas y escala.
 
@@ -182,7 +182,7 @@ Declara estos permisos bajo el prefijo `ludens.android.permissions.*`:
 ## Avanzado: Personalización Manual del Manifest
 
 Para configuraciones no cubiertas por `ludens.properties`, puedes editar el manifest directamente en
-`composeApp/src/androidMain/AndroidManifest.xml`.
+`androidApp/src/main/AndroidManifest.xml`.
 
 :::caution
 Modificar el manifest incorrectamente puede causar que tu aplicación se cierre al iniciar. Los

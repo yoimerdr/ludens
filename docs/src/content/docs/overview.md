@@ -107,7 +107,7 @@ Game assets (`project/www/`), custom fonts (`project/assets/fonts/`), and locali
 
 | Component             | Version |
 |-----------------------|---------|
-| Kotlin                | 2.3.0   |
+| Kotlin                | 2.4.10  |
 | Compose Multiplatform | 1.9.3   |
 | Compose WebView       | 2.0.3   |
 | Virtual Joystick      | 1.0.0   |

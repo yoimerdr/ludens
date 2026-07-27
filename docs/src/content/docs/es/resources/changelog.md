@@ -20,6 +20,8 @@ de [GitHub Releases](https://github.com/yoimerdr/ludens/releases).
 ### Cambiado
 
 - `ludens.properties` reestructurado: los valores de identidad se movieron del espacio de nombres `ludens.android.*` a `ludens.app.*`; las sobreescrituras por plataforma heredan de los valores compartidos cuando no están definidas.
+- Módulo `composeApp` reestructurado en los módulos `shared` y `androidApp`.
+- Actualización de AGP a 9.2.1, Kotlin a 2.4.10, Gradle wrapper a 9.4.1, Jackson a 2.22.1 y targetSDK a 37.
 
 ## v0.4.0 - 2026-07-16
 

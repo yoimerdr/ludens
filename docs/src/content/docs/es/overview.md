@@ -109,7 +109,7 @@ Los assets del juego (`project/www/`), fuentes personalizadas (`project/assets/f
 
 | Componente            | Versión |
 |-----------------------|---------|
-| Kotlin                | 2.3.0   |
+| Kotlin                | 2.4.10  |
 | Compose Multiplatform | 1.9.3   |
 | Compose WebView       | 2.0.3   |
 | Virtual Joystick      | 1.0.0   |

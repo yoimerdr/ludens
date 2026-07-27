@@ -25,7 +25,7 @@ specific store).
 # Android launcher label
 ludens.android.launcherName=Ludens
 ludens.android.minSDK=21
-ludens.android.targetSDK=36
+ludens.android.targetSDK=37
 ludens.android.immersive=true
 ```
 
@@ -39,7 +39,7 @@ Configurable properties using the `ludens.android.*` prefix:
 | `name`         | String  | `ludens.app.name`           | Full application name in Android system settings.              |
 | `launcherName` | String  | `Ludens`                    | Name displayed under the home screen icon (Android-only).      |
 | `minSDK`       | Integer | `21`                        | Minimum Android API level supported.                           |
-| `targetSDK`    | Integer | `36`                        | Target Android API level for the build.                        |
+| `targetSDK`    | Integer | `37`                        | Target Android API level for the build.                        |
 | `immersive`    | Boolean | `true`                      | Enables immersive mode (hides system bars).                    |
 
 :::note
@@ -81,7 +81,7 @@ ludens.icons.scale=0.62
 ```
 
 3. Build the project. The build system will automatically generate:
-   - **Android**: Legacy round and square mipmap icons, XML adaptive icon sheets under `mipmap-anydpi-v26`, and vector/raster layers (`ic_launcher_foreground`, `ic_launcher_background`) placed in `androidMain/res/`.
+   - **Android**: Legacy round and square mipmap icons, XML adaptive icon sheets under `mipmap-anydpi-v26`, and vector/raster layers (`ic_launcher_foreground`, `ic_launcher_background`) placed in `androidApp/src/main/res/`.
    - **iOS**: All required AppIcon sizes (iPhone, iPad, App Store) along with the corresponding `Contents.json` asset catalog manifest under `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
    - **Google Play Store**: A high-resolution `ic_launcher-playstore.png` (512x512) listing icon.
 
@@ -97,7 +97,7 @@ ludens.icons.ios.enable=false
 ```
 :::
 
-1. Right-click on the `composeApp/src/androidMain/res` directory in Android Studio.
+1. Right-click on the `androidApp/src/main/res` directory in Android Studio.
 2. Select **New > Image Asset**.
 3. Use the Asset Studio wizard to configure your layers and scale.
 
@@ -179,7 +179,7 @@ Declare these permissions under the `ludens.android.permissions.*` prefix:
 ## Advanced: Manual Manifest Customization
 
 For configurations not covered by `ludens.properties`, edit the manifest directly at:
-`composeApp/src/androidMain/AndroidManifest.xml`
+`androidApp/src/main/AndroidManifest.xml`
 
 :::caution
 Modifying the manifest incorrectly can cause your application to crash on startup. Manual changes

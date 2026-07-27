@@ -62,7 +62,7 @@ Si prefieres usar la interfaz de Android Studio:
 La salida raw de Gradle se coloca en:
 
 ```text
-composeApp/build/outputs/apk/debug/composeApp-debug.apk
+androidApp/build/outputs/apk/debug/androidApp-debug.apk
 ```
 
 Con la configuración de post-procesado habilitada por defecto, el artefacto también se copia en:
@@ -158,8 +158,8 @@ Ideal para automatizar la compilación, pero requiere configuración manual prev
 
 | Método                   | Ubicación del APK                                                           |
 |--------------------------|-----------------------------------------------------------------------------|
-| **Asistente (Opción A)** | `composeApp/release/` (o la carpeta que seleccionaste durante el asistente) |
-| **Gradle (Opción B)**    | `composeApp/build/outputs/apk/release/composeApp-release.apk`               |
+| **Asistente (Opción A)** | `androidApp/release/` (o la carpeta que seleccionaste durante el asistente) |
+| **Gradle (Opción B)**    | `androidApp/build/outputs/apk/release/androidApp-release.apk`              |
 
 :::caution[Seguridad del Keystore]
 Mantén tu archivo `.jks` y las contraseñas seguros. Si los pierdes, no podrás actualizar tu

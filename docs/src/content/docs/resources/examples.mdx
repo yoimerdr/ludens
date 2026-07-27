@@ -18,7 +18,7 @@ The simplest possible setup — export your game and build with default settings
    ```text
    project/www/
    ```
-   *Note: The build system will automatically synchronize these files to the internal resources directory during compilation. If you prefer manual management without auto-sync, place your files directly in `composeApp/src/commonMain/composeResources/files/www/`.*
+   *Note: The build system will automatically synchronize these files to the internal resources directory during compilation. If you prefer manual management without auto-sync, place your files directly in `shared/src/commonMain/composeResources/files/www/`.*
 3. Edit `ludens.properties`:
    ```properties
    # ----- Android Identity -----
@@ -37,7 +37,7 @@ The simplest possible setup — export your game and build with default settings
 
 ### Result
 
-A debug APK at `composeApp/build/outputs/apk/debug/composeApp-debug.apk` ready for testing.
+A debug APK at `androidApp/build/outputs/apk/debug/androidApp-debug.apk` ready for testing.
 
 ---
 
@@ -73,7 +73,7 @@ A full production workflow with custom branding using the automated App Icon Gen
      ```
 
    :::note[Alternative: Manual Configuration]
-   If you prefer to manually configure your icons using Android Studio's **Image Asset Studio** (right-click `composeApp/src/androidMain/res` > **New > Image Asset**), you must disable the automatic generator first by setting `ludens.icons.android.enable=false` and `ludens.icons.ios.enable=false` in `ludens.properties`.
+   If you prefer to manually configure your icons using Android Studio's **Image Asset Studio** (right-click `androidApp/src/main/res` > **New > Image Asset**), you must disable the automatic generator first by setting `ludens.icons.android.enable=false` and `ludens.icons.ios.enable=false` in `ludens.properties`.
    :::
 
 3. **Create a signing keystore** (if you don't have one):
@@ -97,7 +97,7 @@ A full production workflow with custom branding using the automated App Icon Gen
 
 ### Result
 
-A signed release APK at `composeApp/build/outputs/apk/release/composeApp-release.apk` ready for distribution.
+A signed release APK at `androidApp/build/outputs/apk/release/androidApp-release.apk` ready for distribution.
 
 ---
 
@@ -132,16 +132,17 @@ A complete view of the project structure after setup:
 
 <FileTree>
 - ludens/
-  - composeApp/
+  - shared/
     - src/
-      - androidMain/
-        - res/
-          - mipmap-* (Auto-generated app icons)
       - commonMain/
         - composeResources/
           - files/
             - www/ Your game (Option B path, or auto-synced output)
-              - index.html
+  - androidApp/
+    - src/
+      - main/
+        - res/
+          - mipmap-* (Auto-generated app icons)
     - build/
       - outputs/
         - apk/
