@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="http://kotlinlang.org">
-    <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-v2.3.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
+    <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-v2.4.10-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
   </a>
   <a href="https://github.com/JetBrains/compose-multiplatform">
     <img alt="Compose Multiplatform" src="https://img.shields.io/badge/Compose_Multiplatform-v1.9.3-0EA5E9?style=for-the-badge&logo=jetpackcompose&logoColor=white">
@@ -108,7 +108,7 @@ Place your full `www` folder at the root of the project:
 
 **Option B: Internal Folder**
 Move the full `www` folder directly to the internal Compose resources path:
-`composeApp/src/commonMain/composeResources/files/www/`
+`shared/src/commonMain/composeResources/files/www/`
 
 > [!WARNING]
 > **Case Sensitivity**: Windows file system is **case-insensitive** (`/Path/Example` = `/path/example`), but Android and iOS use **case-sensitive** file systems. Ensure that all file references in your game's code (images, audio, data files) use **exact matching names**. If a file is named `MyImage.png`, you must reference it as `MyImage.png`, not `myimage.png`. This is a common source of silent failures on mobile.
@@ -155,10 +155,11 @@ ludens.android.launcherName=Game
 For the full build flow with screenshots and release-signing details, see [BUILD.md](BUILD.md).
 
 - Debug: `./gradlew assembleDebug`
-  - Output: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
+  - Default output: `androidApp/build/outputs/apk/debug/androidApp-debug.apk`
+  - Post-processed output: `output/debug/Ludens-0.4.0-debug.apk` (configurable via `ludens.properties`)
 - Release: `./gradlew assembleRelease`
   - Create [`keystore.properties`](keystore.properties) first (see [`keystore.properties.template`](keystore.properties.template)).
-  - Output: `composeApp/build/outputs/apk/release/composeApp-release.apk`
+  - Post-processed output: `output/release/Ludens-0.4.0-release.apk` (configurable via `ludens.properties`)
 
 ### Next Steps / Customization
 

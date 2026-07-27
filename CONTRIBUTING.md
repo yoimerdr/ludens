@@ -88,7 +88,7 @@ Optional but recommended for full testing:
 1. Export your RPG Maker MV/MZ project for **Android / iOS** or **Web Browsers**.
 2. Copy the `www` folder to either of these locations:
    - **Root (Recommended)**: `project/www/` (will be synced automatically during build if it contains more than just `index.html`)
-   - **Internal**: `composeApp/src/commonMain/composeResources/files/www/`
+   - **Internal**: `shared/src/commonMain/composeResources/files/www/`
 3. Ensure `index.html` exists inside the `www` folder.
 
 > [!WARNING]
@@ -107,7 +107,7 @@ Optional but recommended for full testing:
 ./gradlew clean
 ```
 
-Debug APK output: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
+Debug APK output: `androidApp/build/outputs/apk/debug/androidApp-debug.apk` (post-processed: `output/debug/Ludens-0.4.0-debug.apk`)
 
 For full build instructions with screenshots, see [BUILD.md](BUILD.md).
 
@@ -119,7 +119,7 @@ an HTML5 game in a WebView with on-screen controls (virtual joystick, configurab
 ### Architecture
 
 ```
-composeApp/src/
+shared/src/              # KMP shared module
 ├── commonMain/          # Shared code (Kotlin Multiplatform)
 │   ├── kotlin/com/yoimerdr/compose/ludens/
 │   │   ├── app/          # Theme, navigation, DI setup
@@ -129,6 +129,9 @@ composeApp/src/
 │   └── proto/            # Protobuf definitions for DataStore
 ├── androidMain/         # Android-specific implementations
 └── iosMain/             # iOS-specific implementations
+
+androidApp/              # Android application module (entry point, manifest, icons)
+build-logic/             # Custom Gradle plugins
 ```
 
 | Layer       | Purpose                                                                                |
@@ -160,7 +163,7 @@ composeApp/src/
 
 ### Localization & Translations
 
-- **DO NOT** edit or add `strings.xml` directly under `composeApp/src/commonMain/composeResources/values*`.
+- **DO NOT** edit or add `strings.xml` directly under `shared/src/commonMain/composeResources/values*`.
 - **Source of Truth**: All localization strings reside under `project/assets/languages/<language_tag>/strings.xml` (e.g., `es/strings.xml`, `en/strings.xml`).
 - **Sync Task**: The custom Gradle task `LanguageStringsSyncTask` runs during compilation to clean and regenerate the `values*` folders in `composeResources` based on the active languages and settings configured in `ludens.properties`. Any manual modifications under `composeResources/values*` will be **permanently lost** on the next build.
 
