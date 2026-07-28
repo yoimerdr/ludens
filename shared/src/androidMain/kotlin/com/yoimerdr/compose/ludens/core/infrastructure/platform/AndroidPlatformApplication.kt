@@ -3,7 +3,8 @@ package com.yoimerdr.compose.ludens.core.infrastructure.platform
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import com.yoimerdr.compose.ludens.BuildConfig
+import android.content.pm.ApplicationInfo
+import com.yoimerdr.compose.ludens.konfig.generated.BuildKonfig
 import kotlin.system.exitProcess
 
 /**
@@ -51,11 +52,18 @@ class AndroidPlatformApplication(
     /**
      * Indicates whether the application is running in debug mode.
      *
-     * Returns the value from Android's `BuildConfig.DEBUG`, which is `true` for
-     * debug builds and `false` for release builds.
+     * Returns `true` if the Android application package has the `FLAG_DEBUGGABLE` flag enabled.
      *
      * @return `true` if the application is a debug build, `false` otherwise
      */
     override val isDebug: Boolean
-        get() = BuildConfig.DEBUG
+        get() {
+            val base = context as? AndroidPlatformContext
+            val appInfo = base?.context?.applicationInfo
+            return if (appInfo != null) {
+                (appInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+            } else {
+                BuildKonfig.LUDENS_DEBUG_ERRORS
+            }
+        }
 }

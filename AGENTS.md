@@ -6,7 +6,7 @@ Ludens is a Kotlin Multiplatform (Compose) wrapper that ports RPG Maker MV/MZ ga
 WebView.
 
 ```
-composeApp/src/
+shared/src/
 ├── commonMain/
 │   ├── kotlin/com/yoimerdr/compose/ludens/
 │   │   ├── app/          # Theme, navigation, DI (Koin) wiring
@@ -17,6 +17,7 @@ composeApp/src/
 ├── androidMain/      # Android-specific implementations
 └── iosMain/          # iOS-specific implementations
 
+androidApp/           # Android application module (entry point, manifest, icons)
 build-logic/          # Custom Gradle plugins (resource sync, manifest generation)
 project/              # Game assets and static resources
 ├── assets/           # Application-wide static assets
@@ -37,7 +38,7 @@ Key configuration files live at the repository root:
 
 Understanding the source of truth for resources is critical to prevent build compilation issues.
 
-#### `composeApp/src/commonMain/composeResources/`
+#### `shared/src/commonMain/composeResources/`
 
 This folder is the standard Compose Multiplatform resource location, but it is divided into two
 distinct zones:
@@ -65,14 +66,14 @@ The single source of truth for game code and custom static configuration:
     - **`project/www/`**: The deployment folder for the RPG Maker game
         * (Option A): If this directory contains **more than just the default `index.html` file**,
           the build system automatically synchronizes these files into
-          `composeApp/src/commonMain/composeResources/files/www/` during compile time.
+          `shared/src/commonMain/composeResources/files/www/` during compile time.
         * (Option B): If it only contains the default `index.html`, the auto-sync does not trigger
           and files must be placed directly in the internal `composeResources/files/www/` directory.
 
 ### Localization & Translations Rule
 
 **DO NOT** add, edit, or delete `strings.xml` files inside the
-`composeApp/.../composeResources/values*` directories.
+`shared/src/commonMain/composeResources/values*` directories.
 Ludens uses a custom Gradle task (`LanguageStringsSyncTask`) inside `build-logic`. During
 compilation, this task completely cleans all `values*` folders in `composeResources` and
 synchronizes the active languages from `project/assets/languages/`. Any manual changes inside
@@ -105,13 +106,14 @@ synchronizes the active languages from `project/assets/languages/`. Any manual c
 |---------------------------------------------------------------|-------------------------------------------------------------|
 | `./gradlew assembleDebug`                                     | Build a debug APK                                           |
 | `./gradlew assembleRelease`                                   | Build a signed release APK (requires `keystore.properties`) |
-| `./gradlew :composeApp:compileDebugKotlinAndroid --no-daemon` | is a focused Android Kotlin/Compose compile check.          |
-| `./gradlew :composeApp:testDebugUnitTest`                     | runs Android unit tests when test sources are present.      |
+| `./gradlew :androidApp:compileDebugKotlinAndroid --no-daemon` | Focused Android Kotlin/Compose compile check.               |
+| `./gradlew :shared:testDebugUnitTest`                         | Runs Android unit tests in the shared module.               |
 | `./gradlew clean`                                             | Remove all build artifacts                                  |
 
 **Prerequisites:** Android Studio Otter 2 Feature Drop (2025.2.2)+, JDK 17+.
 
-Debug APK output: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
+Debug APK output: `androidApp/build/outputs/apk/debug/androidApp-debug.apk`
+Post-processed output: `output/debug/Ludens-0.4.0-debug.apk` (configurable via `ludens.properties`)
 
 ## Coding Style & Naming Conventions
 
@@ -125,7 +127,7 @@ Debug APK output: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
 ## Testing Guidelines
 
 Use `kotlin.test` for shared and platform tests. Put shared tests in
-`composeApp/src/commonTest/kotlin/`; use platform test source sets only for platform-specific
+`shared/src/commonTest/kotlin/`; use platform test source sets only for platform-specific
 behavior. There is no documented coverage gate, so focus on regression tests and run the narrowest
 relevant Gradle test task plus a compile/build check.
 

@@ -61,7 +61,7 @@ If you prefer using the Android Studio interface:
 The raw Gradle output is placed at:
 
 ```text
-composeApp/build/outputs/apk/debug/composeApp-debug.apk
+androidApp/build/outputs/apk/debug/androidApp-debug.apk
 ```
 
 With the default post-processing configuration enabled, the artifact is also copied to:
@@ -155,8 +155,8 @@ Ideal for automating the build, but requires prior manual configuration.
 
 | Method                | APK Location                                                         |
 |-----------------------|----------------------------------------------------------------------|
-| **Wizard (Option A)** | `composeApp/release/` (or the folder you selected during the wizard) |
-| **Gradle (Option B)** | `composeApp/build/outputs/apk/release/composeApp-release.apk`        |
+| **Wizard (Option A)** | `androidApp/release/` (or the folder you selected during the wizard) |
+| **Gradle (Option B)** | `androidApp/build/outputs/apk/release/androidApp-release.apk`       |
 
 :::caution[Keystore Security]
 Keep your `.jks` file and passwords secure. If you lose them, you will not be able to update your

@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `ludens.properties` restructured: identity values moved from `ludens.android.*` to shared `ludens.app.*` namespace; per-platform overrides inherit from shared values when unset.
+- `composeApp` module restructured into `shared` and `androidApp` modules.
+- Upgraded AGP to 9.2.1, Kotlin to 2.4.10, Gradle wrapper to 9.4.1, Jackson to 2.22.1, and targetSDK to 37.
 
 ## [0.4.0] - 2026-07-16
 

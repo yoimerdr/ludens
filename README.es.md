@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="http://kotlinlang.org">
-    <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-v2.3.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
+    <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-v2.4.10-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
   </a>
   <a href="https://github.com/JetBrains/compose-multiplatform">
     <img alt="Compose Multiplatform" src="https://img.shields.io/badge/Compose_Multiplatform-v1.9.3-0EA5E9?style=for-the-badge&logo=jetpackcompose&logoColor=white">
@@ -108,7 +108,7 @@ Coloca la carpeta `www` completa en la raíz del proyecto:
 
 **Opción B: Carpeta Interna**
 Mueve la carpeta `www` completa directamente a la ruta interna de recursos de Compose:
-`composeApp/src/commonMain/composeResources/files/www/`
+`shared/src/commonMain/composeResources/files/www/`
 
 > [!WARNING]
 > **Sensibilidad de Mayúsculas/Minúsculas**: El sistema de archivos de Windows es **insensible** (`/Path/Example` = `/path/example`), pero Android e iOS usan sistemas de archivos **sensibles**. Asegúrate de que todas las referencias a archivos en el código de tu juego (imágenes, audio, archivos de datos) usen nombres **exactamente iguales**. Si un archivo se llama `MiImagen.png`, debes referenciarlo como `MiImagen.png`, no como `miimagen.png`. Esta es una causa común de fallos silenciosos en móviles.
@@ -155,10 +155,11 @@ ludens.android.launcherName=Juego
 Para el flujo de compilación completo con capturas y firma release, consulta [BUILD.es.md](BUILD.es.md).
 
 - Debug: `./gradlew assembleDebug`
-  - Salida: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
+  - Salida por defecto: `androidApp/build/outputs/apk/debug/androidApp-debug.apk`
+  - Salida post-procesada: `output/debug/Ludens-0.4.0-debug.apk` (configurable via `ludens.properties`)
 - Release: `./gradlew assembleRelease`
   - Crea antes el archivo [`keystore.properties`](keystore.properties) (ver [`keystore.properties.template`](keystore.properties.template)).
-  - Salida: `composeApp/build/outputs/apk/release/composeApp-release.apk`
+  - Salida post-procesada: `output/release/Ludens-0.4.0-release.apk` (configurable via `ludens.properties`)
 
 ### Siguientes Pasos / Personalización
 

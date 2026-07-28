@@ -101,7 +101,7 @@ abstract class AppIconGeneratorTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val commonResourcesDir: DirectoryProperty
 
-    @get:Internal
+    @get:OutputDirectory
     abstract val androidResDir: DirectoryProperty
 
     @get:OutputDirectory
@@ -119,7 +119,7 @@ abstract class AppIconGeneratorTask : DefaultTask() {
     fun generate() {
         val root = rootDir.get()
         val commonResourcesPath = commonResourcesDir.get().asFile
-        val androidResDirFile = androidResDir.orNull?.asFile ?: File("${root}/composeApp/src/androidMain/res")
+        val androidResDirFile = androidResDir.orNull?.asFile ?: File("${root}/androidApp/src/main/res")
         val androidResDir = androidResDirFile.absolutePath
         val iosAppIconSetDirFile = iosAppIconSetDir.orNull?.asFile ?: File("${root}/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset")
 
@@ -244,7 +244,7 @@ abstract class AppIconGeneratorTask : DefaultTask() {
 
             if (outputPlaystore.get()) {
                 logger.lifecycle("Generating Play Store icon...")
-                val playstoreFile = playstoreIconFile.orNull?.asFile ?: File("${root}/composeApp/src/androidMain/ic_launcher-playstore.png")
+                val playstoreFile = playstoreIconFile.orNull?.asFile ?: File("${root}/androidApp/src/main/ic_launcher-playstore.png")
                 playstoreFile.deleteIfExists()
                 val combinedImg = createCombinedImage(
                     foregroundFile = foregroundSourceFile,

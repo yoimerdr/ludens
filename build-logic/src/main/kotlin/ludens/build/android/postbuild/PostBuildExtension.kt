@@ -49,7 +49,7 @@ open class PostBuildContext {
  *
  * Registered under `ludens { android { postBuild { ... } } }`.
  *
- * Usage in `composeApp/build.gradle.kts`:
+ * Usage in `androidApp/build.gradle.kts`:
  * ```kotlin
  * ludens {
  *     android {

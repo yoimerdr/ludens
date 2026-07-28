@@ -79,7 +79,7 @@ Antes de exportar tu juego, considera lo siguiente:
 
 Familiarízate con la ubicación de los archivos clave:
 
-- `composeApp/src/commonMain/composeResources/files`: Aquí irá tu juego.
+- `shared/src/commonMain/composeResources/files`: Aquí irá tu juego.
 - [`ludens.properties`](ludens.properties): Configuración principal de Ludens (identidad app, flags de manifest, permisos y preset de settings).
 - [`gradle.properties`](gradle.properties): Opciones de Gradle/Kotlin para rendimiento y sistema de build.
 - [`keystore.properties`](keystore.properties): Credenciales locales de firma release (no subir al repositorio).
@@ -120,7 +120,7 @@ Tienes dos opciones válidas para integrar tus assets:
 **Opción B: Colocación Directa en Carpeta Interna**
 
 1. Navega a la carpeta interna de recursos:
-   `composeApp/src/commonMain/composeResources/files/`
+   `shared/src/commonMain/composeResources/files/`
 2. Copia la carpeta **`www`** completa de tu exportación y pégala dentro de `files`.
 
 **Estructura Interna Obligatoria:**
@@ -167,7 +167,7 @@ Para añadir claves de traducción para un idioma que no esté incluido por defe
 5. Vuelve a compilar el proyecto. El sistema de compilación procesará automáticamente los recursos y generará los directorios de traducción correspondientes durante la compilación.
 
 > [!WARNING]
-> **NO** edites ni agregues archivos `strings.xml` directamente dentro de `composeApp/src/commonMain/composeResources/values*`. Durante la compilación, una tarea personalizada de Gradle limpia estas carpetas y las regenera a partir de la fuente de verdad (`project/assets/languages/`). Cualquier cambio manual dentro de `composeResources` se **perderá permanentemente**.
+> **NO** edites ni agregues archivos `strings.xml` directamente dentro de `shared/src/commonMain/composeResources/values*`. Durante la compilación, una tarea personalizada de Gradle limpia estas carpetas y las regenera a partir de la fuente de verdad (`project/assets/languages/`). Cualquier cambio manual dentro de `composeResources` se **perderá permanentemente**.
 
 ## Android
 
@@ -265,7 +265,7 @@ ludens.icons.scale=0.62
 ```
 
 3. Compila el proyecto. El sistema de compilación generará automáticamente:
-   - **Android**: Iconos mipmap heredados (cuadrados y redondos), hojas XML de iconos adaptativos en `mipmap-anydpi-v26` y capas vectoriales/rasterizadas (`ic_launcher_foreground`, `ic_launcher_background`) ubicadas en `androidMain/res/`.
+   - **Android**: Iconos mipmap heredados (cuadrados y redondos), hojas XML de iconos adaptativos en `mipmap-anydpi-v26` y capas vectoriales/rasterizadas (`ic_launcher_foreground`, `ic_launcher_background`) ubicadas en `androidApp/src/main/res/`.
    - **iOS**: Todos los tamaños necesarios de AppIcon (iPhone, iPad, App Store) junto con su manifiesto `Contents.json` correspondiente en `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset`.
    - **Google Play Store**: Un icono de alta resolución `ic_launcher-playstore.png` (512x512) para la ficha de la tienda.
 
@@ -280,7 +280,7 @@ Si prefieres generar tus recursos manualmente o usar las herramientas estándar 
 > ludens.icons.ios.enable=false
 > ```
 
-1. Haz clic derecho en el directorio `composeApp/src/androidMain/res` en Android Studio.
+1. Haz clic derecho en el directorio `androidApp/src/main/res` en Android Studio.
 2. Selecciona **New > Image Asset**.
 3. Sigue el asistente de Image Asset Studio para configurar tus capas y escala.
 
@@ -329,7 +329,7 @@ Si prefieres usar la interfaz de Android Studio:
 
 #### Resultado
 
-Independientemente del método, el APK aparecerá en: `composeApp/build/outputs/apk/debug/composeApp-debug.apk`.
+Independientemente del método, el APK aparecerá en: `androidApp/build/outputs/apk/debug/androidApp-debug.apk` (copia post-procesada: `output/debug/Ludens-0.4.0-debug.apk`).
 
 > [!TIP]
 > Instala este APK en un emulador o dispositivo real para verificar que el juego carga y los plugins funcionan correctamente.
@@ -417,8 +417,8 @@ Similar al proceso de Debug, esta opción es ideal para automatizar el build, pe
 
 #### Ubicación del Archivo
 
-- **Si usaste la Opción A (Asistente)**: Por defecto, Android Studio suele ubicarlo en `composeApp/release/` (o la carpeta que hayas seleccionado durante el paso de destino).
-- **Si usaste la Opción B (Gradle)**: El archivo estará en `composeApp/build/outputs/apk/release/composeApp-release.apk`.
+- **Si usaste la Opción A (Asistente)**: Por defecto, Android Studio suele ubicarlo en `androidApp/release/` (o la carpeta que hayas seleccionado durante el paso de destino).
+- **Si usaste la Opción B (Gradle)**: El archivo estará en `androidApp/build/outputs/apk/release/androidApp-release.apk` (copia post-procesada: `output/release/Ludens-0.4.0-release.apk`).
 
 ## iOS
 
