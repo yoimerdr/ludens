@@ -72,7 +72,7 @@ class ControlsSettingsViewModel(
     ) {
         updateState {
             val item = items.getOrNull(index)
-            if (enabled && item != null && item.enabled) {
+            if (enabled && item != null) {
                 copy(
                     items = items.toPersistentList().set(index, item.transform())
                 )

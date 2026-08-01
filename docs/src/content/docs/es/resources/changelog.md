@@ -23,6 +23,10 @@ de [GitHub Releases](https://github.com/yoimerdr/ludens/releases).
 - Módulo `composeApp` reestructurado en los módulos `shared` y `androidApp`.
 - Actualización de AGP a 9.2.1, Kotlin a 2.4.10, Gradle wrapper a 9.4.1, Jackson a 2.22.1 y targetSDK a 37.
 
+### Arreglado
+
+- Corregida la reactivación individual de los controles en pantalla: los toggles por elemento ahora funcionan en ambos sentidos en lugar de exigir que el elemento ya esté habilitado.
+
 ## v0.4.0 - 2026-07-16
 
 ### Añadido
